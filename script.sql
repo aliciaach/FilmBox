@@ -201,20 +201,22 @@ CREATE TABLE directeur (
     PRIMARY KEY (directeur_id)
 );
 
+CREATE TABLE utilisateur (
+    utilisateur_id INT NOT NULL AUTO_INCREMENT,
+    nom VARCHAR(255) NOT NULL,
+    prenom VARCHAR(255) NOT NULL,
+    courriel VARCHAR(255) NOT NULL UNIQUE,
+    mot_de_passe VARCHAR(255) NOT NULL,
+    telephone VARCHAR(20) NOT NULL,
+    PRIMARY KEY (utilisateur_id)
+);
+
 CREATE TABLE droit (
     droit_id INT NOT NULL AUTO_INCREMENT,
     nom VARCHAR(255) NOT NULL,
     type_droit VARCHAR(255) NOT NULL,
     PRIMARY KEY (droit_id)
 );
-
-CREATE TABLE film_watchlist (
-    film_id INT NOT NULL,
-    utilisateur_utilisateur_id INT NOT NULL,
-    PRIMARY KEY (film_id, utilisateur_utilisateur_id)
-);
-
-CREATE INDEX film_watchlist_idx ON film_watchlist (utilisateur_utilisateur_id);
 
 CREATE TABLE films (
     film_id INT NOT NULL AUTO_INCREMENT,
@@ -227,12 +229,6 @@ CREATE TABLE films (
     directeur_directeur_id INT NOT NULL,
     PRIMARY KEY (film_id),
     FOREIGN KEY (directeur_directeur_id) REFERENCES directeur(directeur_id) ON DELETE CASCADE
-);
-
-CREATE TABLE films_favoris (
-    film_id INT NOT NULL,
-    utilisateur_utilisateur_id INT NOT NULL,
-    PRIMARY KEY (film_id, utilisateur_utilisateur_id)
 );
 
 CREATE TABLE genre (
@@ -254,8 +250,6 @@ CREATE TABLE note (
     FOREIGN KEY (utilisateur_utilisateur_id) REFERENCES utilisateur(utilisateur_id) ON DELETE CASCADE
 );
 
-CREATE INDEX note_idx ON note (films_film_id);
-
 CREATE TABLE permission (
     permission_id INT NOT NULL AUTO_INCREMENT,
     note VARCHAR(255) NOT NULL,
@@ -275,21 +269,21 @@ CREATE TABLE session (
     FOREIGN KEY (utilisateur_utilisateur_id) REFERENCES utilisateur(utilisateur_id) ON DELETE CASCADE
 );
 
-CREATE TABLE utilisateur (
-    utilisateur_id INT NOT NULL AUTO_INCREMENT,
-    nom VARCHAR(255) NOT NULL,
-    prenom VARCHAR(255) NOT NULL,
-    courriel VARCHAR(255) NOT NULL UNIQUE,
-    mot_de_passe VARCHAR(255) NOT NULL,
-    telephone VARCHAR(20) NOT NULL,
-    PRIMARY KEY (utilisateur_id)
+CREATE TABLE film_watchlist (
+    film_id INT NOT NULL,
+    utilisateur_utilisateur_id INT NOT NULL,
+    PRIMARY KEY (film_id, utilisateur_utilisateur_id),
+    FOREIGN KEY (film_id) REFERENCES films(film_id) ON DELETE CASCADE,
+    FOREIGN KEY (utilisateur_utilisateur_id) REFERENCES utilisateur(utilisateur_id) ON DELETE CASCADE
 );
 
-ALTER TABLE film_watchlist 
-ADD CONSTRAINT film_watchlist_utilisateur_fk 
-FOREIGN KEY (utilisateur_utilisateur_id) 
-REFERENCES utilisateur(utilisateur_id) ON DELETE CASCADE;
-
+CREATE TABLE films_favoris (
+    film_id INT NOT NULL,
+    utilisateur_utilisateur_id INT NOT NULL,
+    PRIMARY KEY (film_id, utilisateur_utilisateur_id),
+    FOREIGN KEY (film_id) REFERENCES films(film_id) ON DELETE CASCADE,
+    FOREIGN KEY (utilisateur_utilisateur_id) REFERENCES utilisateur(utilisateur_id) ON DELETE CASCADE
+);
 ALTER TABLE films_favoris 
 ADD CONSTRAINT films_favoris_utilisateur_fk 
 FOREIGN KEY (utilisateur_utilisateur_id) 
