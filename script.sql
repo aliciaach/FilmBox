@@ -288,3 +288,50 @@ ALTER TABLE films_favoris
 ADD CONSTRAINT films_favoris_utilisateur_fk 
 FOREIGN KEY (utilisateur_utilisateur_id) 
 REFERENCES utilisateur(utilisateur_id) ON DELETE CASCADE;
+
+
+
+
+-------------------------------------------------------------------------------------------------------------
+---------------------INSERTION DES VALEURS DANS LES TABLES---------------------------------------------------
+-------------------------------------------------------------------------------------------------------------
+
+INSERT INTO directeur (nom_directeur) VALUES 
+('Christopher Nolan'), 
+('Quentin Tarantino');
+
+INSERT INTO utilisateur (nom, prenom, courriel, mot_de_passe, telephone) VALUES 
+('Doe', 'John', 'john.doe@example.com', 'password123', '1234567890'), 
+('Smith', 'Jane', 'jane.smith@example.com', 'securepass', '0987654321');
+
+INSERT INTO droit (nom, type_droit) VALUES 
+('Admin', 'Full Access'), 
+('User', 'Read Only');
+
+INSERT INTO films (titre, film_duree, date_sortie, pays_origin_film, langue_original, status, directeur_directeur_id) VALUES 
+('Inception', 148, '2010-07-16', 'États-Unis', 'Anglais', 'Vu', 1), 
+('Pulp Fiction', 154, '1994-10-14', 'États-Unis', 'Anglais', 'Non vu', 2);
+
+INSERT INTO genre (genre, films_film_id) VALUES 
+('Science Fiction', 1), 
+('Crime', 2);
+
+INSERT INTO note (commentaire, valeur_note, films_film_id, utilisateur_utilisateur_id) VALUES 
+('Amazing movie!', 5, 1, 1), 
+('Classic film!', 4, 2, 2);
+
+INSERT INTO permission (note, utilisateur_utilisateur_id, droit_droit_id) VALUES 
+('Full control', 1, 1), 
+('Limited access', 2, 2);
+
+INSERT INTO session (date_cree, jeton, utilisateur_utilisateur_id) VALUES 
+('2025-02-24', 'abc123token', 1), 
+('2025-02-24', 'xyz789token', 2);
+
+INSERT INTO film_watchlist (film_id, utilisateur_utilisateur_id) VALUES 
+(1, 1), 
+(2, 2);
+
+INSERT INTO films_favoris (film_id, utilisateur_utilisateur_id) VALUES 
+(1, 1), 
+(2, 2);
