@@ -1,0 +1,28 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Montserrat", sans-serif;
+}
+
+body{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: #050E42;
+}
+
+#root{
+    width: 100%;
+    padding: 0 0.6rem;
+}
+
+.login-container{
+    max-width: 410px;
+    margin: 0 auto;
+    border-radius: 1rem;
+    padding: 2rem 1.5rem;
+    background: #fff;
+    box-shadow: 0 10px 20px rgb(0, 0, 0, 0.1);
+}
