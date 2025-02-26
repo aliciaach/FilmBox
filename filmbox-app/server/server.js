@@ -17,7 +17,7 @@ const __dirname = path.dirname(__filename);
     Connection au server MySQL
 */
 const con = mysql.createConnection({
-  host: "localhost",
+  host: "localhost", 
   user: "scott",
   password: "oracle",
   database: "mybd"
@@ -25,9 +25,8 @@ const con = mysql.createConnection({
 
 con.connect(function(err) {
   if (err) throw err;
-  console.log("connected!");
+  console.log("Connected to MySQL!");
 });
-
 /*
     Dist folder with all the pages
 */
