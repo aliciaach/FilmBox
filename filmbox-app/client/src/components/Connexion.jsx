@@ -34,7 +34,10 @@ return(
           <label htmlFor="remember"> Remember me</label>
         </div>
 
-        {/* Bouton de connexion */}
+        {/* Ligne séparatrice */}
+        <div className="separator"></div>
+
+        {/* Bouton login */}
         <button type="submit" className="btn btn-primary login-btn">Login</button>
 
       </form>
@@ -42,12 +45,12 @@ return(
       {/* Don't have an account? */}
       <div className='signup-container'>
 
-      <p className='signup-text'>You don’t have an account? </p>
+        <p className='signup-text'>You don’t have an account? </p>
       
         {/*Ceci (le bouton) vient de ChatGPT en attendant de trouver la solution moi même */}
-      <button className="btn btn-outline-primary" onClick={() => window.location.href = '/inscription'}>
-        Create Account
-      </button>
+        <button className="btn btn-outline-primary" onClick={() => window.location.href = '/inscription'}>
+          Create Account
+        </button>
       </div>
 
 
