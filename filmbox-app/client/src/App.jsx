@@ -1,12 +1,7 @@
-import React from 'react';
-import Login from './Account';
+import React from "react";
 
 function App() {
-  return (
-    <div>
-      <Login />
-    </div>
-  );
+  return <></>;
 }
 
 export default App;
