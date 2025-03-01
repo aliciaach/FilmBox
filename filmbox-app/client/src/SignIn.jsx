@@ -1,4 +1,5 @@
-import React from 'react'
+import React from 'react';
+import './SignIn.css';
 
 function LoginRegister() {
     return (
@@ -6,29 +7,32 @@ function LoginRegister() {
             <div className="form-box login">
                 <form action="">
                     <h1>Sign Up</h1>
-                    <div className="input-box">
-                        <input type="text"
-                            placeholder='Ex: Marie' required />
+                    
+                    <div className="row">
+                        <div className="input-box">
+                            <input type="text" placeholder="Ex: Tremblay" required />
+                        </div>
+                        <div className="input-box">
+                            <input type="text" placeholder="Ex: Marie" required />
+                        </div>
                     </div>
-                    <div className="input-box">
-                        <input type="text"
-                        placeholder='Ex: Tremblay' required />
+                    
+                    <div className="row">
+                        <div className="input-box">
+                            <input type="text" placeholder="Ex: marietremblay@gmail.com" required />
+                        </div>
+                        <div className="input-box">
+                            <input type="text" placeholder="Ex: 514-123-5678" required />
+                        </div>
                     </div>
-                    <div className="input-box">
-                        <input type="text"
-                        placeholder='Ex: marietremblay@gmail.com' required />
-                    </div>
-                    <div className="input-box">
-                        <input type="text"
-                        placeholder='Ex: 514-123-5678' required />
-                    </div>
-                    <div className="input-box">
-                        <input type="password"
-                        placeholder='Enter your password' required />
-                    </div>
-                    <div className="input-box">
-                        <input type="password"
-                        placeholder='Enter your password again' required />
+                    
+                    <div className="row">
+                        <div className="input-box">
+                            <input type="password" placeholder="Enter your password" required />
+                        </div>
+                        <div className="input-box">
+                            <input type="password" placeholder="Enter your password again" required />
+                        </div>
                     </div>
 
                     <button type="submit">CREATE ACCOUNT</button>
@@ -40,7 +44,7 @@ function LoginRegister() {
                 </form>
             </div>
         </div>
-    ) 
+    );
 }
 
-export default LoginRegister
+export default LoginRegister;
