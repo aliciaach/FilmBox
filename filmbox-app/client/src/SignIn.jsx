@@ -8,7 +8,6 @@ function LoginRegister() {
         <div className="wrapper">
             <div className="form-box login">
                 <form action="">
-                    
                     <div className="row">
                         <div className="input-box">
                             <p>First Name:</p>
@@ -41,8 +40,7 @@ function LoginRegister() {
                             <input type="password" placeholder="Enter your password again" required />
                         </div>
                     </div>
-
-                    <button type="submit">CREATE ACCOUNT</button>
+                    <button type="submit" className="submit-btn">CREATE ACCOUNT</button>
                 </form>
             </div>
             </div>

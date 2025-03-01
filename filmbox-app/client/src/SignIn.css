@@ -71,4 +71,8 @@ form .input-box {
   text-align: center;
 }
 
+.submit-btn {
+    display:block;
+    margin: 40px auto;
+}
 
