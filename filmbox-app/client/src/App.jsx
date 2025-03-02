@@ -1,13 +1,13 @@
 import React from 'react';
 import Login from './Account';
-import LoginRegister from './SignIn';
 
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+import Connexion from './components/Connexion';
 
 function App() {
   return (
-    <div>
-      <LoginRegister />
-    </div>
+    <Connexion/>
   );
 }
 
