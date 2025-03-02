@@ -1,5 +1,4 @@
-import React from 'react';
-import Login from './Account';
+import React from "react";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
