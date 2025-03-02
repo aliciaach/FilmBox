@@ -15,9 +15,9 @@ function LoginRegister() {
     
         const newUser = { firstName, lastName, email, phoneNumber, password, confirmPassword };
 
+        //AJOUTER MESSAGE D'ERREURRR !!!
         try {
-            // Send the data to your backend endpoint
-            const response = await fetch('http://localhost:5000/api/register', {
+            const response = await fetch('http://localhost:4000/LoginRegister', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -25,12 +25,9 @@ function LoginRegister() {
                 body: JSON.stringify(newUser)
             });
 
-            // Process the response
             const data = await response.json();
-            setMessage(data.message || 'Registration successful!');
         } catch (error) {
             console.error('Error:', error);
-            setMessage('An error occurred while registering.');
         }
     };
 
