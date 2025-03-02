@@ -62,6 +62,24 @@ app.post("/login", (req, res) => {
   });
 });
 
+app.post("/LoginRegister", (req, res) => {
+  console.log("We made it here ")
+  const {email, password, firstName, lastName, phoneNumber} = req.body;
+  const sql = "INSERT INTO utilisateur (prenom, nom, courriel, telephone, mot_de_passe) VALUES (?, ?, ?, ?, ?)"; //Place holder (pour eviter sql injections, comme derniere session)
+
+  //CORRIGER LES TYPES D'ERREUR ET METTRE LES BONNES !!!
+  con.query(sql, [firstName, lastName, email, phoneNumber, password], (err, results) => {
+    if (err) {
+      console.error("Database error: ", err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+    if (results.length > 0) {
+      console.log("USER FOUNDDDDDD")
+    } else {
+      console.log("USER NOTTT FOUNDDD")
+    }
+  });
+});
 
 /*
     Connect to server
