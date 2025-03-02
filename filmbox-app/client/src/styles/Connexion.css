@@ -1,0 +1,96 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Istok Web", sans-serif;
+
+}
+
+
+body {
+    font-size: large; /* avant c'était dans "*" */
+    display: flex;
+    flex-direction: column;
+    gap: 1.31rem;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+
+    background: linear-gradient(to bottom,
+        rgba(5, 14, 66, 1), 
+        rgba(26, 0, 255, 0.6), 
+        rgba(0, 0, 255, 0.5), 
+        rgba(5, 0, 50, 1)),
+        url('../assets/Titanic.png');
+
+    background-size: auto;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: #fff;
+
+}
+
+h2{
+    margin-top: 25px;
+}
+
+.login-form{
+    display: flex;
+    flex-direction: column;
+    gap: 1.31rem;
+    
+    width: 100%;
+    max-width: 400px;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 2rem 2.5rem;
+    border-radius: 10px;
+    /*backdrop-filter: blur(10px);*/
+    box-shadow: 0 10px 20px rgb(0, 0, 0, 0.2);
+    /* border: 1px solid rgba(255, 255, 255, 0.5);*/
+}
+
+
+
+.input-field {
+    /* width: 100%; */
+    padding: 10px;
+    /* padding-right: 40px; */
+    border: 1px solid #7465F7;
+    background-color: rgba(116, 101, 247, 0.1);
+    border-radius: 15px;
+}
+
+
+.icon-image {
+    /* position: absolute; */
+    right: 10px;
+    /* top: 50%; */
+    /* transform: translateY(-50%); */
+    width: 20px;
+    height: 20px;
+    margin-left: 10px;
+}
+
+.signup-container {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Espace entre la case à cocher et le texte */
+    font-size: 14px;
+}
+
+.remember-me input[type="checkbox"] {
+    accent-color: #7465F7; /* Couleur personnalisée de la case cochée */
+    cursor: pointer;
+}
+
+.separator {
+    align-self: center;
+    width: 100%;
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.5); /* Ligne blanche semi-transparente */
+}
