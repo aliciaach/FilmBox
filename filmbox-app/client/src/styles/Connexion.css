@@ -7,7 +7,7 @@
 }
 
 
-body {
+.classBody {
     font-size: large; /* avant c'était dans "*" */
     display: flex;
     flex-direction: column;
@@ -27,7 +27,6 @@ body {
     background-position: center;
     background-repeat: no-repeat;
     color: #fff;
-
 }
 
 h2{
