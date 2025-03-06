@@ -1,5 +1,8 @@
+import { Link } from 'react-router-dom';
 import imageFilm from "../assets/imageFilm.jpg";
-function BodyAccueil() {
+
+
+const BodyAccueil = () => {
   return (
     <div
       style={{
