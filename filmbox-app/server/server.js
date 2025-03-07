@@ -82,6 +82,57 @@ app.post("/LoginRegister", (req, res) => {
 });
 
 /*
+    Afficher fiche technique films
+*/
+app.get("/movies", (req, res) => {
+  res.sendFile(path.join(__dirname, "../client/dist", "index.html"));
+});
+
+app.use(
+  "/images",
+  express.static(path.join(__dirname, "../client/public/images"))
+);
+/*
+    API route pour get les films
+*/
+app.get("/api/movies", (req, res) => {
+  const sql = "SELECT titre FROM films";
+  con.query(sql, (err, results) => {
+    if (err) {
+      console.error("Error fetching movies:", err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+    res.json(results);
+  });
+});
+
+/*
+    Serve the React app
+*/
+app.get("/movies", (req, res) => {
+  res.sendFile(path.join(__dirname, "../client/dist", "index.html"));
+});
+
+app.use(
+  "/images",
+  express.static(path.join(__dirname, "../client/public/images"))
+);
+/*
+    API route pour get les films
+*/
+app.get("/api/movies", (req, res) => {
+  const sql = "SELECT titre FROM films";
+  con.query(sql, (err, results) => {
+    if (err) {
+      console.error("Error fetching movies:", err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+    res.json(results);
+  });
+});
+
+
+/*
     Connect to server
 */
 const PORT = process.env.PORT || 4000;
