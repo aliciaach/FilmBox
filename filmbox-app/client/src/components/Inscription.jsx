@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import '../styles/Inscription.css';
+import { Link } from 'react-router-dom';
 
 function LoginRegister() {
     const [email, setEmail] = useState('');
@@ -32,7 +33,7 @@ function LoginRegister() {
     };
 
     return (
-        <>
+        <div className="inscription-page">
     <h1>Sign Up</h1>
         <div className="wrapper">
             <div className="form-box login">
@@ -75,9 +76,13 @@ function LoginRegister() {
             </div>
             <div className="LoginLink">
                 <p>Already have an account ?</p>
-                <button type="submit">LOGIN</button>
+                <Link to="/connexion">
+                <button type="submit" className="nav-link active text-white">
+                    LOGIN
+                    </button>
+                </Link>
             </div>
-        </>
+        </div>
     );
 }
 
