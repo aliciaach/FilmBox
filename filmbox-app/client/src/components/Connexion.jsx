@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import logoFilmBox from '../assets/logoFilmBox.png';
 import arobase from '../assets/arobase.png';
 import cadenas from '../assets/cadenas.png';
@@ -73,9 +74,15 @@ return(
 
         <p className='signup-text'>You don’t have an account? </p>
       
-        {/*Ceci (le bouton) vient de ChatGPT en attendant de trouver la solution moi même */}
-        <button className="btn btn-outline-primary" onClick={() => window.location.href = '/inscription'}>
+        
+        <button className="btn btn-outline-primary" >
+          <Link
+            to="/inscription"
+            className="nav-link active text-white text-"
+            style={{ fontSize:"20px"}}
+            >
           Create Account
+            </Link>
         </button>
       </div>
     </div>

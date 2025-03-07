@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import BodyAccueil from './components/BodyAccueil';
 import Connexion from './components/Connexion';
+import Inscription from './components/Inscription';
 
 
 
@@ -12,6 +13,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<BodyAccueil />} />
         <Route path="/connexion" element={<Connexion />} />
+        <Route path="/inscription" element={<Inscription />} />
       </Routes>
     </BrowserRouter>
   );

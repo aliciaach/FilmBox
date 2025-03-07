@@ -14,14 +14,13 @@ const BodyAccueil = () => {
       }}
     >
       <nav className="d-flex justify-content-end p-3">
-        <link
+        <Link
           to="/connexion"
           className="nav-link active text-white text-"
           style={{ fontSize: "20px" }}
-          href="#"
         >
           CONNEXION
-        </link>
+        </Link>
       </nav>
 
       <div className="d-flex flex-column">
