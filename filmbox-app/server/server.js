@@ -128,6 +128,26 @@ app.post("/LoginRegister", (req, res) => {
   });
 });
 
+app.post("/ChangePassword", (req, res) => {
+    console.log("Trying to update password")
+    const {email, newPassword} = req.body;
+    const sql = "UPDATE utilisateur SET mot_de_passe = ? WHERE courriel = ?";
+
+    con.query(sql, [newPassword, email], (err, results) => {
+      if (err) {
+        console.error("Database error: ", err);
+        return res.status(500).json({message: "Internal server error" });
+      }
+      if (results.affectedRows > 0) {
+        console.log("PASSWORD UPDATED !!!!!")
+        return res.status(200).json({ success:true, message: "Your password was updated !" });
+      } else {
+        console.log("Error, couldnt update password")
+        return res.status(404).json({ succes:false, message: "Error, couldnt create user..."})
+      }
+    });
+});
+
 
 /*
     API - Obtenir tous les films
