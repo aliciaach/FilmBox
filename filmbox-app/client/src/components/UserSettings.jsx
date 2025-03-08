@@ -61,6 +61,31 @@ function UserSettings() {
         }
     };
 
+    const handleSubmitDelete = async (e) => {
+        e.preventDefault(); 
+
+        try {
+            const response = await fetch('http://localhost:4000/deleteAccount', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({userId: user.id})
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                setMessage("User deleted");
+            } else {
+                setMessage("Error, couldnt delete account");
+            }
+        } catch (error) {
+            console.error('Error deleting account:', error);
+            setMessage("An error occurred while deleting account");
+        }
+    };
+
     return (
         <>
             <div>
@@ -86,6 +111,10 @@ function UserSettings() {
                     </div>
                     <button type="submit" className="btn btn-primary mt-3">Update Password</button>
                 </form>
+                <form onSubmit={handleSubmitDelete} className='DeleteAccount'>
+                    <button type="submit" className="btn btn-primary mt-3">Delete Account</button>
+                </form>
+
             </div>
         </>
     );

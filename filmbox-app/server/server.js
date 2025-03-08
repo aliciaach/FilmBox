@@ -148,6 +148,27 @@ app.post("/ChangePassword", (req, res) => {
     });
 });
 
+app.delete("/deleteAccount", (req, res) => {
+  console.log("trying to delete account")
+  const {userId} = req.body;
+  const sql = "DELETE FROM utilisateur WHERE utilisateur_id = ?;";
+
+  con.query(sql, [userId], (err, results) => {
+    if (err) {
+      console.error("Database error: ", err);
+      return res.status(500).json({message: "Internal server error" });
+    }
+    if (results.affectedRows > 0) {
+      console.log("ACCOUNT DELETED !!!!!")
+      return res.status(200).json({ success:true, message: "Your password was updated !" });
+    } else {
+      console.log("Error, couldnt update password")
+      return res.status(404).json({ succes:false, message: "Error, couldnt create user..."})
+    }
+  });
+
+})
+
 
 /*
     API - Obtenir tous les films
