@@ -56,8 +56,10 @@ app.post("/login", (req, res) => {
     }
     if (results.length > 0) {
       console.log("USER FOUNDDDDDD")
+      return res.status(200).json({succes:true, message: "Login Succesful !" });
     } else {
       console.log("USER NOTTT FOUNDDD")
+      return res.status(401).json({succes:false, message: "Access denied, wrong password or email" });
     }
   });
 });
@@ -71,12 +73,14 @@ app.post("/LoginRegister", (req, res) => {
   con.query(sql, [firstName, lastName, email, phoneNumber, password], (err, results) => {
     if (err) {
       console.error("Database error: ", err);
-      return res.status(500).json({ message: "Internal server error" });
+      return res.status(500).json({message: "Internal server error" });
     }
     if (results.length > 0) {
-      console.log("USER FOUNDDDDDD")
+      console.log("New User created ")
+      return res.status(200).json({ success:true, message: "New user created!" });
     } else {
-      console.log("USER NOTTT FOUNDDD")
+      console.log("Error, couldnt create new user")
+      return res.status(401).json({ succes:false, message: "Error, couldnt create user..."})
     }
   });
 });
