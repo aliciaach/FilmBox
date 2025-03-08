@@ -31,6 +31,17 @@ con.connect(function(err) {
 });
 
 /*
+    Enregistrer une session utilisateur
+*/
+app.use(session({
+  secret: 'mySecretKey',
+  resave: false,
+  saveUninitialized: false
+}));
+
+
+
+/*
     Dist folder with all the pages
 */
 app.use(express.static(path.join(__dirname, "../client/dist")));
@@ -57,7 +68,14 @@ app.post("/login", (req, res) => {
       return res.status(500).json({ message: "Internal server error" });
     }
     if (results.length > 0) {
-      console.log("USER FOUNDDDDDD")
+      req.session.user = {
+        id: results[0].utilisateur_id,  // Adjust column name if needed
+        prenom: results[0].prenom,
+        nom: results[0].nom,
+        courriel: results[0].courriel,
+        telephone: results[0].telephone
+      }
+      console.log("USER FOUNDDDDDD" + results[0].courriel)
       return res.status(200).json({succes:true, message: "Login Succesful !" });
     } else {
       console.log("USER NOTTT FOUNDDD")
