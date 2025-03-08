@@ -8,6 +8,7 @@ import { fileURLToPath } from "url";
 import mysql from "mysql";
 import { body, validationResult } from "express-validator";
 import dateFormat from "dateformat";
+import { json } from "express/lib/response";
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -32,6 +33,7 @@ con.connect(function(err) {
 
 /*
     Enregistrer une session utilisateur
+    Source : https://www.geeksforgeeks.org/how-to-handle-sessions-in-express/
 */
 app.use(session({
   secret: 'mySecretKey',
@@ -39,7 +41,27 @@ app.use(session({
   saveUninitialized: false
 }));
 
+app.get("/get-session", (req, res) => {
+  if (req.session.user) {
+    console.log("Session Found:", req.session.user);
+    res.send('Session data: ' + json.stringfy(req.session.user));
+  } else {
+    console.log("No Session Found");
+    res.send('No session data found');
+  }
+});
 
+app.get("/destroy-session", (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Error destroying session:", err);
+      res.send("Error logging out");
+    } else {
+      console.log("Session Destroyed");
+      res.send("Session destroyed");
+    }
+  });
+});
 
 /*
     Dist folder with all the pages
