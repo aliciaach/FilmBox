@@ -28,6 +28,18 @@ const ListeFilms = () => {
   //utilisation de chatgpt pour les classes BOOTSTRAP
   //affichage dynamique des films
   return (
+    <>
+    <div>
+      <button className="btn btn-outline-primary" >
+        <Link
+          to="/userSettings"
+          className="nav-link active text-black"
+          style={{ fontSize:"20px"}}
+          >
+          User Settings
+        </Link>
+      </button>
+    </div>
     <div className="container text-center mt-4">
       <h2 className="text-white bg-primary p-3 rounded">Liste des Films</h2>
       {erreur ? (
@@ -61,6 +73,7 @@ const ListeFilms = () => {
         </div>
       )}
     </div>
+  </>
   );
 };
  
