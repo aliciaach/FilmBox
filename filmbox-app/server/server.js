@@ -117,17 +117,48 @@ app.use(
   "/images",
   express.static(path.join(__dirname, "../client/public/images"))
 );
+
 /*
-    API route pour get les films
+    API - Obtenir tous les films
 */
 app.get("/api/movies", (req, res) => {
-  const sql = "SELECT titre FROM films";
+  const sql = "SELECT film_id, titre FROM films";
   con.query(sql, (err, results) => {
     if (err) {
-      console.error("Error fetching movies:", err);
-      return res.status(500).json({ message: "Internal server error" });
+      console.error("Erreur SQL:", err);
+      return res.status(500).json({ message: "Erreur serveur" });
     }
     res.json(results);
+  });
+});
+
+/*
+    API - Obtenir un film par ID
+*/
+app.get("/api/movies/:id", (req, res) => {
+  const filmID = Number(req.params.id); //converti le id en nombre au cas ou
+  if (isNaN(filmID)) {
+    return res.status(400).json({ message: "ID invalide" }); //gestions des erreurs etc
+  }
+
+  //requete sql qui fait les jointures avec les tables
+  const sql = `
+    SELECT f.film_id, f.titre, f.film_duree, f.date_sortie, 
+           f.pays_origin_film, f.langue_original, d.nom_directeur, g.genre
+    FROM films f
+    JOIN directeur d ON f.directeur_directeur_id = d.directeur_id
+    LEFT JOIN genre g ON f.film_id = g.films_film_id
+    WHERE f.film_id = ?`;
+
+  con.query(sql, [filmID], (err, results) => {
+    if (err) {
+      console.error("Erreur SQL:", err);
+      return res.status(500).json({ message: "Erreur serveur" });
+    }
+    if (results.length === 0) {
+      return res.status(404).json({ message: "Film non trouvé" });
+    }
+    res.json(results[0]);
   });
 });
 
