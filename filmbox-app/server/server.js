@@ -35,12 +35,14 @@ con.connect(function(err) {
 */
 app.use(express.static(path.join(__dirname, "../client/dist")));
 
+
 /*
-    Description des routes
+    Images
 */
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../client/dist", "index.html"));
-});
+app.use(
+  "/images",
+  express.static(path.join(__dirname, "../client/public/images"))
+);
 
 /*
   Login page + confirmation of information
@@ -77,7 +79,7 @@ app.post("/LoginRegister", (req, res) => {
     }
     if (results.length > 0) {
       console.log("New User created ")
-      return res.status(200).json({ success:true, message: "New user created!" });
+      return res.status(200).json({ success:true, message: "New user created!", redirectUrl: "/PageFilm" });
     } else {
       console.log("Error, couldnt create new user")
       return res.status(401).json({ succes:false, message: "Error, couldnt create user..."})
@@ -85,42 +87,6 @@ app.post("/LoginRegister", (req, res) => {
   });
 });
 
-/*
-    Afficher fiche technique films
-*/
-app.get("/movies", (req, res) => {
-  res.sendFile(path.join(__dirname, "../client/dist", "index.html"));
-});
-
-app.use(
-  "/images",
-  express.static(path.join(__dirname, "../client/public/images"))
-);
-/*
-    API route pour get les films
-*/
-app.get("/api/movies", (req, res) => {
-  const sql = "SELECT titre FROM films";
-  con.query(sql, (err, results) => {
-    if (err) {
-      console.error("Error fetching movies:", err);
-      return res.status(500).json({ message: "Internal server error" });
-    }
-    res.json(results);
-  });
-});
-
-/*
-    Serve the React app
-*/
-app.get("/movies", (req, res) => {
-  res.sendFile(path.join(__dirname, "../client/dist", "index.html"));
-});
-
-app.use(
-  "/images",
-  express.static(path.join(__dirname, "../client/public/images"))
-);
 
 /*
     API - Obtenir tous les films
@@ -164,6 +130,13 @@ app.get("/api/movies/:id", (req, res) => {
     }
     res.json(results[0]);
   });
+});
+
+/*
+    Description des routes
+*/
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../client/dist", "index.html"));
 });
 
 

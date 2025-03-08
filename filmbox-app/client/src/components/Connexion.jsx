@@ -4,17 +4,20 @@ import logoFilmBox from '../assets/logoFilmBox.png';
 import arobase from '../assets/arobase.png';
 import cadenas from '../assets/cadenas.png';
 import '../styles/Connexion.css';
+import { useNavigate } from 'react-router-dom';
 
 function Connexion(){
     //My variables 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
       e.preventDefault();
 
       const userLogin = { email, password };
-
+      
       //AJOUTER MESSAGE D'ERREURRR !!!
       try {
           const response = await fetch('http://localhost:4000/login', {
@@ -26,6 +29,14 @@ function Connexion(){
           });
           
           const data = await response.json();
+          console.log("data:" + data);
+          if (response.ok)
+          {
+            console.log("Going to film page");
+            navigate('/listeFilms');
+          } else {
+            setError(data.message || "Inavalid logon")
+          }
       } catch (error) {
           console.error('Error:', error);
       }
@@ -66,6 +77,7 @@ return(
 
         {/* Bouton login */}
         <button type="submit" className="btn btn-primary login-btn">Login</button>
+        {error && <p style={{ color: "red" }}>{error}</p>}
 
       </form>
 
