@@ -8,7 +8,7 @@ import { fileURLToPath } from "url";
 import mysql from "mysql";
 import { body, validationResult } from "express-validator";
 import dateFormat from "dateformat";
-import { json } from "express/lib/response";
+
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -44,10 +44,11 @@ app.use(session({
 app.get("/get-session", (req, res) => {
   if (req.session.user) {
     console.log("Session Found:", req.session.user);
-    res.send('Session data: ' + json.stringfy(req.session.user));
+    res.json({ loggedIn: true, user: req.session.user });
   } else {
     console.log("No Session Found");
     res.send('No session data found');
+    res.json({ loggedIn: false });
   }
 });
 

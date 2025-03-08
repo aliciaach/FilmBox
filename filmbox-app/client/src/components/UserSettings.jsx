@@ -1,41 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styles/UserSettings.css';
-import { Link } from 'react-router-dom';
 
 function UserSettings() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
+    const [user, setUser] = useState({});
     const [message, setMessage] = useState('');
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-    
-        const userData = { firstName, lastName, email, phoneNumber, password, confirmPassword };
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const response = await fetch('http://localhost:4000/get-session');
+                const data = await response.json();
 
-        //AJOUTER MESSAGE D'ERREURRR !!!
-        try {
-            const response = await fetch('http://localhost:4000/UserSettings', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(userData)
-            });
+                if (data.loggedIn) {
+                    setUser(data.user);
+                } else {
+                    setMessage("SESSION INTROUVABLE");
+                }
+            } catch (error) {
+                console.error('Error', error);
+                setMessage("Error,");
+            }
+        };
 
-            const data = await response.json();
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    };
+        fetchUserData(); 
+    }, []);
 
     return (
-        <div className="inscription-page">
-    <h1>This is the page with the user data</h1>
-        </div>
+        <div>
+            <h1>This is the page with the user data, he will be able to change his password or delete his account</h1>
+                <div>
+                    <p><strong>First Name:</strong> {user.prenom}</p>
+                    <p><strong>Last Name:</strong> {user.nom}</p>
+                    <p><strong>Email:</strong> {user.courriel}</p>
+                    <p><strong>Phone Number:</strong> {user.telephone}</p>
+                </div>
+            </div>
     );
 }
 
