@@ -92,12 +92,15 @@ app.post("/LoginRegister", (req, res) => {
     API - Obtenir tous les films
 */
 app.get("/api/movies", (req, res) => {
+  console.log("Request received at /api/movies");
   const sql = "SELECT film_id, titre FROM films";
   con.query(sql, (err, results) => {
     if (err) {
       console.error("Erreur SQL:", err);
       return res.status(500).json({ message: "Erreur serveur" });
     }
+    console.log(` Movies fetched: ${results.length} rows`); // Log number of rows
+    console.table(results);
     res.json(results);
   });
 });
