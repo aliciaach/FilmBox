@@ -118,7 +118,7 @@ app.post("/LoginRegister", (req, res) => {
       console.error("Database error: ", err);
       return res.status(500).json({message: "Internal server error" });
     }
-    if (results.length > 0) {
+    if (results.affectedRows && results.affectedRows > 0) {
       console.log("New User created ")
       return res.status(200).json({ success:true, message: "New user created!", redirectUrl: "/PageFilm" });
     } else {
@@ -160,10 +160,10 @@ app.delete("/deleteAccount", (req, res) => {
     }
     if (results.affectedRows > 0) {
       console.log("ACCOUNT DELETED !!!!!")
-      return res.status(200).json({ success:true, message: "Your password was updated !" });
+      return res.status(200).json({ success:true, message: "Your account was deleted !" });
     } else {
       console.log("Error, couldnt update password")
-      return res.status(404).json({ succes:false, message: "Error, couldnt create user..."})
+      return res.status(404).json({ succes:false, message: "Error, couldnt delete user..."})
     }
   });
 
