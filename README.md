@@ -1,6 +1,6 @@
 Voici comment déployer notre projet FilmBox dans votre machine :
 
-1. Télécharger notre dépôt git sur votre PC.
+1. Télécharger notre dépôt git sur votre PC (ou faire un git clone).
 
 2. Il faut préparer votre environnement Docker pour être capable d'insérer nos données :
    
