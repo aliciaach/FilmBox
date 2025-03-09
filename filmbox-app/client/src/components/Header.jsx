@@ -9,13 +9,14 @@ function Header() {
       }}
     >
       <nav className="d-flex justify-content-end p-3">
-        <a
+        <link
+          to="/connexion"
           className="nav-link active text-white text-"
           style={{ fontSize: "20px" }}
           href="#"
         >
           CONNEXION
-        </a>
+        </link>
       </nav>
 
       <div className="d-flex flex-column">
