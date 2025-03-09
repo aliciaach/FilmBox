@@ -16,7 +16,7 @@ c) Ensuite créer une base de données :
 
 3. Maintenant que tout est prêt, il faut insérer les tables de notre script. ATTENTION : Le script mysql se trouve au milieu du script(indiqué en commentaire).
 
-4. Insérer les valeur des les tables(ce trouve en bas du script).
+4. Insérer les valeur des tables(ce trouve en bas du script).
 
 5. Ouvrir le dépôt git télécharger sur Visual Studio avec Docker ouvert.
 
