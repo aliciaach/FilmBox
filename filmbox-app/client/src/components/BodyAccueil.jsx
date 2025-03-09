@@ -59,10 +59,15 @@ const BodyAccueil = () => {
             </h1>
           </div>
         </div>
-
-        <button className="btn custom-btn text-light text-start fw-light fs-4">
+        <Link
+          to="/inscription"
+          className="btn custom-btn text-light text-start fw-light fs-4"
+          style={{ fontSize: "20px" }}
+        >
           GET STARTED
-        </button>
+        </Link>
+
+        
       </div>
     </header>
     <div
