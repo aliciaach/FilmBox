@@ -70,9 +70,8 @@ function LoginRegister() {
         <h1 style={{marginTop: '25px'}}>Sign Up</h1>
         <div className="wrapper">
             <div className="form-box login" style={{
-                    display: 'grid', //'flex',
-                    gridTemplateColumns: '1fr 1fr',//flexDirection: 'column',
-                    gap : '1.5rem', //ajout
+                    display: 'flex',
+                    flexDirection: 'column',
                     width: '100%', //
                     maxWidth: '900px', //
                     background: 'rgba(0, 0, 0, 0.4)',
@@ -80,9 +79,9 @@ function LoginRegister() {
                     borderRadius: '10px',
                     boxShadow: '0 10px 20px rgba(0, 0, 0, 0.2)'
                 }}>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr'}}>
                     {/* Nom Prenom */}
-                    <div /*className="row"*/>
+
                         <div className="input-box" style={{gridColumn : '1/2', width:'100%'}}>
                             <p>First Name:</p>
                             <input type="text" placeholder="Ex: Marie" required value={firstName} onChange={(e) => setFirstName(e.target.value)} 
@@ -96,10 +95,10 @@ function LoginRegister() {
                                 style={{ padding: '10px', border: '1px solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', borderRadius: '15px' }}/>
                             <i><img src={utilisateur} alt="Utilisateur" /*className="icon-image"*/ style={{right:'10px', width: '20px', height: '20px', marginLeft: '10px' }} /> </i>
                         </div>
-                    </div>
+
                     
                     {/* Email / telephone */}
-                    <div /*className="row"*/>
+
                         <div className="input-box" style={{gridColumn : '1/2', width:'100%'}}>
                             <p>Email:</p>
                             <input type="text" placeholder="Ex: marietremblay@gmail.com" required value={email} onChange={(e) => setEmail(e.target.value)}
@@ -113,10 +112,10 @@ function LoginRegister() {
                                 style={{ padding: '10px', border: '1px solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', borderRadius: '15px' }}/>
                             <i><img src={telephone} alt="Telephone" /*className="icon-image"*/ style={{right:'10px', width: '20px', height: '20px', marginLeft: '10px' }} /> </i>
                         </div>
-                    </div>
+
                     
                     {/* Mot de passe */}
-                    <div /*className="row"*/>
+
                         <div className="input-box" style={{gridColumn : '1/2', width:'100%'}}>
                             <p>Password:</p>
                             <input type="password" placeholder="Enter your password" required value={password} onChange={(e) => setPassword(e.target.value)}
@@ -130,7 +129,7 @@ function LoginRegister() {
                                 style={{ padding: '10px', border: '1px solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', borderRadius: '15px' }}/>
                             <i><img src={cadenas} alt="Cadenas" /*className="icon-image"*/ style={{right:'10px', width: '20px', height: '20px', marginLeft: '10px' }} /> </i>
                         </div>
-                    </div>
+                    
                     
                     {/* Ligne séparatrice */}
                     <div style={{

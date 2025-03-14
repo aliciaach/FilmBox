@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import logoFilmBox from '../assets/logoFilmBox.png';
-import arobase from '../assets/arobase.png';
-import cadenas from '../assets/cadenas.png';
+import arobase from '../assets/icone_arobase.png';
+import cadenas from '../assets/icone_cadenas.png';
 import titanicImage from '../assets/Titanic.png';
 import '../styles/Connexion.css';
 import { useNavigate } from 'react-router-dom';
