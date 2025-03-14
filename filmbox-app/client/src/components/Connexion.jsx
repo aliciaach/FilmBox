@@ -95,7 +95,7 @@ return(
         <label htmlFor="email" className="input-label">Email</label>
         
         <div /*className='input-wrapper'*/style={{ display: 'flex', alignItems: 'center' }} /*AAAA POURQUOI*/>
-          <input type='email' placeholder='example@gmail.com' className='input-field' required value={email} onChange={(e) => setEmail(e.target.value)} 
+          <input type='email' placeholder='Example@gmail.com' className='input-field' required value={email} onChange={(e) => setEmail(e.target.value)} 
           style={{ padding: '10px', border: '1px solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', borderRadius: '15px'/*, flexGrow: 1 */}}/>
           <i><img src={arobase} alt="Arobase" /*className="icon-image"*/ style={{right:'10px', width: '20px', height: '20px', marginLeft: '10px' }}/> </i>
         </div>
@@ -104,7 +104,7 @@ return(
         <label htmlFor="password" className="input-label">Password</label>
           
         <div /*className='input-wrapper'*/style={{ display: 'flex', alignItems: 'center' }} /*AAAA POURQUOI*/>
-          <input type='password' placeholder='enter your password' className='input-field' required value={password} onChange={(e) => setPassword(e.target.value)}
+          <input type='password' placeholder='Enter your password' className='input-field' required value={password} onChange={(e) => setPassword(e.target.value)}
           style={{ padding: '10px', border: '1px solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', borderRadius: '15px'/*, flexGrow: 1 */}}/>
           <i><img src={cadenas} alt="Cadenas" /*className="icon-image"*/ style={{right:'10px', width: '20px', height: '20px', marginLeft: '10px' }} /> </i>
         </div>
