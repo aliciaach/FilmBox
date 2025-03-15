@@ -72,45 +72,51 @@ function LoginRegister() {
             <div className="form-box login" style={{
                     display: 'flex',
                     flexDirection: 'column',
-                    width: '100%', //
-                    maxWidth: '1100px', //
+                    width: '110%', //
+                    maxWidth: '1200px', //
                     background: 'rgba(0, 0, 0, 0.4)',
                     padding: '2.5rem 4rem',//'5rem 5rem',
                     borderRadius: '10px',
-                    boxShadow: '0 10px 20px rgba(0, 0, 0, 0.2)'
+                    boxShadow: '0 10px 20px rgba(17, 1, 1, 0.2)',
+                    margin:'0 auto',
+                    transform: 'translateX(-5%)'
                 }}>
-                <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', columnGap: '2.5rem'}}>
+                <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', columnGap: '5rem'}}>
                         {/* Nom Prenom */}
 
                         <div className="input-box" style={{gridColumn : '1/2', width:'100%', marginTop:'2rem'}}>
                             <p style={{fontSize:'22px'}}>First Name:</p>
-                            <input type="text" placeholder="Ex: Marie" required value={firstName} onChange={(e) => setFirstName(e.target.value)} 
-                                style={{ maxWidth: '500px',padding: '12px', border: '1px solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', borderRadius: '15px', width: '270px'}}/>
-                            <i><img src={utilisateur} alt="Utilisateur" /*className="icon-image"*/ style={{right:'10px', width: '20px', height: '20px', marginLeft: '10px'}} /> </i>
+                            <input className='w-100 p-2 pe-5 ps-3 text-white border-1 rounded-4 ' type="text" placeholder="Ex: Marie" required value={firstName} onChange={(e) => setFirstName(e.target.value)} 
+                                style={{ border: 'solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', outline: 'none', /* JE GARDE OU PAS? */ backgroundImage: `url(${cadenas})`,
+                                backgroundPosition: 'right 10px center', backgroundRepeat: 'no-repeat', backgroundSize: '20px' 
+                                }}/>
                         </div>
                         
                         <div className="input-box" style={{gridColumn : '2/3', width:'100%', marginTop:'2rem'}}>
                             <p style={{fontSize:'22px'}}>Last Name:</p>
-                            <input type="text" placeholder="Ex: Tremblay" required value={lastName} onChange={(e) => setLastName(e.target.value)} 
-                                style={{ maxWidth: '500px',padding: '12px', border: '1px solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', borderRadius: '15px', width: '270px', marginLeft:'20px'}}/>
-                            <i><img src={utilisateur} alt="Utilisateur" /*className="icon-image"*/ style={{right:'10px', width: '20px', height: '20px', marginLeft: '10px' }} /> </i>
+                            <input className='w-100  p-2 pe-5 ps-3 text-white border-1 rounded-4 ' type="text" placeholder="Ex: Tremblay" required value={lastName} onChange={(e) => setLastName(e.target.value)} 
+                                style={{ border: 'solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', outline: 'none', /* JE GARDE OU PAS? */ backgroundImage: `url(${cadenas})`,
+                                backgroundPosition: 'right 10px center', backgroundRepeat: 'no-repeat', backgroundSize: '20px' 
+                                }}/>
                         </div>
 
                     
-                        {/* Email / telephone */}
+                        {/* Email / telephone */} {/* BTW : input className= 'p-2 pe-5' OU 'p-2 pe-5 ps-3'*/}
 
                         <div className="input-box" style={{gridColumn : '1/2', width:'100%',  marginTop:'4rem'}}>
-                            <p style={{fontSize:'22px'}}>Email:</p>
-                            <input type="text" placeholder="Ex: marietremblay@gmail.com" required value={email} onChange={(e) => setEmail(e.target.value)}
-                                style={{ maxWidth: '500px',padding: '12px', border: '1px solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', borderRadius: '15px', width: '270px'}}/>
-                            <i><img src={arobase} alt="Arobase" /*className="icon-image"*/ style={{right:'10px', width: '20px', height: '20px', marginLeft: '10px' }} /> </i>
+                            <p style={{fontSize:'22px'}}>Email:</p> 
+                            <input className='w-100 p-2 pe-5 ps-3 text-white border-1 rounded-4 ' type="text" placeholder="Ex: marietremblay@gmail.com" required value={email} onChange={(e) => setEmail(e.target.value)}
+                                style={{ border: 'solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', outline: 'none', /* JE GARDE OU PAS? */ backgroundImage: `url(${cadenas})`,
+                                backgroundPosition: 'right 10px center', backgroundRepeat: 'no-repeat', backgroundSize: '20px' 
+                                }}/>
                         </div>
 
                         <div className="input-box"style={{gridColumn : '2/3', width:'100%',  marginTop:'4rem'}}>
                             <p style={{fontSize:'22px'}}>Phone Number:</p>
-                            <input type="text" placeholder="Ex: 514-123-5678" required value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)}
-                                style={{ maxWidth: '500px',padding: '12px', border: '1px solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', borderRadius: '15px', width: '270px'}}/>
-                            <i><img src={telephone} alt="Telephone" /*className="icon-image"*/ style={{right:'10px', width: '20px', height: '20px', marginLeft: '10px' }} /> </i>
+                            <input className='w-100 p-2 pe-5 ps-3 text-white border-1 rounded-4 'type="text" placeholder="Ex: 514-123-5678" required value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)}
+                                style={{ border: 'solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', outline: 'none', /* JE GARDE OU PAS? */ backgroundImage: `url(${cadenas})`,
+                                backgroundPosition: 'right 10px center', backgroundRepeat: 'no-repeat', backgroundSize: '20px' 
+                                }}/>
                         </div>
 
                     
@@ -118,16 +124,18 @@ function LoginRegister() {
 
                         <div className="input-box" style={{gridColumn : '1/2', width:'100%', marginTop:'4rem'}}>
                             <p style={{fontSize:'22px'}}>Password:</p>
-                            <input type="password" placeholder="Enter your password" required value={password} onChange={(e) => setPassword(e.target.value)}
-                                style={{ maxWidth: '500px', padding: '12px', border: '1px solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', borderRadius: '15px', width: '270px'}}/>
-                            <i><img src={cadenas} alt="Cadenas" /*className="icon-image"*/ style={{right:'10px', width: '20px', height: '20px', marginLeft: '10px', marginBottom:'0' }} /> </i>
+                            <input className='w-100  p-2 pe-5 ps-3 text-white border-1 rounded-4 ' type="password" placeholder="Enter your password" required value={password} onChange={(e) => setPassword(e.target.value)}
+                                style={{ border: 'solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', outline: 'none', /* JE GARDE OU PAS? */ backgroundImage: `url(${cadenas})`,
+                                backgroundPosition: 'right 10px center', backgroundRepeat: 'no-repeat', backgroundSize: '20px' 
+                                }}/>
                         </div>
                         
                         <div className="input-box"style={{gridColumn : '2/3', width:'100%', marginTop:'4rem'}}>
                             <p style={{fontSize:'22px'}}>Confirm Password:</p>
-                            <input type="password" placeholder="Enter your password again" required value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
-                                style={{ maxWidth: '500px',padding: '12px', border: '1px solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', borderRadius: '15px', width: '270px'}}/>
-                            <i><img src={cadenas} alt="Cadenas" /*className="icon-image"*/ style={{right:'10px', width: '20px', height: '20px', marginLeft: '10px', marginBottom:'0'}} /> </i>
+                            <input className='w-100 p-2 pe-5 ps-3 text-white border-1 rounded-4 ' type="password" placeholder="Enter your password again" required value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
+                                style={{ border: 'solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', outline: 'none', /* JE GARDE OU PAS? */ backgroundImage: `url(${cadenas})`,
+                                backgroundPosition: 'right 10px center', backgroundRepeat: 'no-repeat', backgroundSize: '20px' 
+                                }}/>
                         </div>
 
                     <div style={{
