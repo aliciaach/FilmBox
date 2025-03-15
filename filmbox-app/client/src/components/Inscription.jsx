@@ -156,7 +156,7 @@ function LoginRegister() {
             <div className="LoginLink">
                 <p>You already have an account ?</p>
                 <Link to="/connexion">
-                <button type="submit" className="btn btn-primary login-btn" /*className="nav-link active text-white"*/ >
+                <button type="submit" className="btn btn-outline-primary" /*className="nav-link active text-white"*/ >
                     LOGIN
                     </button>
                 </Link>

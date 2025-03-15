@@ -45,20 +45,13 @@ function Connexion(){
 
 return(
 
-  <div className="classBody"
+  <div className="d-flex flex-column justify-content-center align-items-center vh-100" 
   style={{
     margin: 0,
     padding: 0,
     boxSizing: 'border-box',
     fontFamily: 'Istok Web, sans-serif',
-
-    fontSize: 'large', /* avant c'était dans "*" AAAA*/
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1.31rem',
-    justifyContent: 'center',
-    alignItems: 'center',
-    minHeight: '100vh',
+    fontSize: 'large',
 
     background: `linear-gradient(to bottom,
         rgba(5, 14, 66, 1),
@@ -73,10 +66,10 @@ return(
         color: '#fff'
   }}
   > 
-    <h2 /*className="form-title"*/ style={{marginTop: '25px'}}>Log in</h2>
+    <h2 style={{marginTop: '25px', marginBottom: '2rem'}}>Log in</h2>
      
      {/* Container du formulaire */}
-    <div /*className='login-container'*/>
+    <div>
 
       <form onSubmit={handleSubmit} className='login-form' style={{
           display: 'flex',
@@ -94,38 +87,40 @@ return(
         {/* Email */}
         <label htmlFor="email" className="input-label">Email</label>
         
-        <div /*className='input-wrapper'*/style={{ display: 'flex', alignItems: 'center' }} /*AAAA POURQUOI*/>
-          <input type='email' placeholder='Example@gmail.com' className='input-field' required value={email} onChange={(e) => setEmail(e.target.value)} 
-          style={{ padding: '10px', border: '1px solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', borderRadius: '15px'/*, flexGrow: 1 */}}/>
-          <i><img src={arobase} alt="Arobase" /*className="icon-image"*/ style={{right:'10px', width: '20px', height: '20px', marginLeft: '10px' }}/> </i>
+        <div className="mb-3 position-relative">
+          <input className='w-100 p-2 pe-5 ps-3 text-white border-1 rounded-4' type='email' placeholder='Example@gmail.com' required value={email} onChange={(e) => setEmail(e.target.value)}
+            style={{ border: 'solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', outline: 'none', /* JE GARDE OU PAS? */ backgroundImage: `url(${arobase})`,
+              backgroundPosition: 'right 10px center', backgroundRepeat: 'no-repeat', backgroundSize: '20px' 
+            }}/>
         </div>
 
         {/* Mot de passe */}
         <label htmlFor="password" className="input-label">Password</label>
           
-        <div /*className='input-wrapper'*/style={{ display: 'flex', alignItems: 'center' }} /*AAAA POURQUOI*/>
-          <input type='password' placeholder='Enter your password' className='input-field' required value={password} onChange={(e) => setPassword(e.target.value)}
-          style={{ padding: '10px', border: '1px solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', borderRadius: '15px'/*, flexGrow: 1 */}}/>
-          <i><img src={cadenas} alt="Cadenas" /*className="icon-image"*/ style={{right:'10px', width: '20px', height: '20px', marginLeft: '10px' }} /> </i>
+        <div className="mb-3 position-relative">
+          <input className='w-100 p-2 pe-5 ps-3 text-white border-1 rounded-4 ' type='password' placeholder='Enter your password' required value={password} onChange={(e) => setPassword(e.target.value)}
+            style={{ border: 'solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', outline: 'none', /* JE GARDE OU PAS? */ backgroundImage: `url(${cadenas})`,
+              backgroundPosition: 'right 10px center', backgroundRepeat: 'no-repeat', backgroundSize: '20px' 
+            }}/>
         </div>
 
         {/* Checkbox "Remember me" */}
-        <div /*className="remember-me"*/ style={{display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px'}}>
+        <div  style={{display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px'}}>
           <input type="checkbox" id="remember" style={{ accentColor: '#7465F7', cursor: 'pointer' }} />
           <label htmlFor="remember"> Remember me</label>
         </div>
 
         {/* Ligne séparatrice */}
-        <div /*className="separator"*/ style={{alignSelf: 'center', width: '100%', height: '1px', backgroundColor: 'rgba(255, 255, 255, 0.5)'}}></div>
+        <div style={{alignSelf: 'center', width: '100%', height: '1px', backgroundColor: 'rgba(255, 255, 255, 0.5)'}}></div>
 
         {/* Bouton login */}
-        <button type="submit" className="btn btn-primary login-btn">Login</button>
+        <button type="submit" className="btn btn-primary w-100 login-btn">Login</button>
         {error && <p style={{ color: "red" }}>{error}</p>}
 
       </form>
 
       {/* Don't have an account? */}
-      <div /*className='signup-container'*/style={{textAlign: 'center', marginTop: '50px'}}>
+      <div className='text-center mt-5'>
 
         <p className='signup-text'>You don’t have an account? </p>
       
