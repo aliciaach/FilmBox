@@ -39,20 +39,13 @@ function LoginRegister() {
     };
 
     return (
-        <div className="inscription-page"
+        <div className="text-white d-flex flex-column justify-content-center align-items-center vh-100 m-0 p-0"
           style={{
-            margin: 0,//
-            padding: 0, //
             boxSizing: 'border-box', //
             fontFamily: 'Istok Web, sans-serif',
         
-            fontSize: 'large', /* avant c'était dans "*" AAAA*/
-            display: 'flex',
-            flexDirection: 'column',
+            fontSize: 'large',
             gap: '2rem',
-            justifyContent: 'center',
-            alignItems: 'center',
-            minHeight: '100vh',
         
             background: `linear-gradient(to bottom,
                 rgba(5, 14, 66, 1),
@@ -64,21 +57,15 @@ function LoginRegister() {
                 backgroundSize: 'auto',
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',
-                color: '#fff'
           }}
         >
         <h1 style={{marginTop: '25px'}}>Sign Up</h1>
         <div className="wrapper">
-            <div className="form-box login" style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    width: '110%', //
-                    maxWidth: '1200px', //
+            <div className="d-flex flex-column rounded-2 mx-auto" style={{ 
+                    width: '110%', 
                     background: 'rgba(0, 0, 0, 0.4)',
                     padding: '2.5rem 4rem',//'5rem 5rem',
-                    borderRadius: '10px',
                     boxShadow: '0 10px 20px rgba(17, 1, 1, 0.2)',
-                    margin:'0 auto',
                     transform: 'translateX(-5%)'
                 }}>
                 <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', columnGap: '5rem'}}>
@@ -138,21 +125,16 @@ function LoginRegister() {
                                 }}/>
                         </div>
 
-                    <div style={{
-                        gridColumn: 'span 2',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        gap: '0rem',
-                        marginTop:'2.5rem'
+                    <div className="d-flex flex-column align-items-center" style={{
+                            gridColumn: 'span 2',
+                            gap: '0rem',
+                            marginTop:'2.5rem'
                         }}>
 
                         {/* Ligne séparatrice */}
-                        <div style={{
-                            width: '100%', 
-                            height: '1px', 
-                            backgroundColor: 'rgba(255, 255, 255, 0.5)',
-                            margin : '1.5rem 0'
+                            <div className="w-100 my-4" style={{
+                                height: '1px', 
+                                backgroundColor: 'rgba(255, 255, 255, 0.5)',
                             }}></div>
 
                         {/* Bouton Créer Compte */}
