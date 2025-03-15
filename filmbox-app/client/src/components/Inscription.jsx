@@ -73,75 +73,83 @@ function LoginRegister() {
                     display: 'flex',
                     flexDirection: 'column',
                     width: '100%', //
-                    maxWidth: '900px', //
+                    maxWidth: '1100px', //
                     background: 'rgba(0, 0, 0, 0.4)',
-                    padding: '2.5rem 3rem',//'5rem 5rem',
+                    padding: '2.5rem 4rem',//'5rem 5rem',
                     borderRadius: '10px',
                     boxShadow: '0 10px 20px rgba(0, 0, 0, 0.2)'
                 }}>
-                <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', columnGap: '2.5rem', rowGap:'3rem'}}>
-                    {/* Nom Prenom */}
+                <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', columnGap: '2.5rem'}}>
+                        {/* Nom Prenom */}
 
-                        <div className="input-box" style={{gridColumn : '1/2', width:'100%'}}>
-                            <p>First Name:</p>
+                        <div className="input-box" style={{gridColumn : '1/2', width:'100%', marginTop:'2rem'}}>
+                            <p style={{fontSize:'22px'}}>First Name:</p>
                             <input type="text" placeholder="Ex: Marie" required value={firstName} onChange={(e) => setFirstName(e.target.value)} 
-                                style={{ padding: '10px', border: '1px solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', borderRadius: '15px' }}/>
+                                style={{ maxWidth: '500px',padding: '12px', border: '1px solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', borderRadius: '15px', width: '270px'}}/>
                             <i><img src={utilisateur} alt="Utilisateur" /*className="icon-image"*/ style={{right:'10px', width: '20px', height: '20px', marginLeft: '10px'}} /> </i>
                         </div>
                         
-                        <div className="input-box" style={{gridColumn : '2/3', width:'100%'}}>
-                            <p>Last Name:</p>
+                        <div className="input-box" style={{gridColumn : '2/3', width:'100%', marginTop:'2rem'}}>
+                            <p style={{fontSize:'22px'}}>Last Name:</p>
                             <input type="text" placeholder="Ex: Tremblay" required value={lastName} onChange={(e) => setLastName(e.target.value)} 
-                                style={{ padding: '10px', border: '1px solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', borderRadius: '15px' }}/>
+                                style={{ maxWidth: '500px',padding: '12px', border: '1px solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', borderRadius: '15px', width: '270px', marginLeft:'20px'}}/>
                             <i><img src={utilisateur} alt="Utilisateur" /*className="icon-image"*/ style={{right:'10px', width: '20px', height: '20px', marginLeft: '10px' }} /> </i>
                         </div>
 
                     
-                    {/* Email / telephone */}
+                        {/* Email / telephone */}
 
-                        <div className="input-box" style={{gridColumn : '1/2', width:'100%'}}>
-                            <p>Email:</p>
+                        <div className="input-box" style={{gridColumn : '1/2', width:'100%',  marginTop:'4rem'}}>
+                            <p style={{fontSize:'22px'}}>Email:</p>
                             <input type="text" placeholder="Ex: marietremblay@gmail.com" required value={email} onChange={(e) => setEmail(e.target.value)}
-                                style={{ padding: '10px', border: '1px solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', borderRadius: '15px' }}/>
+                                style={{ maxWidth: '500px',padding: '12px', border: '1px solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', borderRadius: '15px', width: '270px'}}/>
                             <i><img src={arobase} alt="Arobase" /*className="icon-image"*/ style={{right:'10px', width: '20px', height: '20px', marginLeft: '10px' }} /> </i>
                         </div>
 
-                        <div className="input-box"style={{gridColumn : '2/3', width:'100%'}}>
-                            <p>Phone Number:</p>
+                        <div className="input-box"style={{gridColumn : '2/3', width:'100%',  marginTop:'4rem'}}>
+                            <p style={{fontSize:'22px'}}>Phone Number:</p>
                             <input type="text" placeholder="Ex: 514-123-5678" required value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)}
-                                style={{ padding: '10px', border: '1px solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', borderRadius: '15px' }}/>
+                                style={{ maxWidth: '500px',padding: '12px', border: '1px solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', borderRadius: '15px', width: '270px'}}/>
                             <i><img src={telephone} alt="Telephone" /*className="icon-image"*/ style={{right:'10px', width: '20px', height: '20px', marginLeft: '10px' }} /> </i>
                         </div>
 
                     
-                    {/* Mot de passe */}
+                        {/* Mot de passe */}
 
-                        <div className="input-box" style={{gridColumn : '1/2', width:'100%'}}>
-                            <p>Password:</p>
+                        <div className="input-box" style={{gridColumn : '1/2', width:'100%', marginTop:'4rem'}}>
+                            <p style={{fontSize:'22px'}}>Password:</p>
                             <input type="password" placeholder="Enter your password" required value={password} onChange={(e) => setPassword(e.target.value)}
-                                style={{ padding: '10px', border: '1px solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', borderRadius: '15px' }}/>
-                            <i><img src={cadenas} alt="Cadenas" /*className="icon-image"*/ style={{right:'10px', width: '20px', height: '20px', marginLeft: '10px' }} /> </i>
+                                style={{ maxWidth: '500px', padding: '12px', border: '1px solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', borderRadius: '15px', width: '270px'}}/>
+                            <i><img src={cadenas} alt="Cadenas" /*className="icon-image"*/ style={{right:'10px', width: '20px', height: '20px', marginLeft: '10px', marginBottom:'0' }} /> </i>
                         </div>
                         
-                        <div className="input-box"style={{gridColumn : '2/3', width:'100%'}}>
-                            <p>Confirm Password:</p>
+                        <div className="input-box"style={{gridColumn : '2/3', width:'100%', marginTop:'4rem'}}>
+                            <p style={{fontSize:'22px'}}>Confirm Password:</p>
                             <input type="password" placeholder="Enter your password again" required value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
-                                style={{ padding: '10px', border: '1px solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', borderRadius: '15px' }}/>
-                            <i><img src={cadenas} alt="Cadenas" /*className="icon-image"*/ style={{right:'10px', width: '20px', height: '20px', marginLeft: '10px' }} /> </i>
+                                style={{ maxWidth: '500px',padding: '12px', border: '1px solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', borderRadius: '15px', width: '270px'}}/>
+                            <i><img src={cadenas} alt="Cadenas" /*className="icon-image"*/ style={{right:'10px', width: '20px', height: '20px', marginLeft: '10px', marginBottom:'0'}} /> </i>
                         </div>
-                    
-                    
-                    {/* Ligne séparatrice */}
-                    <div style={{
-                        gridColumn: 'span 2', //ajout
-                        alignSelf: 'center', 
-                        width: '100%', 
-                        height: '1px', 
-                        backgroundColor: 'rgba(255, 255, 255, 0.5)',
-                        margin : '1.5rem 0'
-                        }}></div>
 
-                    <button type="submit" className="btn btn-primary login-btn" style={{gridColumn : 'span 2', marginTop:'1,5rem'}}>CREATE ACCOUNT</button> 
+                    <div style={{
+                        gridColumn: 'span 2',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: '0rem',
+                        marginTop:'2.5rem'
+                        }}>
+
+                        {/* Ligne séparatrice */}
+                        <div style={{
+                            width: '100%', 
+                            height: '1px', 
+                            backgroundColor: 'rgba(255, 255, 255, 0.5)',
+                            margin : '1.5rem 0'
+                            }}></div>
+
+                        {/* Bouton Créer Compte */}
+                        <button type="submit" className="btn btn-primary login-btn">CREATE ACCOUNT</button> 
+                    </div>
                 </form>
             </div>
             </div>
