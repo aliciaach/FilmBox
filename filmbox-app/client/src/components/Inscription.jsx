@@ -49,7 +49,7 @@ function LoginRegister() {
             fontSize: 'large', /* avant c'était dans "*" AAAA*/
             display: 'flex',
             flexDirection: 'column',
-            gap: '1.5rem',
+            gap: '2rem',
             justifyContent: 'center',
             alignItems: 'center',
             minHeight: '100vh',
@@ -79,14 +79,14 @@ function LoginRegister() {
                     borderRadius: '10px',
                     boxShadow: '0 10px 20px rgba(0, 0, 0, 0.2)'
                 }}>
-                <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr'}}>
+                <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', columnGap: '2.5rem', rowGap:'3rem'}}>
                     {/* Nom Prenom */}
 
                         <div className="input-box" style={{gridColumn : '1/2', width:'100%'}}>
                             <p>First Name:</p>
                             <input type="text" placeholder="Ex: Marie" required value={firstName} onChange={(e) => setFirstName(e.target.value)} 
                                 style={{ padding: '10px', border: '1px solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', borderRadius: '15px' }}/>
-                            <i><img src={utilisateur} alt="Utilisateur" /*className="icon-image"*/ style={{right:'10px', width: '20px', height: '20px', marginLeft: '10px' }} /> </i>
+                            <i><img src={utilisateur} alt="Utilisateur" /*className="icon-image"*/ style={{right:'10px', width: '20px', height: '20px', marginLeft: '10px'}} /> </i>
                         </div>
                         
                         <div className="input-box" style={{gridColumn : '2/3', width:'100%'}}>
@@ -141,7 +141,7 @@ function LoginRegister() {
                         margin : '1.5rem 0'
                         }}></div>
 
-                    <button type="submit" className="btn btn-primary login-btn" style={{gridColumn : 'span 2'}}>CREATE ACCOUNT</button> 
+                    <button type="submit" className="btn btn-primary login-btn" style={{gridColumn : 'span 2', marginTop:'1,5rem'}}>CREATE ACCOUNT</button> 
                 </form>
             </div>
             </div>
