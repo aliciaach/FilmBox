@@ -20,6 +20,7 @@ export default function App() {
         <Route path="/userSettings" element={<UserSettings />} />
       </Routes>
     </BrowserRouter>
+    //<UserSettings />
   );
 }
 
