@@ -1,4 +1,4 @@
-*{
+/*  *{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -8,7 +8,7 @@
 
 
 .classBody {
-    font-size: large; /* avant c'était dans "*" */
+    font-size: large; /* avant c'était dans "*" AAAA *//*
     display: flex;
     flex-direction: column;
     gap: 1.31rem;
@@ -43,17 +43,17 @@ h2{
     background: rgba(0, 0, 0, 0.4);
     padding: 2rem 2.5rem;
     border-radius: 10px;
-    /*backdrop-filter: blur(10px);*/
+    /*backdrop-filter: blur(10px); AAAA  *//*
     box-shadow: 0 10px 20px rgb(0, 0, 0, 0.2);
-    /* border: 1px solid rgba(255, 255, 255, 0.5);*/
+    /* border: 1px solid rgba(255, 255, 255, 0.5); AAAA *//*
 }
 
 
 
 .input-field {
-    /* width: 100%; */
+    /* width: 100%; AAAA *//*
     padding: 10px;
-    /* padding-right: 40px; */
+    /* padding-right: 40px; AAAA *//*
     border: 1px solid #7465F7;
     background-color: rgba(116, 101, 247, 0.1);
     border-radius: 15px;
@@ -61,10 +61,10 @@ h2{
 
 
 .icon-image {
-    /* position: absolute; */
+    /* position: absolute; AAAA *//*
     right: 10px;
-    /* top: 50%; */
-    /* transform: translateY(-50%); */
+    /* top: 50%; AAAA */
+    /* transform: translateY(-50%); AAAA *//*
     width: 20px;
     height: 20px;
     margin-left: 10px;
@@ -78,12 +78,12 @@ h2{
 .remember-me {
     display: flex;
     align-items: center;
-    gap: 10px; /* Espace entre la case à cocher et le texte */
+    gap: 10px; /* Espace entre la case à cocher et le texte AAAA*//*
     font-size: 14px;
 }
 
 .remember-me input[type="checkbox"] {
-    accent-color: #7465F7; /* Couleur personnalisée de la case cochée */
+    accent-color: #7465F7; /* Couleur personnalisée de la case cochée AAAA*//*
     cursor: pointer;
 }
 
@@ -91,5 +91,6 @@ h2{
     align-self: center;
     width: 100%;
     height: 1px;
-    background-color: rgba(255, 255, 255, 0.5); /* Ligne blanche semi-transparente */
+    background-color: rgba(255, 255, 255, 0.5); /* Ligne blanche semi-transparente AAAA*//*
 }
+*/

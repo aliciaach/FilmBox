@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import logoFilmBox from '../assets/logoFilmBox.png';
-import arobase from '../assets/arobase.png';
-import cadenas from '../assets/cadenas.png';
+import arobase from '../assets/icone_arobase.png';
+import cadenas from '../assets/icone_cadenas.png';
+import titanicImage from '../assets/Titanic.png';
 import '../styles/Connexion.css';
 import { useNavigate } from 'react-router-dom';
 
@@ -44,49 +45,85 @@ function Connexion(){
 
 return(
 
-  <div className="classBody"> 
-    <h2 className="form-title">Log in</h2>
-     
-    <div className='login-container'>
+  <div className="d-flex flex-column justify-content-center align-items-center vh-100" 
+  style={{
+    margin: 0,
+    padding: 0,
+    boxSizing: 'border-box',
+    fontFamily: 'Istok Web, sans-serif',
+    fontSize: 'large',
 
-      <form onSubmit={handleSubmit} className='login-form'>
+    background: `linear-gradient(to bottom,
+        rgba(5, 14, 66, 1),
+        rgba(26, 0, 255, 0.6), 
+        rgba(0, 0, 255, 0.5), 
+        rgba(5, 0, 50, 1)),
+        url(${titanicImage})`,
+
+        backgroundSize: 'auto',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        color: '#fff'
+  }}
+  > 
+    <h2 style={{marginTop: '25px', marginBottom: '2rem'}}>Log in</h2>
+     
+     {/* Container du formulaire */}
+    <div>
+
+      <form onSubmit={handleSubmit} className='login-form' style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '1.31rem',
+
+          width: '100%',
+          maxWidth: '400px',
+          background: 'rgba(0, 0, 0, 0.4)',
+          padding: '2rem 2.5rem',
+          borderRadius: '10px',
+          boxShadow: '0 10px 20px rgba(0, 0, 0, 0.2)'
+          }}>
+        
         {/* Email */}
         <label htmlFor="email" className="input-label">Email</label>
         
-        <div className='input-wrapper'>
-          <input type='email' placeholder='example@gmail.com' className='input-field' required value={email} onChange={(e) => setEmail(e.target.value)} ></input>
-          <i><img src={arobase} alt="Arobase" className="icon-image" /> </i>
+        <div className="mb-3 position-relative">
+          <input className='w-100 p-2 pe-5 ps-3 text-white border-1 rounded-4' type='email' placeholder='Example@gmail.com' required value={email} onChange={(e) => setEmail(e.target.value)}
+            style={{ border: 'solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', outline: 'none', /* JE GARDE OU PAS? */ backgroundImage: `url(${arobase})`,
+              backgroundPosition: 'right 10px center', backgroundRepeat: 'no-repeat', backgroundSize: '20px' 
+            }}/>
         </div>
 
         {/* Mot de passe */}
         <label htmlFor="password" className="input-label">Password</label>
           
-        <div className='input-wrapper'>
-          <input type='password' placeholder='enter your password' className='input-field' required value={password} onChange={(e) => setPassword(e.target.value)}></input>
-          <i><img src={cadenas} alt="Cadenas" className="icon-image" /> </i>
+        <div className="mb-3 position-relative">
+          <input className='w-100 p-2 pe-5 ps-3 text-white border-1 rounded-4 ' type='password' placeholder='Enter your password' required value={password} onChange={(e) => setPassword(e.target.value)}
+            style={{ border: 'solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', outline: 'none', /* JE GARDE OU PAS? */ backgroundImage: `url(${cadenas})`,
+              backgroundPosition: 'right 10px center', backgroundRepeat: 'no-repeat', backgroundSize: '20px' 
+            }}/>
         </div>
 
         {/* Checkbox "Remember me" */}
-        <div className="remember-me">
-          <input type="checkbox" id="remember" />
+        <div  style={{display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px'}}>
+          <input type="checkbox" id="remember" style={{ accentColor: '#7465F7', cursor: 'pointer' }} />
           <label htmlFor="remember"> Remember me</label>
         </div>
 
         {/* Ligne séparatrice */}
-        <div className="separator"></div>
+        <div style={{alignSelf: 'center', width: '100%', height: '1px', backgroundColor: 'rgba(255, 255, 255, 0.5)'}}></div>
 
         {/* Bouton login */}
-        <button type="submit" className="btn btn-primary login-btn">Login</button>
+        <button type="submit" className="btn btn-primary w-100 login-btn">Login</button>
         {error && <p style={{ color: "red" }}>{error}</p>}
 
       </form>
 
       {/* Don't have an account? */}
-      <div className='signup-container'>
+      <div className='text-center mt-5'>
 
         <p className='signup-text'>You don’t have an account? </p>
       
-        
         <button className="btn btn-outline-primary" >
           <Link
             to="/inscription"
@@ -97,6 +134,7 @@ return(
             </Link>
         </button>
       </div>
+
     </div>
   </div>
 )
