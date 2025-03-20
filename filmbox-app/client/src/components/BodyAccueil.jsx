@@ -1,10 +1,11 @@
 import imageFilm from "../assets/imageFilm.jpg";
+import imageLogo from "../assets/logo_FilmBox.png";
 function BodyAccueil() {
   return (
     <div
       style={{
         background:
-          "linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(25, 41, 124, 1) 50%, rgba(0,0,0,1) 100%)",
+          "linear-gradient(180deg, rgb(23, 5, 113) 0%, rgb(66, 18, 179) 50%, rgb(23, 5, 113) 100%)",
         minHeight: "100vh",
         width: "100vw",
         display: "flex",
@@ -13,282 +14,152 @@ function BodyAccueil() {
         padding: "40px",
       }}
     >
-      <div
-        className="container-fluid text-white"
-        style={{
-          maxWidth: "900px",
-          textAlign: "left",
-        }}
-      >
-        <h1
-          className="fw-bold"
-          style={{ fontSize: "2.3rem", marginBottom: "50px" }}
-        >
-          <span style={{ fontWeight: "900" }}>
+      <nav className="position-absolute top-0 end-0 p-3">
+        <a className="nav-link active text-white fw-2" href="#">
+          CONNEXION
+        </a>
+      </nav>
+
+      {/* Logo */}
+      <img
+        src={imageLogo}
+        className="img-fluid position-absolute top-0 start-0 mt-2 ms-2"
+        alt="image-logo"
+        style={{ width: "100px", height: "auto" }}
+      />
+
+      <div className="d-flex flex-column align-items-center w-100 text-center mt-5">
+        <div className="w-100 mb-4 px-5">
+          <div className="d-flex align-items-center w-100">
+            {/* Premier texte */}
+            <h1
+              className="text-white fw-bold mb-0 text-start me-1"
+              style={{ fontFamily: "'Jomhuria', sans-serif", fontSize: "50px" }}
+            >
+              COLLECT MEMORIES
+            </h1>
+            <div className="flex-grow-1 border-top border-light border-light border-2 w-50 ms-3" />
+          </div>
+          {/* Deuxieme texte */}
+          <div className="my-3" />
+
+          <div className="d-flex align-items-center w-100">
+            <div
+              className="border-top border-2 border-light flex-grow-1 me-auto"
+              style={{ width: "30%" }}
+            />
+            <h1
+              className="text-white fw-bold mb-0 ms-3 text-nowrap"
+              style={{ minWidth: "250px" }}
+            >
+              ONE MOVIE AT A TIME
+            </h1>
+          </div>
+        </div>
+        {/* Bouton pour se connecter */}
+        <div className="d-flex justify-content-start w-100">
+          <button className="btn custom-btn text-light text-start fw-light fs-4 mb-4">
+            GET STARTED
+          </button>
+        </div>
+        {/**Texte du bas */}
+        <div className="text-center text-light mt-3">
+          <span className="fw-bold fs-3">
             Make every film you watch part of your story
           </span>
-        </h1>
-        <div className="row align-items-start">
-          <div className="col-md-7">
-            <p
-              className="lead text-start"
-              style={{
-                fontSize: "1.1rem",
-                lineHeight: "1.6",
-                marginBottom: "10px",
-              }}
-            >
-              Sometimes, you watch a movie that connects so deeply within you
-              that you can’t stop thinking about it. You need to talk about it,
-              analyze it—you’re just not ready to say goodbye yet. Or sometimes,
-              it’s so bad that you can’t help but express how terrible it was.
-              That’s what FilmBox is for. Rate your movies, leave an impression,
-              write down your thoughts, and express your emotions one last time
-              before cutting the final scene for good.
-            </p>
+        </div>
+        {/**Gros paragraphes */}
+        <div className="text-white container text-center mt-4 d-flex flex-column align-items-center">
+          <div
+            className="row align-items-start w-100"
+            style={{ maxWidth: "900px" }}
+          >
+            <div className="col-md-7 text-md-start">
+              <p className="lead mb-2 fs-6 lh-lg">
+                Sometimes, you watch a movie that connects so deeply within you
+                that you can’t stop thinking about it. You need to talk about
+                it, analyze it—you’re just not ready to say goodbye yet. Or
+                sometimes, it’s so bad that you can’t help but express how
+                terrible it was. That’s what FilmBox is for. Rate your movies,
+                leave an impression, write down your thoughts, and express your
+                emotions one last time before cutting the final scene for good.
+              </p>
 
-            <p
-              style={{
-                fontSize: "1.1rem",
-                lineHeight: "1.6",
-                marginTop: "20px",
-              }}
-            >
-              It’s also a way to revisit old movies you’ve watched and relive
-              the emotions you experienced during them. Whether it’s nostalgia,
-              awe, or frustration, it’s all part of your cinematic journey.
-            </p>
-          </div>
+              <p className="fs-6 lh-lg mt-3">
+                It’s also a way to revisit old movies you’ve watched and relive
+                the emotions you experienced during them. Whether it’s
+                nostalgia, awe, or frustration, it’s all part of your cinematic
+                journey.
+              </p>
+            </div>
 
-          <div className="col-md-5 d-flex justify-content-center">
-            {" "}
-            {/** Image */}
-            <div
-              className="image-container"
-              style={{
-                textAlign: "center",
-                maxWidth: "65%",
-                alignSelf: "flex-start",
-                marginTop: "-10px",
-              }}
-            >
-              <img
-                src={imageFilm}
-                alt="Film Experience"
-                className="img-fluid rounded"
-                style={{
-                  maxWidth: "100%",
-                  height: "auto",
-                  borderRadius: "5px",
-                }}
-              />
+            {/* Image a droite */}
+            <div className="col-md-5 d-flex justify-content-center">
+              <div className="text-center w-75">
+                <img
+                  src={imageFilm}
+                  alt="Film Experience"
+                  className="img-fluid rounded"
+                />
+              </div>
             </div>
           </div>
         </div>
+        {/**Les quotes pour le site */}
         <div className="row mt-3">
-          {" "}
-          {/** texte du bas */}
-          <div className="col text-start ">
-            <p
-              className="fw-bold mt-3 text-center"
-              style={{ fontSize: "1.2rem" }}
-            >
-              <b>For Every Movie That Moves You—Share Your Final Scene.</b>
+          <div className="col text-center text-light">
+            <p className="fw-bold fs-5 mt-3">
+              <b>For Every Movie That Moves You-Share Your Final Scene.</b>
             </p>
-            <p
-              className="fw-bold mt-1 text-center"
-              style={{ fontSize: "1.2rem" }}
-            >
-              It’s simple: just watch it, feel it, and rate it!
+            <p className="fw-bold fs-5 mt-1">
+              It's simple: just watch it, feel it, and rate it!
             </p>
           </div>
         </div>
-
-        <div className="mt-5 text-center">
+        {/**Les films a venir */}
+        <div className="mt-5 text-center text-light">
           <h1 className="mb-5 fw-bold">Coming Soon: Your Future Favorites</h1>
-          <div class="row justify-content-center mb-5">
-            <div class="col-3">
+          {/**les images dans un tableau */}
+          <div className="row justify-content-center mb-5">
+            {[...Array(4)].map((_, index) => (
               <div
-                className="image-container"
-                style={{
-                  textAlign: "center",
-                  maxWidth: "100%",
-                  alignSelf: "flex-start",
-                }}
+                className="col-6 col-md-3 d-flex justify-content-center"
+                key={index}
               >
                 <img
                   src={imageFilm}
-                  alt="Film Experience"
-                  className="img-fluid rounded"
-                  style={{
-                    maxWidth: "100%",
-                    height: "auto",
-                    borderRadius: "5px",
-                  }}
+                  alt="Film random"
+                  className="img-fluid rounded w-100"
                 />
               </div>
-            </div>
-            <div class="col-3">
-              <div
-                className="image-container"
-                style={{
-                  textAlign: "center",
-                  maxWidth: "100%",
-                  alignSelf: "flex-start",
-                }}
-              >
-                <img
-                  src={imageFilm}
-                  alt="Film Experience"
-                  className="img-fluid rounded"
-                  style={{
-                    maxWidth: "100%",
-                    height: "auto",
-                    borderRadius: "5px",
-                  }}
-                />
-              </div>
-            </div>
-            <div class="col-3">
-              <div
-                className="image-container"
-                style={{
-                  textAlign: "center",
-                  maxWidth: "100%",
-                  alignSelf: "flex-start",
-                }}
-              >
-                <img
-                  src={imageFilm}
-                  alt="Film Experience"
-                  className="img-fluid rounded"
-                  style={{
-                    maxWidth: "100%",
-                    height: "auto",
-                    borderRadius: "5px",
-                  }}
-                />
-              </div>
-            </div>
-            <div class="col-3">
-              <div
-                className="image-container"
-                style={{
-                  textAlign: "center",
-                  maxWidth: "100%",
-                  alignSelf: "flex-start",
-                }}
-              >
-                <img
-                  src={imageFilm}
-                  alt="Film Experience"
-                  className="img-fluid rounded"
-                  style={{
-                    maxWidth: "100%",
-                    height: "auto",
-                    borderRadius: "5px",
-                  }}
-                />
-              </div>
-            </div>
+            ))}
           </div>
         </div>
-
-        <div className="mt-5 text-center">
+        {/**Les films des Oscars */}
+        <div className="mt-5 text-center text-light">
           <h1 className="mb-5 fw-bold">Lights, Camera, Oscar!</h1>
-          <div class="row justify-content-center mb-5">
-            <div class="col-3">
+          {/**les images dans un tableau */}
+          <div className="row justify-content-center mb-5">
+            {[...Array(4)].map((_, index) => (
               <div
-                className="image-container"
-                style={{
-                  textAlign: "center",
-                  maxWidth: "100%",
-                  alignSelf: "flex-start",
-                }}
+                className="col-6 col-md-3 d-flex justify-content-center"
+                key={index}
               >
                 <img
                   src={imageFilm}
-                  alt="Film Experience"
-                  className="img-fluid rounded"
-                  style={{
-                    maxWidth: "100%",
-                    height: "auto",
-                    borderRadius: "5px",
-                  }}
+                  alt="Film random"
+                  className="img-fluid rounded w-100"
                 />
               </div>
-            </div>
-            <div class="col-3">
-              <div
-                className="image-container"
-                style={{
-                  textAlign: "center",
-                  maxWidth: "100%",
-                  alignSelf: "flex-start",
-                }}
-              >
-                <img
-                  src={imageFilm}
-                  alt="Film Experience"
-                  className="img-fluid rounded"
-                  style={{
-                    maxWidth: "100%",
-                    height: "auto",
-                    borderRadius: "5px",
-                  }}
-                />
-              </div>
-            </div>
-            <div class="col-3">
-              <div
-                className="image-container"
-                style={{
-                  textAlign: "center",
-                  maxWidth: "100%",
-                  alignSelf: "flex-start",
-                }}
-              >
-                <img
-                  src={imageFilm}
-                  alt="Film Experience"
-                  className="img-fluid rounded"
-                  style={{
-                    maxWidth: "100%",
-                    height: "auto",
-                    borderRadius: "5px",
-                  }}
-                />
-              </div>
-            </div>
-            <div class="col-3">
-              <div
-                className="image-container"
-                style={{
-                  textAlign: "center",
-                  maxWidth: "100%",
-                  alignSelf: "flex-start",
-                }}
-              >
-                <img
-                  src={imageFilm}
-                  alt="Film Experience"
-                  className="img-fluid rounded"
-                  style={{
-                    maxWidth: "100%",
-                    height: "auto",
-                    borderRadius: "5px",
-                  }}
-                />
-              </div>
-            </div>
+            ))}
           </div>
         </div>
-
-        <div className="mt-5 text-center">
+        {/**Les questions */}
+        <div className="mt-5 text-center text-light">
           {" "}
           {/** FAQ */}
           <h2 className="fw-bold mb-4">Frequently asked questions</h2>
-          <div className="faq-container mx-auto" style={{ maxWidth: "600px" }}>
+          <div className="faq-container mx-auto" style={{ maxWidth: "800px" }}>
             {[
               {
                 question: "What is FilmBox?",
@@ -342,7 +213,7 @@ function BodyAccueil() {
                     className="faq-icon"
                     style={{
                       transition: "transform 0.3s",
-                      color: "#2978A0",
+                      color: "#657ED4",
                       fontWeight: "bold",
                       fontSize: "20px",
                     }}
@@ -354,7 +225,7 @@ function BodyAccueil() {
                   id={`faq-answer-${index}`}
                   className="faq-answer d-none p-3 rounded"
                   style={{
-                    backgroundColor: "#141A30",
+                    backgroundColor: "#657ED4",
                     fontSize: "16px",
                     textAlign: "left",
                   }}
@@ -365,6 +236,8 @@ function BodyAccueil() {
             ))}
           </div>
         </div>
+
+        {/* KEEP EVERYTHING ABOVE THIS COMMENT */}
       </div>
     </div>
   );
