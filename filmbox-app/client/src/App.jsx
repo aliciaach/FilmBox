@@ -10,6 +10,7 @@ import UserSettings from './components/UserSettings';
 
 export default function App() {
   return (
+    
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<BodyAccueil />} />
