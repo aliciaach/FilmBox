@@ -4,7 +4,6 @@ import logoFilmBox from '../assets/logoFilmBox.png';
 import arobase from '../assets/icone_arobase.png';
 import cadenas from '../assets/icone_cadenas.png';
 import titanicImage from '../assets/Titanic.png';
-import '../styles/Connexion.css';
 import { useNavigate } from 'react-router-dom';
 
 function Connexion(){
@@ -45,8 +44,13 @@ function Connexion(){
 
 return(
 
-  <div className="d-flex flex-column justify-content-center align-items-center vh-100" 
+  <div className="d-flex flex-column justify-content-center align-items-center" //vh-100" 
   style={{
+    
+    minHeight: '120vh', // Page + haute   => minHeight: '100vh', ///////
+    paddingTop: '5vh', // 
+    paddingBottom: '5vh', //
+
     margin: 0,
     padding: 0,
     boxSizing: 'border-box',
@@ -60,7 +64,7 @@ return(
         rgba(5, 0, 50, 1)),
         url(${titanicImage})`,
 
-        backgroundSize: 'auto',
+        backgroundSize: 'cover',  //'auto'
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
         color: '#fff'

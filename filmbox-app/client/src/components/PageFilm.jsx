@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "../styles/Style.css"; 
  
 const NOMBRE_DUPLICATION = 5; // Nombre de fois que les films seront dupliqués
  
