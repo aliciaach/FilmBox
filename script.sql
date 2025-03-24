@@ -335,3 +335,26 @@ INSERT INTO film_watchlist (film_id, utilisateur_utilisateur_id) VALUES
 INSERT INTO films_favoris (film_id, utilisateur_utilisateur_id) VALUES 
 (1, 1), 
 (2, 2);
+
+INSERT INTO films (film_id, titre, film_duree, date_sortie, pays_origin_film, langue_original, status, directeur_directeur_id)
+VALUES
+(3, 'The Dark Knight', 152, '2008-07-18', 'USA', 'English', 'vu', 1),
+(4, 'Interstellar', 169, '2014-11-07', 'USA', 'English', 'vu', 2),
+(5, 'Inception', 148, '2010-07-16', 'USA', 'English', 'vu', 2),
+(6, 'Titanic', 195, '1997-12-19', 'USA', 'English', 'non vu', 1),
+(7, 'The Godfather', 175, '1972-03-24', 'USA', 'English', 'vu', 2),
+(8, 'Pulp Fiction', 154, '1994-10-14', 'USA', 'English', 'vu', 2),
+(9, 'Fight Club', 139, '1999-10-15', 'USA', 'English', 'non vu', 1),
+(10, 'Forrest Gump', 142, '1994-07-06', 'USA', 'English', 'vu', 1),
+(11, 'The Matrix', 136, '1999-03-31', 'USA', 'English', 'vu', 2),
+(12, 'The Lord of the Rings: The Fellowship of the Ring', 178, '2001-12-19', 'New Zealand', 'English', 'vu', 2),
+(13, 'The Lord of the Rings: The Two Towers', 179, '2002-12-18', 'New Zealand', 'English', 'vu', 1),
+(14, 'The Lord of the Rings: The Return of the King', 201, '2003-12-17', 'New Zealand', 'English', 'vu', 1),
+(15, 'The Shawshank Redemption', 142, '1994-09-23', 'USA', 'English', 'vu', 1),
+(16, 'Gladiator', 155, '2000-05-05', 'USA', 'English', 'non vu', 1),
+(17, 'The Avengers', 143, '2012-04-25', 'USA', 'English', 'vu', 1),
+(18, 'Avatar', 162, '2009-12-18', 'USA', 'English', 'vu', 1),
+(19, 'Joker', 122, '2019-10-04', 'USA', 'English', 'vu', 1),
+(20, 'Spider-Man: No Way Home', 148, '2021-12-17', 'USA', 'English', 'vu', 1),
+(21, 'Django Unchained', 165, '2012-12-25', 'USA', 'English', 'non vu', 2),
+(22, 'The Wolf of Wall Street', 180, '2013-12-25', 'USA', 'English', 'vu', 1);
