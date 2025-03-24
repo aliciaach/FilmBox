@@ -19,7 +19,7 @@ function AdminLogin() {
 
       if (response.ok) {
         console.log("WE ARE HEREE THOOOO");
-        //navigate('/admin/adminManagement');
+        navigate('/adminManagement');
       } else {
         setError(data.message || 'Erreur de connexion admin');
       }

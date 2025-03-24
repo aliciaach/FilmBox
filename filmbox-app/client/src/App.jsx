@@ -8,6 +8,8 @@ import ListeFilms from './components/PageFilm';
 import FilmInfo from './components/FilmInfo';
 import UserSettings from './components/UserSettings';
 import AdminLogin from './components/AdminLogin';
+import AdminManagement from './components/adminManagement';
+
 
 export default function App() {
   return (
@@ -20,6 +22,7 @@ export default function App() {
         <Route path="/movies/:filmId" element={<FilmInfo />} />
         <Route path="/userSettings" element={<UserSettings />} />
         <Route path="/adminLogin" element={<AdminLogin />} />
+        <Route path="/adminManagement" element={<AdminManagement />} />
       </Routes>
     </BrowserRouter>
     //<UserSettings />
