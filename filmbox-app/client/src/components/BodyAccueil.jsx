@@ -81,7 +81,7 @@ const BodyAccueil = () => {
         justifyContent: "center",
         padding: "40px",
       }}
-    >
+      >
       <div
         className="container-fluid text-white"
         style={{
@@ -436,6 +436,21 @@ const BodyAccueil = () => {
         </div>
       </div>
     </div>
+    {/* Footer */}
+    <footer style={{
+        background: '#123456',
+        padding: '20px',
+        textAlign: 'center'
+      }}>
+        <Link
+          to="/AdminLogin"
+          className="btn custom-btn text-light text-start fw-light fs-4"
+          style={{ fontSize: "20px" }}
+        >
+          Admin Settings
+        </Link>
+        <p>footer not done yettt !!</p>
+      </footer>
     </>
   );
 }

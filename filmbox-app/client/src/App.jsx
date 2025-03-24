@@ -7,6 +7,7 @@ import Inscription from './components/Inscription';
 import ListeFilms from './components/PageFilm';
 import FilmInfo from './components/FilmInfo';
 import UserSettings from './components/UserSettings';
+import AdminLogin from './components/AdminLogin';
 
 export default function App() {
   return (
@@ -18,9 +19,11 @@ export default function App() {
         <Route path="/listeFilms" element={<ListeFilms/>} />
         <Route path="/movies/:filmId" element={<FilmInfo />} />
         <Route path="/userSettings" element={<UserSettings />} />
+        <Route path="/adminLogin" element={<AdminLogin />} />
       </Routes>
     </BrowserRouter>
     //<UserSettings />
+    //<AdminLogin />
   );
 }
 

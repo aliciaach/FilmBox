@@ -8,7 +8,11 @@ import { fileURLToPath } from "url";
 import mysql from "mysql";
 import { body, validationResult } from "express-validator";
 import dateFormat from "dateformat";
+import { MongoClient } from "mongodb"; 
+import { config } from "dotenv";
+import bcrypt from 'bcrypt';
 
+config(); 
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -215,6 +219,41 @@ app.get("/api/movies/:id", (req, res) => {
     }
     res.json(results[0]);
   });
+});
+
+
+/* ============================= REQUETE NOSQL =========================== */
+
+//Pour permettre à un admin de se connecter 
+app.post("/adminLogin", async (req, res) => {
+  const { username, password } = req.body;
+  
+  const uri = process.env.DB_URI; 
+  const client = new MongoClient(uri);
+  
+  try {
+    await client.connect();
+    const db = client.db("FilmBox"); 
+    const adminUsers = db.collection("AdminUsers");
+    
+    const admin = await adminUsers.findOne({ username });
+    if (!admin) {
+      return res.status(401).json({ message: "Admin not found" });
+    }
+    
+    //const isPasswordValid = await compare(password, admin.password);
+    const isPasswordValid = password === admin.password;
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: "Mot de passe invalide" });
+    } else {console.log("The admin connexion was succesful");}
+    
+    return res.json({ message: "Admin Connexion Succesful" });
+  } catch (error) {
+    console.error("Error during admin connexion:", error);
+    return res.status(500).json({ message: "Server Error" });
+  } finally {
+    await client.close();
+  }
 });
 
 /*
