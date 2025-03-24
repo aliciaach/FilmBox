@@ -13,6 +13,7 @@ import AdminManagement from './components/adminManagement';
 
 export default function App() {
   return (
+    
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<BodyAccueil />} />

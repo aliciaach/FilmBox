@@ -2,6 +2,13 @@ import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import BlackImage from '../assets/BlackImage.png'
 
+
+/*
+    https://www.youtube.com/watch?v=oYGhoHW7zqI
+    Pour ajouter token eventuellement, cookies et securite : 
+    https://www.youtube.com/watch?v=oExWh86IgHA
+    https://www.youtube.com/watch?v=9J3UQYcro-U
+*/
 function UserSettings() {
   const [user, setUser] = useState({});
   const [message, setMessage] = useState('');
