@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import imageFilm from "../assets/imageFilm.jpg";
 import imageLogo from "../assets/logo_FilmBox.png";
-import fondAffiches from "../assets/titanic.png"; //
- 
+import fondAffiches from "../assets/affiches.png";
+
 function BodyAccueil() {
   return (
     <div
@@ -40,7 +40,7 @@ function BodyAccueil() {
               CONNEXION
             </Link>
           </nav>
- 
+
           {/* Logo */}
           <img
             src={imageLogo}
@@ -48,7 +48,7 @@ function BodyAccueil() {
             alt="image-logo"
             style={{ width: "100px", height: "auto" }}
           />
- 
+
           <div className="d-flex flex-column align-items-center w-100 text-center mt-5">
             <div className="w-100 mb-4 px-5 " style={{ marginTop: "300px" }}>
               <div className="d-flex align-items-center w-100">
@@ -66,16 +66,16 @@ function BodyAccueil() {
                 <div className="flex-grow-1 border-top border-light border-light border-2 w-25 ms-3" />
               </div>
               {/* Deuxieme texte */}
-              <div className="my-3" />
- 
+              <div className="my-4" />
+
               <div className="d-flex align-items-center w-100">
                 <div
-                  className="border-top border-2 border-light flex-grow-1 me-auto"
-                  style={{ width: "30%" }}
+                  className="border-top border-2 border-light "
+                  style={{ width: "20%" }}
                 />
                 <h1
-                  className="text-white fw-bold mb-0 ms-3 text-nowrap"
-                  style={{ minWidth: "250px" }}
+                  className="text-white fw-bold mb-0 ms-5 "
+                  style={{ minWidth: "250px", fontSize: "60px" }}
                 >
                   ONE MOVIE AT A TIME
                 </h1>
@@ -83,7 +83,7 @@ function BodyAccueil() {
             </div>
             {/* Bouton pour se connecter */}
             <div className="d-flex justify-content-start w-100">
-              <button className="btn custom-btn text-light fw-light fs-4 mb-4">
+              <button className="btn custom-btn text-light fw-light fs-4 mb-4 ms-3 mt-5">
                 GET STARTED
               </button>
             </div>
@@ -113,7 +113,7 @@ function BodyAccueil() {
                   your emotions one last time before cutting the final scene for
                   good.
                 </p>
- 
+
                 <p className="fs-6 lh-lg mt-3">
                   It’s also a way to revisit old movies you’ve watched and
                   relive the emotions you experienced during them. Whether it’s
@@ -134,7 +134,7 @@ function BodyAccueil() {
                   </div>
                 </div>
               </div>
- 
+
               {/* Image a droite */}
               <div className="col-md-5 d-flex justify-content-center">
                 <div className="text-center w-50">
@@ -147,7 +147,7 @@ function BodyAccueil() {
               </div>
             </div>
           </div>
- 
+
           {/**Les films a venir */}
           <div className="mt-5 text-center text-light">
             <h1 className="mb-5 fw-bold">Coming Soon: Your Future Favorites</h1>
@@ -279,13 +279,11 @@ function BodyAccueil() {
             </div>
           </div>
         </div>
- 
+
         {/* KEEP EVERYTHING ABOVE THIS COMMENT */}
       </div>
     </div>
   );
 }
- 
+
 export default BodyAccueil;
- 
- 
