@@ -1,80 +1,89 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "../styles/Style.css"; 
- 
-const NOMBRE_DUPLICATION = 5; // Nombre de fois que les films seront dupliqués
- 
+import imageLogo from "../assets/logo_FilmBox.png";
+
+
+const NOMBRE_DUPLICATION = 5;
+
 const ListeFilms = () => {
   const [films, setFilms] = useState([]);
   const [erreur, setErreur] = useState(null);
- 
+
   useEffect(() => {
     fetch("http://localhost:4000/api/movies")
       .then((response) => {
         if (!response.ok) {
-          throw new Error("Probleme dans le chargement des films");
+          throw new Error("Problème dans le chargement des films");
         }
         return response.json();
       })
       .then((donnees) => {
-        //permet de dupliquer dynamiquement les films en fonction du nombre donnee
         const filmsDuppliques = Array.from({ length: NOMBRE_DUPLICATION }, () => donnees).flat();
         setFilms(filmsDuppliques);
       })
       .catch((erreur) => setErreur(erreur.message));
   }, []);
- 
-  //utilisation de chatgpt pour les classes BOOTSTRAP
-  //affichage dynamique des films
+
   return (
-    <>
-    <div>
-      <button className="btn btn-outline-primary" >
-        <Link
-          to="/userSettings"
-          className="nav-link active text-black"
-          style={{ fontSize:"20px"}}
-          >
-          User Settings
+    <div
+      className="min-vh-100"
+      style={{ background: "linear-gradient(180deg, #050A30, #0A1F50, #162269)", color: "white" }}
+    >
+      {/* Navbar */}
+      <nav className="navbar navbar-dark px-4">
+        <Link to="/" className="navbar-brand">
+          <img src={imageLogo} alt="Logo" height="150" />
         </Link>
-      </button>
-    </div>
-    <div className="container text-center mt-4">
-      <h2 className="text-white bg-primary p-3 rounded">Liste des Films</h2>
-      {erreur ? (
-        <p className="text-danger">{erreur}</p>
-      ) : (
-        <div className="row mt-3">
-          {films.map((film, index) => {
-            //genere dynamiquement le chemin de l'image en fonction du titre du film
-            let cheminImage = `/images/${film.titre.replace(/\s+/g, "_").toLowerCase()}.jpg`;
- 
-            return (
-              <div key={film.film_id || index} className="col-md-4 mb-4">
-                <div className="card shadow">
-                  <Link to={`/movies/${film.film_id}`}>
-                    <div className="card-img-container" style={{ aspectRatio: "2/3" }}>
+        <div>
+          <Link to="/" className="text-decoration-none text-white mx-3 fw-bold">HOME</Link>
+          <Link to="/usersettings" className="text-decoration-none text-white mx-3 fw-bold">USER SETTINGS</Link>
+          <Link to="/listeFilms" className="text-decoration-none text-primary mx-3 fw-bold">MY MOVIES</Link>
+          <Link to="/connexion" className="text-decoration-none text-white mx-3 fw-bold">LOGOUT</Link>
+        </div>
+      </nav>
+
+      {/* Movie List Section */}
+      <div className="container text-center mt-0">
+        <h1 className="text-white display-3 fw-bold">Seen It? Rate It!</h1>
+        <p className="text-white">
+          Don't forget to leave your opinion on the movies you watch.
+          <br />
+          Every story deserves a final word. Will it be 5 stars or 0?
+          <br />
+          The ending is yours to decide!
+        </p>
+
+        {erreur ? (
+          <p className="text-danger">{erreur}</p>
+        ) : (
+          <div className="row mt-3">
+            {films.map((film, index) => {
+              let cheminImage = `/images/${film.titre.replace(/\s+/g, "_").toLowerCase()}.jpg`;
+
+              return (
+                <div key={film.film_id || index} className="col-lg-3 col-md-4 col-sm-6 mb-4">
+                  <div className="card bg-dark border-0 shadow">
+                    <Link to={`/movies/${film.film_id}`}>
                       <img
                         src={cheminImage}
                         alt={film.titre}
-                        className="card-img-top"
-                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                        className="card-img-top rounded"
+                        style={{ height: "480px", objectFit: "cover" }}
                       />
-                    </div>
-                    <div className="card-body">
-                      <h5 className="card-title">{film.titre}</h5>
-                    </div>
-                  </Link>
+                      <div className="card-body text-center">
+                        <h6 className="card-title text-white">{film.titre}</h6>
+                      </div>
+                    </Link>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
-  </>
   );
 };
- 
+
 export default ListeFilms;

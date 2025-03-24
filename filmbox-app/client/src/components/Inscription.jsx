@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import '../styles/Inscription.css';
 import logoFilmBox from '../assets/logoFilmBox.png';
 import arobase from '../assets/icone_arobase.png';
 import cadenas from '../assets/icone_cadenas.png';

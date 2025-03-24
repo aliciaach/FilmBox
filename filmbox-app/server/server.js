@@ -9,7 +9,6 @@ import mysql from "mysql";
 import { body, validationResult } from "express-validator";
 import dateFormat from "dateformat";
 
-
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -20,13 +19,13 @@ app.use(express.json()); //convert json data to javascript
     Connection au server MySQL
 */
 const con = mysql.createConnection({
-  host: "localhost", 
+  host: "localhost",
   user: "scott",
   password: "oracle",
-  database: "filmbox"
+  database: "prototype",
 });
 
-con.connect(function(err) {
+con.connect(function (err) {
   if (err) throw err;
   console.log("Connection succesful !!!!!!!!!!");
 });
@@ -35,11 +34,13 @@ con.connect(function(err) {
     Enregistrer une session utilisateur
     Source : https://www.geeksforgeeks.org/how-to-handle-sessions-in-express/
 */
-app.use(session({
-  secret: 'mySecretKey',
-  resave: false,
-  saveUninitialized: false
-}));
+app.use(
+  session({
+    secret: "mySecretKey",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
 app.get("/get-session", (req, res) => {
   if (req.session.user) {
@@ -47,7 +48,7 @@ app.get("/get-session", (req, res) => {
     res.json({ loggedIn: true, user: req.session.user });
   } else {
     console.log("No Session Found");
-    res.send('No session data found');
+    res.send("No session data found");
     res.json({ loggedIn: false });
   }
 });
@@ -69,7 +70,6 @@ app.get("/destroy-session", (req, res) => {
 */
 app.use(express.static(path.join(__dirname, "../client/dist")));
 
-
 /*
     Images
 */
@@ -83,8 +83,9 @@ app.use(
 */
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
-  const sql = "SELECT * FROM utilisateur WHERE courriel = ? AND mot_de_passe = ?";
-  
+  const sql =
+    "SELECT * FROM utilisateur WHERE courriel = ? AND mot_de_passe = ?";
+
   con.query(sql, [email, password], (err, results) => {
     if (err) {
       console.error("Database error: ", err);
@@ -92,83 +93,109 @@ app.post("/login", (req, res) => {
     }
     if (results.length > 0) {
       req.session.user = {
-        id: results[0].utilisateur_id,  // Adjust column name if needed
+        id: results[0].utilisateur_id, // Adjust column name if needed
         prenom: results[0].prenom,
         nom: results[0].nom,
         courriel: results[0].courriel,
-        telephone: results[0].telephone
-      }
-      console.log("USER FOUNDDDDDD" + results[0].courriel)
-      return res.status(200).json({succes:true, message: "Login Succesful !" });
+        telephone: results[0].telephone,
+      };
+      console.log("USER FOUNDDDDDD" + results[0].courriel);
+      return res
+        .status(200)
+        .json({ succes: true, message: "Login Succesful !" });
     } else {
-      console.log("USER NOTTT FOUNDDD")
-      return res.status(401).json({succes:false, message: "Access denied, wrong password or email" });
+      console.log("USER NOTTT FOUNDDD");
+      return res
+        .status(401)
+        .json({
+          succes: false,
+          message: "Access denied, wrong password or email",
+        });
     }
   });
 });
 
 app.post("/LoginRegister", (req, res) => {
-  console.log("We made it here ")
-  const {email, password, firstName, lastName, phoneNumber} = req.body;
-  const sql = "INSERT INTO utilisateur (prenom, nom, courriel, telephone, mot_de_passe) VALUES (?, ?, ?, ?, ?)"; //Place holder (pour eviter sql injections, comme derniere session)
+  console.log("We made it here ");
+  const { email, password, firstName, lastName, phoneNumber } = req.body;
+  const sql =
+    "INSERT INTO utilisateur (prenom, nom, courriel, telephone, mot_de_passe) VALUES (?, ?, ?, ?, ?)"; //Place holder (pour eviter sql injections, comme derniere session)
 
   //CORRIGER LES TYPES D'ERREUR ET METTRE LES BONNES !!!
-  con.query(sql, [firstName, lastName, email, phoneNumber, password], (err, results) => {
+  con.query(
+    sql,
+    [firstName, lastName, email, phoneNumber, password],
+    (err, results) => {
+      if (err) {
+        console.error("Database error: ", err);
+        return res.status(500).json({ message: "Internal server error" });
+      }
+      if (results.affectedRows && results.affectedRows > 0) {
+        console.log("New User created ");
+        return res
+          .status(200)
+          .json({
+            success: true,
+            message: "New user created!",
+            redirectUrl: "/PageFilm",
+          });
+      } else {
+        console.log("Error, couldnt create new user");
+        return res
+          .status(401)
+          .json({ succes: false, message: "Error, couldnt create user..." });
+      }
+    }
+  );
+});
+
+app.post("/ChangePassword", (req, res) => {
+  console.log("Trying to update password");
+  const { email, newPassword } = req.body;
+  const sql = "UPDATE utilisateur SET mot_de_passe = ? WHERE courriel = ?";
+
+  con.query(sql, [newPassword, email], (err, results) => {
     if (err) {
       console.error("Database error: ", err);
-      return res.status(500).json({message: "Internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
     }
-    if (results.affectedRows && results.affectedRows > 0) {
-      console.log("New User created ")
-      return res.status(200).json({ success:true, message: "New user created!", redirectUrl: "/PageFilm" });
+    if (results.affectedRows > 0) {
+      console.log("PASSWORD UPDATED !!!!!");
+      return res
+        .status(200)
+        .json({ success: true, message: "Your password was updated !" });
     } else {
-      console.log("Error, couldnt create new user")
-      return res.status(401).json({ succes:false, message: "Error, couldnt create user..."})
+      console.log("Error, couldnt update password");
+      return res
+        .status(404)
+        .json({ succes: false, message: "Error, couldnt create user..." });
     }
   });
 });
 
-app.post("/ChangePassword", (req, res) => {
-    console.log("Trying to update password")
-    const {email, newPassword} = req.body;
-    const sql = "UPDATE utilisateur SET mot_de_passe = ? WHERE courriel = ?";
-
-    con.query(sql, [newPassword, email], (err, results) => {
-      if (err) {
-        console.error("Database error: ", err);
-        return res.status(500).json({message: "Internal server error" });
-      }
-      if (results.affectedRows > 0) {
-        console.log("PASSWORD UPDATED !!!!!")
-        return res.status(200).json({ success:true, message: "Your password was updated !" });
-      } else {
-        console.log("Error, couldnt update password")
-        return res.status(404).json({ succes:false, message: "Error, couldnt create user..."})
-      }
-    });
-});
-
 app.delete("/deleteAccount", (req, res) => {
-  console.log("trying to delete account")
-  const {userId} = req.body;
+  console.log("trying to delete account");
+  const { userId } = req.body;
   const sql = "DELETE FROM utilisateur WHERE utilisateur_id = ?;";
 
   con.query(sql, [userId], (err, results) => {
     if (err) {
       console.error("Database error: ", err);
-      return res.status(500).json({message: "Internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
     }
     if (results.affectedRows > 0) {
-      console.log("ACCOUNT DELETED !!!!!")
-      return res.status(200).json({ success:true, message: "Your account was deleted !" });
+      console.log("ACCOUNT DELETED !!!!!");
+      return res
+        .status(200)
+        .json({ success: true, message: "Your account was deleted !" });
     } else {
-      console.log("Error, couldnt update password")
-      return res.status(404).json({ succes:false, message: "Error, couldnt delete user..."})
+      console.log("Error, couldnt update password");
+      return res
+        .status(404)
+        .json({ succes: false, message: "Error, couldnt delete user..." });
     }
   });
-
-})
-
+});
 
 /*
     API - Obtenir tous les films
@@ -223,7 +250,6 @@ app.get("/api/movies/:id", (req, res) => {
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../client/dist", "index.html"));
 });
-
 
 /*
     Connect to server
