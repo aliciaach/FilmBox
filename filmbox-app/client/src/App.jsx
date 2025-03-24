@@ -2,10 +2,10 @@ import React from "react";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
-import Connexion from "./components/Connexion";
+import Accueil from "./components/BodyAccueil";
 
 function App() {
-  return <Connexion />;
+  return <Accueil />;
 }
 
 export default App;

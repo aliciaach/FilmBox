@@ -5,7 +5,7 @@ function BodyAccueil() {
     <div
       style={{
         background:
-          "linear-gradient(180deg, rgb(23, 5, 113) 0%, rgb(66, 18, 179) 50%, rgb(23, 5, 113) 100%)",
+          "linear-gradient(180deg, rgb(0, 0, 0) 0%, rgb(66, 18, 179) 45%, rgb(0, 0, 0) 100%)",
         minHeight: "100vh",
         width: "100vw",
         display: "flex",
