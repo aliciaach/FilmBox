@@ -45,8 +45,13 @@ function Connexion(){
 
 return(
 
-  <div className="d-flex flex-column justify-content-center align-items-center vh-100" 
+  <div className="d-flex flex-column justify-content-center align-items-center" //vh-100" 
   style={{
+    
+    minHeight: '120vh', // Page + haute   => minHeight: '100vh', ///////
+    paddingTop: '5vh', // 
+    paddingBottom: '5vh', //
+
     margin: 0,
     padding: 0,
     boxSizing: 'border-box',
@@ -60,7 +65,7 @@ return(
         rgba(5, 0, 50, 1)),
         url(${titanicImage})`,
 
-        backgroundSize: 'auto',
+        backgroundSize: 'cover',  //'auto'
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
         color: '#fff'
