@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import imageLogo from "../assets/logo_FilmBox.png";
+
 const NOMBRE_DUPLICATION = 5; // Nombre de fois que les films seront dupliqués
  
 const ListeFilms = () => {
