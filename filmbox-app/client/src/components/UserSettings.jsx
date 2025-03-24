@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import '../styles/UserSettings.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 /*
     https://www.youtube.com/watch?v=oYGhoHW7zqI
@@ -88,8 +89,66 @@ function UserSettings() {
 
     return (
         <>
-            <div>
+        <header>
+            <link rel="preconnect" href="https://fonts.googleapis.com" />
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
+            <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet" />
+        </header>
+        <div
+            className="text-white d-flex flex-column justify-content-center align-items-center vh-100 m-0 p-0"
+                style={{
+                    fontFamily: 'Fredoka, sans-serif',
+                    fontWeight: 300,
+                    background: `linear-gradient(to bottom, rgba(4,0,69,1) 0%, rgba(32,13,134,1) 36%, rgba(44,0,140,1) 50%, rgba(32,13,134,1) 63%, rgba(4,0,69,1) 100%)`
+                  }}
+            >
                 <h1>This is the page with the user data, he will be able to change his password or delete his account</h1>
+            <div>
+                <div class>
+                    <p style={{fontSize:'22px'}}>First Name</p>
+                    <input className='w-100 p-2 pe-5 ps-3 text-white border-1 rounded-2' type="text" placeholder={user.prenom}
+                    required value={user.firstName} onChange={(e) => setFirstName(e.target.value)}  
+                    style={{ border: 'solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', outline: 'none', 
+                    backgroundPosition: 'right 10px center', backgroundRepeat: 'no-repeat', backgroundSize: '20px' 
+                }}/>
+
+                <div className="input-box" style={{gridColumn : 1/2, width:'100%', marginTop:'2rem'}}>
+                <p style={{fontSize:'22px'}}>Last Name</p>
+                <input className='w-100 p-2 pe-5 ps-3 text-white border-1 rounded-2' type="text" placeholder={user.nom}
+                    style={{border: 'solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', outline: 'none', 
+                    backgroundPosition: 'right 10px center', backgroundRepeat: 'no-repeat', backgroundSize: '20px' 
+                }}/>
+                <div className='input-box' style={{gridColumn : 1/2, width:'100%', marginTop:'2rem'}}>
+                    <p style={{fontSize:'22px'}}>Email</p>
+                    <input className='w-100 p-2 pe-5 ps-3 text-white border-1 rounded-2 ' type="text" placeholder={user.courriel}  
+                    style={{ border: 'solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', outline: 'none', 
+                    backgroundPosition: 'right 10px center', backgroundRepeat: 'no-repeat', backgroundSize: '20px'
+                }}/>
+                <div className='input-box' style={{gridColumn: 1/2, width:'100%', marginTop:'2rem'}}>
+                    <p style={{fontSize:'22px'}}>Phone Number</p>
+                    <input className='w-100 p-2 pe-5 ps-3 text-white border-1 rounded-2 ' type="text" placeholder={user.telephone}  
+                    style={{ border: 'solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', outline: 'none', 
+                    backgroundPosition: 'right 10px center', backgroundRepeat: 'no-repeat', backgroundSize: '20px'
+                }}/>
+                <div className='input-box' style={{gridColumn: 1/2, width:'100%', marginTop:'2rem'}}/>
+                    <p style={{fontSize:'22px'}}>Password</p>
+                    <input className='w-100 p-2 pe-5 ps-3 text-white border-1 rounded-2 ' type="text" placeholder="***********"  
+                    style={{ border: 'solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', outline: 'none', 
+                    backgroundPosition: 'right 10px center', backgroundRepeat: 'no-repeat', backgroundSize: '20px'
+                }}/>
+                </div>
+                <div className="input-box" style={{gridColumn : 1/2, width: '100%', marginTop:'2rem'}}>
+                    <p style={{fontSize:'22px'}}>Confirm New Password</p>
+                    <input className='w-100 p-2 pe-5 ps-3 text-white border-1 rounded-2 ' type="text" 
+                    style={{ border: 'solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', outline: 'none', 
+                    backgroundPosition: 'right 10px center', backgroundRepeat: 'no-repeat', backgroundSize: '20px'
+                }}/>
+                </div>
+                </div>
+
+                </div>
+            </div>
+                
                 <div>
                     <p><strong>First Name:</strong> {user.prenom}</p>
                     <p><strong>Last Name:</strong> {user.nom}</p>
@@ -116,6 +175,8 @@ function UserSettings() {
                 </form>
 
             </div>
+        </div>
+            
         </>
     );
 }
