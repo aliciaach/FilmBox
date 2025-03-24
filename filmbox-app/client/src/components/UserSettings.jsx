@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-
 /*
     https://www.youtube.com/watch?v=oYGhoHW7zqI
     Pour ajouter token eventuellement, cookies et securite : 
