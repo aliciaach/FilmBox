@@ -20,7 +20,7 @@ function BodyAccueil() {
     <div
       style={{
         background:
-          "linear-gradient(180deg, rgb(0, 0, 0) 0%, rgb(50, 6, 98) 45%, rgb(0, 0, 0) 100%)",
+          "linear-gradient(180deg, rgb(5, 14, 66) 0%, rgb(5, 14, 66) 40%, rgb(0, 0, 0) 60%, rgb(5, 0, 50) 100%)",
         minHeight: "100vh",
         width: "100vw",
         display: "flex",
@@ -95,9 +95,11 @@ function BodyAccueil() {
             </div>
             {/* Bouton pour se connecter */}
             <div className="d-flex justify-content-start w-100">
-              <button className="btn custom-btn text-light fw-light fs-4 mb-4 ms-3 mt-5">
-                GET STARTED
-              </button>
+              <Link to="/inscription" className="ms-3 mt-5 mb-4">
+                <button className="btn custom-btn text-light fw-light fs-4">
+                  GET STARTED
+                </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -271,7 +273,7 @@ function BodyAccueil() {
                         transition: "transform 0.3s",
                         color: "#657ED4",
                         fontWeight: "bold",
-                        fontSize: "20px",
+                        fontSize: "30px",
                       }}
                     >
                       +
