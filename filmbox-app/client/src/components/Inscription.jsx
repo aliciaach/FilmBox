@@ -43,11 +43,12 @@ function LoginRegister() {
           style={{
             boxSizing: 'border-box', //
             fontFamily: 'Istok Web, sans-serif',
- 
+
             minHeight: '120vh', // Page + haute   => minHeight: '100vh', ///////
            paddingTop: '15vh', //
             paddingBottom: '15vh', //
  
+
             fontSize: 'large',
             gap: '2rem',
        
@@ -57,7 +58,7 @@ function LoginRegister() {
                 rgba(0, 0, 255, 0.5),
                 rgba(5, 0, 50, 1)),
                 url(${SeigneurAnneauxImage})`,
-       
+
                 backgroundSize: 'cover', //'auto'
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',
@@ -65,8 +66,10 @@ function LoginRegister() {
         >
         <h1 style={{marginTop: '15vh'}} >Sign Up</h1> {/*style={{marginTop: '25px'}} */}
         <div className="wrapper">
+
             <div className="d-flex flex-column rounded-2 mx-auto" style={{
                     width:'100%',//width: '110%',
+
                     background: 'rgba(0, 0, 0, 0.4)',
                     padding: '2.5rem 4rem',//'5rem 5rem',
                     boxShadow: '0 10px 20px rgba(17, 1, 1, 0.2)',
