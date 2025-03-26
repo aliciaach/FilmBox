@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
+import BlackImage from '../assets/BlackImage.png';
 
 const FilmInfo = () => {
   const { filmId } = useParams();
@@ -37,20 +38,48 @@ const FilmInfo = () => {
   let cheminImage = `/images/${film.titre.replace(/\s+/g, "_").toLowerCase()}.jpg`;
 
   return (
-    <div
-      className="min-vh-100 py-5"
+    <div className="min-vh-100 py-5" 
       style={{
-        background: "linear-gradient(135deg, #050A30 0%, #0A1F50 50%, #162269 100%)",
-        color: "white",
-      }}
-    >
-      <div className="container">
-      <button
-        className="btn btn-outline-light position-absolute top-0 start-0 m-4"
-        onClick={() => navigate(-1)}
-      >
-      Retour
-      </button>
+        background: `linear-gradient(to bottom,
+          rgba(5, 14, 66, 1),
+          rgba(26, 0, 255, 0.6),
+          rgba(0, 0, 255, 0.5),
+          rgba(5, 0, 50, 1)),
+          url(${BlackImage})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        minHeight: '100vh',
+        color: '#fff'
+      }}>
+      <div className="container position-relative">
+        {/* Back Button - Now integrated into the header area */}
+        <button
+          className="btn btn-outline-light mb-4 d-flex align-items-center"
+          onClick={() => navigate(-1)}
+          style={{
+            background: 'rgba(28, 28, 28, 0.6)',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            borderRadius: '50px',
+            padding: '8px 16px',
+            transition: 'all 0.3s ease',
+            width: 'fit-content'
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.background = 'rgba(74, 107, 255, 0.8)';
+            e.currentTarget.style.borderColor = 'rgba(74, 107, 255, 0.8)';
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.background = 'rgba(28, 28, 28, 0.6)';
+            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+          }}
+        >
+          {/* ce bout de code import une fleche et shape la fleche a l'aide de chatgpt */}
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-arrow-left me-2" viewBox="0 0 16 16">
+            <path fillRule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+          </svg>
+          Retour
+        </button>
 
         <div className="card border-0 shadow-lg overflow-hidden" style={{ 
           background: "rgba(28, 28, 28, 0.8)",
@@ -85,16 +114,12 @@ const FilmInfo = () => {
                       fontSize: "2.5rem",
                       textTransform: "uppercase",
                       letterSpacing: "1px",
-                      color: "#FFFFFF" //FFFFFFF = blanc
+                      color: "#FFFFFF"
                     }}>
                       {film.titre}
                     </h1>
                     
-                    <div className="d-flex flex-wrap gap-2 mb-3">
-                      <span className="badge bg-primary px-3 py-2" style={{ color: "#FFFFFF" }}>
-                        {film.genre}
-                      </span> 
-                    </div>
+                    
                   </div>
                   
                   <div className="mb-4">
@@ -116,11 +141,16 @@ const FilmInfo = () => {
                         <p className="mb-1"><strong>Langue originale:</strong></p>
                         <p>{film.langue_original}</p>
                       </div>
-
                       <div className="col-md-6 mb-3">
                         <p className="mb-1"><strong>Pays origine:</strong></p>
                         <p>{film.pays_origin_film}</p>
                       </div>
+                      
+                      <div className="col-md-6 mb-3">
+                        <p className="mb-1"><strong>Genre:</strong></p>
+                        <p>{film.genre}</p>
+                      </div>
+
                     </div>
                   </div>
                 </div>
