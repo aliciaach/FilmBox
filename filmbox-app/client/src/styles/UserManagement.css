@@ -1,0 +1,8 @@
+#inputInfo {
+    border: solid rgba(116, 101, 247, 0.6);
+    outline: none;
+    background-position: right 10px center;
+    background-repeat: no-repeat;
+    background-size: 20px;
+    color: white;
+}

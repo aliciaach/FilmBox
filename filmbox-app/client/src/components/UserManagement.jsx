@@ -5,6 +5,7 @@ import arobase from '../assets/icone_arobase.png';
 import cadenas from '../assets/icone_cadenas.png';
 import titanicImage from '../assets/Titanic.png';
 import fondNoir from '../assets/BlackImage.png';
+import '../styles/UserManagement.css';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -22,10 +23,10 @@ return (
             width:'100%',
        
             background: `linear-gradient(to bottom,
-                rgba(5, 14, 66, 1),
-                rgba(26, 0, 255, 0.6),
-                rgba(0, 0, 255, 0.5),
-                rgba(5, 0, 50, 1)),
+                rgba(26, 0, 255, 0.4) 0%,
+                rgba(5, 14, 68, 0.38) 13%,
+                rgba(5, 0, 50, 0) 100%,
+                rgba(0, 0, 255, 0.4)) 100%,     
                 url(${fondNoir})`,
 
             backgroundSize: 'cover', //'auto'
@@ -51,6 +52,97 @@ return (
               <button className="list-group-item bg-transparent text-white border-light">
                 FirstName LastName
               </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+                            <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+
             </div>
           </div>
 
@@ -69,17 +161,30 @@ return (
                 }}/>            
             </div>
 
-            <div className="row mb-3" style={{marginTop:'8vh'}}>
+            <div className="row mb-3" style={{marginTop:'8vh', fontSize:'22px'}}>
               <div className="col-md-6">
-                <label>First Name</label>
-                <input type="text" className="form-control bg-transparent text-white border-light" placeholder="John" />
+                <label id="titresInfo" className="mb-2"> First Name </label>
+                <input id="inputInfo" type="text" className="w-100 p-2 pe-5 ps-3 text-white bg-transparent border-1 rounded-4" placeholder="John" />
               </div>
               <div className="col-md-6">
-                <label>Last Name</label>
-                <input type="text" className="form-control bg-transparent text-white border-light" placeholder="Doe" />
+                <label id="titresInfo" className="mb-2"> Last Name </label>
+                <input id="inputInfo" type="text" className="w-100 p-2 pe-5 ps-3 text-white bg-transparent border-1 rounded-4" placeholder="Doe" />
               </div>
             </div>
 
+            <div className="row mb-3" style={{marginTop:'8vh', fontSize:'22px'}}>
+              <div className="col">
+                <label id="titresInfo" className="mb-2"> Email </label>
+                <input id="inputInfo" type="text" className="w-100 p-2 pe-5 ps-3 text-white bg-transparent border-1 rounded-4" placeholder="example@gmail.com" />
+              </div>
+            </div>
+
+            <div className="row mb-3" style={{marginTop:'8vh', fontSize:'22px'}}>
+              <div className="col">
+                <label id="titresInfo" className="mb-2"> Phone Number </label>
+                <input id="inputInfo" type="text" className="w-100 p-2 pe-5 ps-3 text-white bg-transparent border-1 rounded-4" placeholder="514-123-1234" />
+              </div>
+            </div>
 
           </div>
         </div>
