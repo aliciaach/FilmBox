@@ -94,25 +94,21 @@ return(
         <label htmlFor="email" className="input-label">Email</label>
         
         <div className="mb-3 position-relative">
-          <input className='w-100 p-2 pe-5 ps-3 text-white border-1 rounded-4' type='email' placeholder='Example@gmail.com' required value={email} onChange={(e) => setEmail(e.target.value)}
-            style={{ border: 'solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', outline: 'none', /* JE GARDE OU PAS? */ backgroundImage: `url(${arobase})`,
-              backgroundPosition: 'right 10px center', backgroundRepeat: 'no-repeat', backgroundSize: '20px' 
-            }}/>
+          <input id="inputForm" className='w-100 p-2 pe-5 ps-3 text-white border-1 rounded-4' type='email' placeholder='Example@gmail.com' required value={email} onChange={(e) => setEmail(e.target.value)}
+            style={{backgroundImage: `url(${arobase})`}}/>
         </div>
 
         {/* Mot de passe */}
         <label htmlFor="password" className="input-label">Password</label>
           
         <div className="mb-3 position-relative">
-          <input className='w-100 p-2 pe-5 ps-3 text-white border-1 rounded-4 ' type='password' placeholder='Enter your password' required value={password} onChange={(e) => setPassword(e.target.value)}
-            style={{ border: 'solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', outline: 'none', /* JE GARDE OU PAS? */ backgroundImage: `url(${cadenas})`,
-              backgroundPosition: 'right 10px center', backgroundRepeat: 'no-repeat', backgroundSize: '20px' 
-            }}/>
+          <input id="inputForm" className='w-100 p-2 pe-5 ps-3 text-white border-1 rounded-4 ' type='password' placeholder='Enter your password' required value={password} onChange={(e) => setPassword(e.target.value)}
+            style={{backgroundImage: `url(${cadenas})`}}/>
         </div>
 
         {/* Checkbox "Remember me" */}
         <div  style={{display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px'}}>
-          <input type="checkbox" id="remember" style={{ accentColor: '#7465F7', cursor: 'pointer' }} />
+          <input type="checkbox" id="remember" style={{accentColor: '#7465F7', cursor: 'pointer' }} />
           <label htmlFor="remember"> Remember me</label>
         </div>
 
