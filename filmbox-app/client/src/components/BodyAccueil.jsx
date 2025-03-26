@@ -1,7 +1,19 @@
 import { Link } from "react-router-dom";
-import imageFilm from "../assets/imageFilm.jpg";
+import img1 from "../assets/mid90s.jpg";
+import img2 from "../assets/imageFilm.jpg";
+import image1 from "../assets/Avatar_Fire.png";
+import image2 from "../assets/captain_america.png";
+import image3 from "../assets/Jurassic_World.png";
+import image4 from "../assets/the-gorge.jpg";
+import image5 from "../assets/boy-heron.jpg";
+import image6 from "../assets/oppenheimer.png";
+import image7 from "../assets/maestro.png";
+import image8 from "../assets/may-december.jpg";
 import imageLogo from "../assets/logo_FilmBox.png";
 import fondAffiches from "../assets/affiches.png";
+
+const imagesVenir = [image1, image2, image3, image4];
+const oscars = [image5, image6, image7, image8];
 
 function BodyAccueil() {
   return (
@@ -92,7 +104,7 @@ function BodyAccueil() {
         {/**Texte du bas */}
         <div>
           <div className="d-flex flex-column align-items-center text-center mt-4 text-white">
-            <div style={{ width: "100%", marginLeft: "100px" }}>
+            <div style={{ width: "100%", marginLeft: "150px" }}>
               {/** grande affirmation */}
               <div className="text-light mt-3 text-start ms-5">
                 <span className="fw-bold fs-1">
@@ -127,7 +139,7 @@ function BodyAccueil() {
                           For Every Movie That Moves You—Share Your Final Scene.
                         </b>
                       </p>
-                      <p className="fw-bold fs-3 mt-1">
+                      <p className="fw-bold fs-2 mt-1">
                         It’s simple: just watch it, feel it, and rate it!
                       </p>
                     </div>
@@ -137,9 +149,10 @@ function BodyAccueil() {
                 <div className="col-md-5 d-flex justify-content-center">
                   <div className="text-center w-50">
                     <img
-                      src={imageFilm}
+                      src={img1}
                       alt="Film Experience"
                       className="img-fluid"
+                      style={{ maxWidth: "100%", width: "auto" }}
                     />
                   </div>
                 </div>
@@ -155,15 +168,16 @@ function BodyAccueil() {
               className="row justify-content-center mb-5"
               style={{ padding: "40px" }}
             >
-              {[...Array(4)].map((_, index) => (
+              {imagesVenir.map((src, index) => (
                 <div
-                  className="col-6 col-md-3 d-flex justify-content-center"
+                  className="col-6 col-md-3 d-flex justify-content-center mb-4"
                   key={index}
                 >
                   <img
-                    src={imageFilm}
-                    alt="Film random"
-                    className="img-fluid  w-100"
+                    src={src}
+                    alt={`Film ${index + 1}`}
+                    className="img-fluid mx-2"
+                    style={{ width: "90%" }}
                   />
                 </div>
               ))}
@@ -177,15 +191,16 @@ function BodyAccueil() {
               className="row justify-content-center mb-5"
               style={{ padding: "40px" }}
             >
-              {[...Array(4)].map((_, index) => (
+              {oscars.map((src, index) => (
                 <div
-                  className="col-6 col-md-3 d-flex justify-content-center"
+                  className="col-6 col-md-3 d-flex justify-content-center mb-4"
                   key={index}
                 >
                   <img
-                    src={imageFilm}
-                    alt="Film random"
-                    className="img-fluid  w-100"
+                    src={src}
+                    alt={`Film ${index + 1}`}
+                    className="img-fluid mx-2"
+                    style={{ width: "90%" }}
                   />
                 </div>
               ))}
