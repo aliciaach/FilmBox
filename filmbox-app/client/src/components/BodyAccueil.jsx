@@ -91,58 +91,57 @@ function BodyAccueil() {
         </div>
         {/**Texte du bas */}
         <div>
-          <div className="text-center text-light mt-3">
-            <span className="fw-bold fs-3">
-              Make every film you watch part of your story
-            </span>
-          </div>
-          {/**Gros paragraphes */}
-          <div className="text-white container text-center mt-4 d-flex flex-column align-items-center">
-            <div
-              className="row align-items-start w-100"
-              style={{ maxWidth: "1300px" }}
-            >
-              <div className="col-md-7 text-md-start">
-                <p className="lead mb-2 fs-6 lh-lg">
-                  Sometimes, you watch a movie that connects so deeply within
-                  you that you can’t stop thinking about it. You need to talk
-                  about it, analyze it—you’re just not ready to say goodbye yet.
-                  Or sometimes, it’s so bad that you can’t help but express how
-                  terrible it was. That’s what FilmBox is for. Rate your movies,
-                  leave an impression, write down your thoughts, and express
-                  your emotions one last time before cutting the final scene for
-                  good.
-                </p>
+          <div className="d-flex flex-column align-items-center text-center mt-4 text-white">
+            <div style={{ width: "100%", marginLeft: "100px" }}>
+              {/** grande affirmation */}
+              <div className="text-light mt-3 text-start ms-5">
+                <span className="fw-bold fs-1">
+                  Make every film you watch part of your story
+                </span>
+              </div>
+              {/**Gros paragraphes */}
+              <div className="row align-items-start w-100 mt-4 ">
+                <div className="col-md-7 text-md-start">
+                  <p className="lead mb-2 fs-4 fw-semibold lh-lg">
+                    Sometimes, you watch a movie that connects so deeply within
+                    you that you can’t stop thinking about it. You need to talk
+                    about it, analyze it—you’re just not ready to say goodbye
+                    yet. Or sometimes, it’s so bad that you can’t help but
+                    express how terrible it was. That’s what FilmBox is for.
+                    Rate your movies, leave an impression, write down your
+                    thoughts, and express your emotions one last time before
+                    cutting the final scene for good.
+                  </p>
 
-                <p className="fs-6 lh-lg mt-3">
-                  It’s also a way to revisit old movies you’ve watched and
-                  relive the emotions you experienced during them. Whether it’s
-                  nostalgia, awe, or frustration, it’s all part of your
-                  cinematic journey.
-                </p>
-                {/**Les quotes pour le site */}
-                <div className="row mt-3">
-                  <div className="col text-center text-light">
-                    <p className="fw-bold fs-5 mt-3">
-                      <b>
-                        For Every Movie That Moves You-Share Your Final Scene.
-                      </b>
-                    </p>
-                    <p className="fw-bold fs-5 mt-1">
-                      It's simple: just watch it, feel it, and rate it!
-                    </p>
+                  <p className="fs-4 fw-semibold lh-lg mt-3">
+                    It’s also a way to revisit old movies you’ve watched and
+                    relive the emotions you experienced during them. Whether
+                    it’s nostalgia, awe, or frustration, it’s all part of your
+                    cinematic journey.
+                  </p>
+                  {/**Les quotes pour le site */}
+                  <div className="row mt-3">
+                    <div className="col text-center text-light">
+                      <p className="fw-bold fs-2 mt-3">
+                        <b>
+                          For Every Movie That Moves You—Share Your Final Scene.
+                        </b>
+                      </p>
+                      <p className="fw-bold fs-3 mt-1">
+                        It’s simple: just watch it, feel it, and rate it!
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-
-              {/* Image a droite */}
-              <div className="col-md-5 d-flex justify-content-center">
-                <div className="text-center w-50">
-                  <img
-                    src={imageFilm}
-                    alt="Film Experience"
-                    className="img-fluid"
-                  />
+                {/* Image a droite */}
+                <div className="col-md-5 d-flex justify-content-center">
+                  <div className="text-center w-50">
+                    <img
+                      src={imageFilm}
+                      alt="Film Experience"
+                      className="img-fluid"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
