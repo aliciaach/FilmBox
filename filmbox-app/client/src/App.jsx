@@ -9,12 +9,13 @@ import FilmInfo from './components/FilmInfo';
 import UserSettings from './components/UserSettings';
 import AdminLogin from './components/AdminLogin';
 import AdminManagement from './components/adminManagement';
+import UserManagement from './components/UserManagement';
 
 
 export default function App() {
   return (
-    
-    <BrowserRouter>
+  
+    /*<BrowserRouter>
       <Routes>
         <Route path="/" element={<BodyAccueil />} />
         <Route path="/connexion" element={<Connexion />} />
@@ -24,10 +25,12 @@ export default function App() {
         <Route path="/userSettings" element={<UserSettings />} />
         <Route path="/adminLogin" element={<AdminLogin />} />
         <Route path="/adminManagement" element={<AdminManagement />} />
+        <Route path="/userManagement" element={<UserManagement />} />        
       </Routes>
-    </BrowserRouter>
+    </BrowserRouter>*/
     //<UserSettings />
     //<AdminLogin />
+    <UserManagement />
   );
 }
 
