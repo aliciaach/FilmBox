@@ -80,7 +80,7 @@ function LoginRegister() {
  
                         <div className="input-box" style={{gridColumn : '1/2', width:'100%', marginTop:'2rem'}}>
                             <p style={{fontSize:'22px'}}>First Name:</p>
-                            <input className='w-100 p-2 pe-5 ps-3 text-white border-1 rounded-4 ' type="text" placeholder="Ex: Marie" required value={firstName} onChange={(e) => setFirstName(e.target.value)}
+                            <input className='w-100 p-2 pe-5 ps-3 text-white border-1 rounded-4 ' type="text" placeholder="Ex: Lila" required value={firstName} onChange={(e) => setFirstName(e.target.value)}
                                 style={{ border: 'solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', outline: 'none', /* JE GARDE OU PAS? */ backgroundImage: `url(${cadenas})`,
                                 backgroundPosition: 'right 10px center', backgroundRepeat: 'no-repeat', backgroundSize: '20px'
                                 }}/>
@@ -99,7 +99,7 @@ function LoginRegister() {
  
                         <div className="input-box" style={{gridColumn : '1/2', width:'100%',  marginTop:'4rem'}}>
                             <p style={{fontSize:'22px'}}>Email:</p>
-                            <input className='w-100 p-2 pe-5 ps-3 text-white border-1 rounded-4 ' type="text" placeholder="Ex: marietremblay@gmail.com" required value={email} onChange={(e) => setEmail(e.target.value)}
+                            <input className='w-100 p-2 pe-5 ps-3 text-white border-1 rounded-4 ' type="text" placeholder="Ex: lilatremblay@gmail.com" required value={email} onChange={(e) => setEmail(e.target.value)}
                                 style={{ border: 'solid #7465F7', backgroundColor: 'rgba(116, 101, 247, 0.1)', outline: 'none', /* JE GARDE OU PAS? */ backgroundImage: `url(${cadenas})`,
                                 backgroundPosition: 'right 10px center', backgroundRepeat: 'no-repeat', backgroundSize: '20px'
                                 }}/>
