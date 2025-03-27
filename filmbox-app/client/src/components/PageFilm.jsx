@@ -19,12 +19,9 @@ const ListeFilms = () => {
         }
         return response.json();
       })
-      .then((donnees) => {
-        const filmsDuppliques = Array.from({ length: NOMBRE_DUPLICATION }, () => donnees).flat();
-        setFilms(filmsDuppliques);
-      })
-      .catch((erreur) => setErreur(erreur.message));
-  }, []);
+      .then(donnees => setFilms(donnees))
+      .catch(erreur => setErreur(erreur.message));
+      }, []);
 
   return (
     <div className="min-vh-100" 
@@ -144,25 +141,26 @@ const ListeFilms = () => {
             </div>
           )}
         </div>
-
+        
         {erreur ? (
           <p className="text-danger">{erreur}</p>
         ) : (
           <div className="row mt-3">
             {films.map((film, index) => {
-              let cheminImage = `/images/${film.titre.replace(/\s+/g, "_").toLowerCase()}.jpg`;
+              // How to get access to the poster image with the TMDB API, source => https://developer.themoviedb.org/docs/image-basics
+              let cheminImage = `https://image.tmdb.org/t/p/w500/${film.poster_path}`;
 
               return (
-                <div key={film.film_id || index} className="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div key={film.id || index} className="col-lg-3 col-md-4 col-sm-6 mb-4">
                   <div className="card bg-dark border-0 shadow movie-card" 
                     style={{
                       transition: 'all 0.3s ease',
                       transform: 'translateY(0)'
                     }}>
-                    <Link to={`/movies/${film.film_id}`} className="text-decoration-none">
+                    <Link to={`/movies/${film.id}`} className="text-decoration-none">
                       <img
                         src={cheminImage}
-                        alt={film.titre}
+                        alt={film.title}
                         className="card-img-top rounded"
                         style={{ 
                           height: "480px", 
@@ -171,7 +169,7 @@ const ListeFilms = () => {
                         }}
                       />
                       <div className="card-body text-center">
-                        <h6 className="card-title text-white">{film.titre}</h6>
+                        <h6 className="card-title text-white">{film.title}</h6>
                       </div>
                     </Link>
                   </div>
