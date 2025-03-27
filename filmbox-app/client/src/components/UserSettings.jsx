@@ -87,15 +87,15 @@ function UserSettings() {
       {/* Header */}
 
       <header
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '10px 20px',
-        backgroundColor: 'rgba(116, 101, 247, 0)',
-        color: '#fff'
-      }}
-    >
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '10px 20px',
+          backgroundColor: 'rgba(116, 101, 247, 0)',
+          color: '#fff'
+        }}
+      >
       {/* Logo */}
       <div style={{ fontSize: '24px', fontWeight: 'bold' }}>logo here !!</div>
 

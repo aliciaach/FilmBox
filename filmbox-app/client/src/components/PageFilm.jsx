@@ -113,13 +113,13 @@ const ListeFilms = () => {
 
 
           <p style={{fontSize: "30px"}}>Popular</p>
-          <h2 style={{fontSize: "80px"}}>WICKED</h2>
+          <p style={{fontSize: "150px", fontFamily: "Jomhuria, cursive", marginBottom: "-60px", marginTop: "-60px"}}>WICKED</p>
           <p>
             Elphaba, a young woman with green skin, as she navigates life at Shiz University and forms an unlikely friendship with the popular Galinda. 
             Their bond deepens as they encounter the Wizard of Oz, leading to a series of events that ultimately shape their destinies and transform  
             them into the Wicked Witch of the West and Glinda the Good.
           </p>
-          <button className="btn btn-light">ADD TO WATCHLIST</button>
+          <button className="btn btn-light" style={{borderRadius: "0px", border: "0px", backgroundColor: "#0352fc", color: "white", fontFamily: "Fredoka"}}>ADD TO WATCHLIST</button>
           </div>
           <div
   style={{
@@ -148,12 +148,21 @@ const ListeFilms = () => {
             type="button"
             onClick={() => setShowFilters(!showFilters)}
             aria-expanded="false"
+            style={{
+              background: "transparent",
+              border: "0px"
+            }}
           >
             Filtrer les films
           </button>
-          
+          <div style={{ position: 'relative' }}>
           {showFilters && (
-            <div className="bg-dark p-3 mt-2 rounded" style={{ width: '300px' }}>
+            <div className="bg-dark p-3 mt-2" 
+              style={{ 
+                width: '300px', 
+                position: 'absolute',
+                left: '0',
+                zIndex: 10}}>
               <div className="mb-3">
                 <label className="form-label text-white">Genre</label>
                 <select className="form-select bg-secondary text-white">
@@ -218,6 +227,9 @@ const ListeFilms = () => {
               </div>
             </div>
           )}
+
+          </div>
+          
         </div>
         
         {erreur ? (
@@ -229,13 +241,15 @@ const ListeFilms = () => {
               let cheminImage = `https://image.tmdb.org/t/p/w500/${film.poster_path}`;
 
               return (
-                <div key={film.id || index} className="col-lg-2">
+                <div key={film.id || index} className="col-lg-2" 
+                  style={{
+                    paddingBottom: "25px",
+                  }}>
                   <div className="card border-0 shadow movie-card" 
                     style={{
                       borderRadius: "0px",
                       transition: 'all 0.3s ease',
                       transform: 'translateY(0)',
-                      paddingBottom: "25px",
                       backgroundColor: "transparent"
                     }}>
                     <Link to={`/movies/${film.id}`} className="text-decoration-none">
