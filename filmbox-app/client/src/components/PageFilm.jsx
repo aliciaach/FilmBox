@@ -9,6 +9,7 @@ import WickedTrailer from '../assets/Video/WickedTrailer.mp4';
 import WickedImage from '../assets/wicked.jpg';
 const NOMBRE_DUPLICATION = 5; // Nombre de fois que les films seront dupliqués
 import { useRef } from 'react';
+import { Dropdown, DropdownButton } from 'react-bootstrap';
 
  
 const ListeFilms = () => {
@@ -100,20 +101,36 @@ const ListeFilms = () => {
         {/* Profile Section */}
         <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
           {/* Profile Avatar Placeholder */}
-          <div
-            style={{
-              width: '32px',
-              height: '32px',
-              borderRadius: '50%',
-              backgroundColor: '#fff',
-              marginRight: '8px'
-            }}
-          ></div>
-          <span style={{ fontSize: '18px' }}>Profil</span>
-          <span style={{ fontSize: '18px', marginLeft: '5px' }}>
-            &#x25BC;
-          </span>
-        </div>
+          
+          <DropdownButton 
+            id="dropdown-basic-button" 
+            align="end"
+            title={
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div
+                  style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  backgroundColor: '#fff',
+                  marginRight: '8px'
+                 }}
+              ></div>
+            <span style={{ fontSize: '18px', color: '#fff' }}>Profil</span>
+    </div>
+  }
+  variant="transparent"
+  style={{
+    background: "transparent",
+    border: "none",
+    margin: "0px",
+    padding: "0px"
+  }}
+>
+  <Dropdown.Item href="/settings">Settings</Dropdown.Item>
+  <Dropdown.Item href="/logout">Logout</Dropdown.Item>
+</DropdownButton>
+</div>
       </nav>
     </header>
       
