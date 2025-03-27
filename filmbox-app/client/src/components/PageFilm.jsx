@@ -3,7 +3,9 @@ import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import imageLogo from "../assets/logo_FilmBox.png";
 import BlackImage from '../assets/BlackImage.png';
-
+import '../App.css'; 
+import { Container } from 'react-bootstrap';
+import WickedImage from '../assets/wicked.jpg'; 
 const NOMBRE_DUPLICATION = 5; // Nombre de fois que les films seront dupliqués
  
 const ListeFilms = () => {
@@ -27,41 +29,122 @@ const ListeFilms = () => {
     <div className="min-vh-100" 
         style={{
                background: `linear-gradient(to bottom,
-                    rgba(5, 14, 66, 1),
-                    rgba(26, 0, 255, 0.6),
-                    rgba(0, 0, 255, 0.5),
+                    rgba(7, 0, 66, 1),
                     rgba(5, 0, 50, 1)),
                     url(${BlackImage})`,
-           
+
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat',
           minHeight: '100vh',
-          color: '#fff'
+          color: '#fff',
+          fontFamily: "Fredoka",
         }}>
-      {/* Navbar */}
-      <nav className="navbar navbar-dark">
-        <Link to="/" className="navbar-brand">
-          <img src={imageLogo} alt="Logo" height="150" />
-        </Link>
-        <div>
-          <Link to="/" className="text-decoration-none text-white mx-3 fw-bold">Accueil</Link>
-          <Link to="/usersettings" className="text-decoration-none text-white mx-3 fw-bold">Paramètres user</Link>
-          <Link to="/listeFilms" className="text-decoration-none text-primary mx-3 fw-bold">Mes films</Link>
-          <Link to="/connexion" className="text-decoration-none text-white mx-3 fw-bold">Déconnexion</Link>
+          
+      <div className="text-center mt-0">
+        <Container fluid className="main_container" 
+          style={{ 
+            backgroundImage: `url(${WickedImage})`, 
+            backgroundColor: 'rgb(7, 0, 66)', 
+            backgroundSize: 'cover',  
+            backgroundPosition: 'center',    
+            backgroundRepeat: 'no-repeat', 
+            width: '100%',
+            height: '95vh',         
+            color: 'white',
+            position: 'relative',
+            padding: '0',
+          }}>
+
+        <header
+          style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '10px 20px',
+          backgroundColor: 'rgba(116, 101, 247, 0)',
+          color: '#fff'
+        }}
+      >
+      {/* Logo */}
+      <div style={{ fontSize: '24px', fontWeight: 'bold' }}>logo here !!</div>
+
+      {/* Navigation */}
+      <nav style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+        <a
+          href="/"
+          style={{ textDecoration: 'none', color: '#fff', fontSize: '18px' }}
+        >
+          HOME
+        </a>
+        <a
+          href="/movies"
+          style={{ textDecoration: 'none', color: '#fff', fontSize: '18px' }}
+        >
+          MY MOVIES
+        </a>
+        <span style={{ fontSize: '18px' }}>|</span>
+
+        {/* Profile Section */}
+        <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+          {/* Profile Avatar Placeholder */}
+          <div
+            style={{
+              width: '32px',
+              height: '32px',
+              borderRadius: '50%',
+              backgroundColor: '#fff',
+              marginRight: '8px'
+            }}
+          ></div>
+          <span style={{ fontSize: '18px' }}>Profil</span>
+          <span style={{ fontSize: '18px', marginLeft: '5px' }}>
+            &#x25BC;
+          </span>
         </div>
       </nav>
+    </header>
+      
+      <div className="movie-info" 
+      style={{ 
+        position: 'absolute',
+        bottom: '40px',
+        left: '40px',
+        maxWidth: '600px',
+        textAlign: 'left',
+        fontFamily: 'Fredoka',
+      }}
+      >
+
+
+          <p style={{fontSize: "30px"}}>Popular</p>
+          <h2 style={{fontSize: "80px"}}>WICKED</h2>
+          <p>
+            Elphaba, a young woman with green skin, as she navigates life at Shiz University and forms an unlikely friendship with the popular Galinda. 
+            Their bond deepens as they encounter the Wizard of Oz, leading to a series of events that ultimately shape their destinies and transform  
+            them into the Wicked Witch of the West and Glinda the Good.
+          </p>
+          <button className="btn btn-light">ADD TO WATCHLIST</button>
+          </div>
+          <div
+  style={{
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    width: '100%',
+    height: '150px', // adjust height of fade
+    background: 'linear-gradient(to top, rgba(7, 0, 66, 1), rgba(7, 0, 66, 0))',
+    pointerEvents: 'none', // let clicks pass through
+    zIndex: 1
+  }}
+></div>
+        </Container>
+      </div>
 
       {/* Movie List Section */}
       <div className="container text-center mt-0">
-        <h1 className="text-white display-3 fw-bold">Vu ce film ? Notez-le !</h1>
-        <p className="text-white">
-          N'oubliez pas de donner votre avis sur les films que vous regardez.
-          <br />
-          Chaque histoire mérite un dernier mot. Ce sera 5 étoiles ou 0 ?
-          <br />
-          C'est à vous de décider !
-        </p>
+         
+          
 
         {/* Filtres déroulants */}
         <div className="mb-4 text-start">
