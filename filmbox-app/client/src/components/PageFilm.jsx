@@ -46,8 +46,25 @@ const ListeFilms = () => {
         }}>
           
       <div className="text-center mt-0">
-      <div style={{ position: 'relative', width: '100%', height: '80vh', overflow: 'hidden' }}>
-  
+      <div style={{ position: 'relative', width: '100%', height: '90vh', overflow: 'hidden' }}>
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        style={{
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
+          top: 0,
+          left: 0,
+          zIndex: 0,
+        }}
+      >
+        <source src={WickedTrailer} type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
         <header
           style={{
             position: 'relative', 
@@ -60,6 +77,7 @@ const ListeFilms = () => {
             color: '#fff'
         }}
       >
+        
       {/* Logo */}
       <div style={{ fontSize: '24px', fontWeight: 'bold' }}>logo here !!</div>
 
@@ -127,7 +145,7 @@ const ListeFilms = () => {
     bottom: 0,
     left: 0,
     width: '100%',
-    height: '100px', // adjust height of fade
+    height: '120px', // adjust height of fade
     background: 'linear-gradient(to top, rgba(7, 0, 66, 1), rgba(7, 0, 66, 0))',
     pointerEvents: 'none', // let clicks pass through
     zIndex: 1
