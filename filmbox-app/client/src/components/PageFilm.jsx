@@ -5,13 +5,16 @@ import imageLogo from "../assets/logo_FilmBox.png";
 import BlackImage from '../assets/BlackImage.png';
 import '../App.css'; 
 import { Container } from 'react-bootstrap';
-import WickedImage from '../assets/wicked.jpg'; 
+import WickedTrailer from '../assets/Video/WickedTrailer.mp4';
 const NOMBRE_DUPLICATION = 5; // Nombre de fois que les films seront dupliqués
+import { useRef } from 'react';
+
  
 const ListeFilms = () => {
   const [films, setFilms] = useState([]);
   const [erreur, setErreur] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
+  const videoRef = useRef();
 
   useEffect(() => {
     fetch("http://localhost:4000/api/movies")
@@ -42,28 +45,35 @@ const ListeFilms = () => {
         }}>
           
       <div className="text-center mt-0">
-        <Container fluid className="main_container" 
-          style={{ 
-            backgroundImage: `url(${WickedImage})`, 
-            backgroundColor: 'rgb(7, 0, 66)', 
-            backgroundSize: 'cover',  
-            backgroundPosition: 'center',    
-            backgroundRepeat: 'no-repeat', 
-            width: '100%',
-            height: '95vh',         
-            color: 'white',
-            position: 'relative',
-            padding: '0',
-          }}>
-
+      <div style={{ position: 'relative', width: '100%', height: '80vh', overflow: 'hidden' }}>
+  <video
+    autoPlay
+    muted
+    loop
+    playsInline
+    style={{
+      position: 'absolute',
+      width: '100%',
+      height: '100%',
+      objectFit: 'cover',
+      top: 0,
+      left: 0,
+      zIndex: 0,
+    }}
+  >
+    <source src={WickedTrailer} type="video/mp4" />
+    Your browser does not support the video tag.
+  </video>
         <header
           style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '10px 20px',
-          backgroundColor: 'rgba(116, 101, 247, 0)',
-          color: '#fff'
+            position: 'relative', 
+            zIndex: 1,            
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '10px 20px',
+            backgroundColor: 'rgba(116, 101, 247, 0)',
+            color: '#fff'
         }}
       >
       {/* Logo */}
@@ -113,6 +123,7 @@ const ListeFilms = () => {
         maxWidth: '600px',
         textAlign: 'left',
         fontFamily: 'Fredoka',
+        paddingBottom: '40px',
       }}
       >
 
@@ -132,13 +143,13 @@ const ListeFilms = () => {
     bottom: 0,
     left: 0,
     width: '100%',
-    height: '150px', // adjust height of fade
+    height: '100px', // adjust height of fade
     background: 'linear-gradient(to top, rgba(7, 0, 66, 1), rgba(7, 0, 66, 0))',
     pointerEvents: 'none', // let clicks pass through
     zIndex: 1
   }}
 ></div>
-        </Container>
+        </div>
       </div>
 
       {/* Movie List Section */}
