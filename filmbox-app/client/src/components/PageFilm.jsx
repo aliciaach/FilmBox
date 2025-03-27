@@ -3,13 +3,19 @@ import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import imageLogo from "../assets/logo_FilmBox.png";
 import BlackImage from '../assets/BlackImage.png';
-
+import '../App.css'; 
+import { Container } from 'react-bootstrap';
+import WickedTrailer from '../assets/Video/WickedTrailer.mp4';
+import WickedImage from '../assets/wicked.jpg';
 const NOMBRE_DUPLICATION = 5; // Nombre de fois que les films seront dupliqués
+import { useRef } from 'react';
+
  
 const ListeFilms = () => {
   const [films, setFilms] = useState([]);
   const [erreur, setErreur] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
+  const videoRef = useRef();
 
   useEffect(() => {
     fetch("http://localhost:4000/api/movies")
@@ -19,52 +25,139 @@ const ListeFilms = () => {
         }
         return response.json();
       })
-      .then((donnees) => {
-        const filmsDuppliques = Array.from({ length: NOMBRE_DUPLICATION }, () => donnees).flat();
-        setFilms(filmsDuppliques);
-      })
-      .catch((erreur) => setErreur(erreur.message));
-  }, []);
+      .then(donnees => setFilms(donnees))
+      .catch(erreur => setErreur(erreur.message));
+      }, []);
 
   return (
     <div className="min-vh-100" 
         style={{
                background: `linear-gradient(to bottom,
-                    rgba(5, 14, 66, 1),
-                    rgba(26, 0, 255, 0.6),
-                    rgba(0, 0, 255, 0.5),
+                    rgba(7, 0, 66, 1),
                     rgba(5, 0, 50, 1)),
-                    url(${BlackImage})`,
-           
+                    url(${WickedImage})`,
+
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat',
           minHeight: '100vh',
-          color: '#fff'
+          color: '#fff',
+          fontFamily: "Fredoka",
         }}>
-      {/* Navbar */}
-      <nav className="navbar navbar-dark">
-        <Link to="/" className="navbar-brand">
-          <img src={imageLogo} alt="Logo" height="150" />
-        </Link>
-        <div>
-          <Link to="/" className="text-decoration-none text-white mx-3 fw-bold">Accueil</Link>
-          <Link to="/usersettings" className="text-decoration-none text-white mx-3 fw-bold">Paramètres user</Link>
-          <Link to="/listeFilms" className="text-decoration-none text-primary mx-3 fw-bold">Mes films</Link>
-          <Link to="/connexion" className="text-decoration-none text-white mx-3 fw-bold">Déconnexion</Link>
+          
+      <div className="text-center mt-0">
+      <div style={{ position: 'relative', width: '100%', height: '90vh', overflow: 'hidden' }}>
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        style={{
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
+          top: 0,
+          left: 0,
+          zIndex: 0,
+        }}
+      >
+        <source src={WickedTrailer} type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+        <header
+          style={{
+            position: 'relative', 
+            zIndex: 1,            
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '10px 20px',
+            backgroundColor: 'rgba(116, 101, 247, 0)',
+            color: '#fff'
+        }}
+      >
+        
+      {/* Logo */}
+      <div style={{ fontSize: '24px', fontWeight: 'bold' }}>logo here !!</div>
+
+      {/* Navigation */}
+      <nav style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+        <a
+          href="/"
+          style={{ textDecoration: 'none', color: '#fff', fontSize: '18px' }}
+        >
+          HOME
+        </a>
+        <a
+          href="/movies"
+          style={{ textDecoration: 'none', color: '#fff', fontSize: '18px' }}
+        >
+          MY MOVIES
+        </a>
+        <span style={{ fontSize: '18px' }}>|</span>
+
+        {/* Profile Section */}
+        <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+          {/* Profile Avatar Placeholder */}
+          <div
+            style={{
+              width: '32px',
+              height: '32px',
+              borderRadius: '50%',
+              backgroundColor: '#fff',
+              marginRight: '8px'
+            }}
+          ></div>
+          <span style={{ fontSize: '18px' }}>Profil</span>
+          <span style={{ fontSize: '18px', marginLeft: '5px' }}>
+            &#x25BC;
+          </span>
         </div>
       </nav>
+    </header>
+      
+      <div className="movie-info" 
+      style={{ 
+        position: 'absolute',
+        bottom: '40px',
+        left: '40px',
+        maxWidth: '600px',
+        textAlign: 'left',
+        fontFamily: 'Fredoka',
+        paddingBottom: '40px',
+      }}
+      >
+
+
+          <p style={{fontSize: "30px"}}>Popular</p>
+          <p style={{fontSize: "150px", fontFamily: "Jomhuria, cursive", marginBottom: "-60px", marginTop: "-60px"}}>WICKED</p>
+          <p>
+            Elphaba, a young woman with green skin, as she navigates life at Shiz University and forms an unlikely friendship with the popular Galinda. 
+            Their bond deepens as they encounter the Wizard of Oz, leading to a series of events that ultimately shape their destinies and transform  
+            them into the Wicked Witch of the West and Glinda the Good.
+          </p>
+          <button className="btn btn-light" style={{borderRadius: "0px", border: "0px", backgroundColor: "#0352fc", color: "white", fontFamily: "Fredoka"}}>ADD TO WATCHLIST</button>
+          </div>
+          <div
+  style={{
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    width: '100%',
+    height: '120px', // adjust height of fade
+    background: 'linear-gradient(to top, rgba(7, 0, 66, 1), rgba(7, 0, 66, 0))',
+    pointerEvents: 'none', // let clicks pass through
+    zIndex: 1
+  }}
+></div>
+        </div>
+      </div>
 
       {/* Movie List Section */}
-      <div className="container text-center mt-0">
-        <h1 className="text-white display-3 fw-bold">Vu ce film ? Notez-le !</h1>
-        <p className="text-white">
-          N'oubliez pas de donner votre avis sur les films que vous regardez.
-          <br />
-          Chaque histoire mérite un dernier mot. Ce sera 5 étoiles ou 0 ?
-          <br />
-          C'est à vous de décider !
-        </p>
+      <div className="container text-center mt-0" style={{paddingTop: '50px'}}>
+         
+          
 
         {/* Filtres déroulants */}
         <div className="mb-4 text-start">
@@ -73,12 +166,21 @@ const ListeFilms = () => {
             type="button"
             onClick={() => setShowFilters(!showFilters)}
             aria-expanded="false"
+            style={{
+              background: "transparent",
+              border: "0px"
+            }}
           >
             Filtrer les films
           </button>
-          
+          <div style={{ position: 'relative' }}>
           {showFilters && (
-            <div className="bg-dark p-3 mt-2 rounded" style={{ width: '300px' }}>
+            <div className="bg-dark p-3 mt-2" 
+              style={{ 
+                width: '300px', 
+                position: 'absolute',
+                left: '0',
+                zIndex: 10}}>
               <div className="mb-3">
                 <label className="form-label text-white">Genre</label>
                 <select className="form-select bg-secondary text-white">
@@ -143,36 +245,47 @@ const ListeFilms = () => {
               </div>
             </div>
           )}
-        </div>
 
+          </div>
+          
+        </div>
+        
         {erreur ? (
           <p className="text-danger">{erreur}</p>
         ) : (
           <div className="row mt-3">
             {films.map((film, index) => {
-              let cheminImage = `/images/${film.titre.replace(/\s+/g, "_").toLowerCase()}.jpg`;
+              // How to get access to the poster image with the TMDB API, source => https://developer.themoviedb.org/docs/image-basics
+              let cheminImage = `https://image.tmdb.org/t/p/w500/${film.poster_path}`;
 
               return (
-                <div key={film.film_id || index} className="col-lg-3 col-md-4 col-sm-6 mb-4">
-                  <div className="card bg-dark border-0 shadow movie-card" 
+                <div key={film.id || index} className="col-lg-2" 
+                  style={{
+                    paddingBottom: "25px",
+                  }}>
+                  <div className="card border-0 shadow movie-card" 
                     style={{
+                      borderRadius: "0px",
                       transition: 'all 0.3s ease',
-                      transform: 'translateY(0)'
+                      transform: 'translateY(0)',
+                      backgroundColor: "transparent"
                     }}>
-                    <Link to={`/movies/${film.film_id}`} className="text-decoration-none">
+                    <Link to={`/movies/${film.id}`} className="text-decoration-none">
                       <img
                         src={cheminImage}
-                        alt={film.titre}
-                        className="card-img-top rounded"
+                        alt={film.title}
+                        className="card-img-top"
                         style={{ 
-                          height: "480px", 
+                          height: "300px", 
                           objectFit: "cover",
-                          transition: 'all 0.3s ease'
+                          transition: 'all 0.3s ease',
+                          borderRadius: "0px"
                         }}
                       />
-                      <div className="card-body text-center">
-                        <h6 className="card-title text-white">{film.titre}</h6>
-                      </div>
+                      {/* <div className="card-body text-center">
+                        <h6 className="card-title text-white">{film.title}</h6>
+                      </div> */}
+                      
                     </Link>
                   </div>
                 </div>

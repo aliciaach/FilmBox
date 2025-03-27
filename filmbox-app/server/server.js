@@ -27,7 +27,7 @@ const con = mysql.createConnection({
   host: "localhost",
   user: "scott",
   password: "oracle",
-  database: "prototype",
+  database: "filmbox",
 });
 
 con.connect(function (err) {
@@ -205,7 +205,7 @@ app.delete("/deleteAccount", (req, res) => {
 /*
     API - Obtenir tous les films
 */
-app.get("/api/movies", (req, res) => {
+/*app.get("/api/movies", (req, res) => {
   console.log("Request received at /api/movies");
   const sql = "SELECT film_id, titre FROM films";
   con.query(sql, (err, results) => {
@@ -217,7 +217,37 @@ app.get("/api/movies", (req, res) => {
     console.table(results);
     res.json(results);
   });
+});*/
+/*
+    API - Obtenir tous les films
+*/
+import fetch from "node-fetch";
+
+app.get("/api/movies", async (req, res) => {
+  //Methode given by the TMBD API, its to authenticate yourself to get access to the API
+  const options = {
+    method: 'GET',
+    headers: {
+      accept: 'application/json',
+      Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0'
+    }
+  };
+
+  try {
+    const response = await fetch("https://api.themoviedb.org/3/discover/movie", options);
+    const data = await response.json();
+
+    if (data && data.results) {
+      res.json(data.results);
+    } else {
+      res.status(500).json({ message: "Unexpected response from TMDb" });
+    }
+  } catch (error) {
+    console.error("Error fetching movies:", error);
+    res.status(500).json({ message: "Failed to fetch movies" });
+  }
 });
+
 
 /*
     API - Obtenir un film par ID
