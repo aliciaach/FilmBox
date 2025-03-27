@@ -6,6 +6,7 @@ import BlackImage from '../assets/BlackImage.png';
 import '../App.css'; 
 import { Container } from 'react-bootstrap';
 import WickedTrailer from '../assets/Video/WickedTrailer.mp4';
+import WickedImage from '../assets/wicked.jpg';
 const NOMBRE_DUPLICATION = 5; // Nombre de fois que les films seront dupliqués
 import { useRef } from 'react';
 
@@ -34,7 +35,7 @@ const ListeFilms = () => {
                background: `linear-gradient(to bottom,
                     rgba(7, 0, 66, 1),
                     rgba(5, 0, 50, 1)),
-                    url(${BlackImage})`,
+                    url(${WickedImage})`,
 
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
@@ -46,24 +47,7 @@ const ListeFilms = () => {
           
       <div className="text-center mt-0">
       <div style={{ position: 'relative', width: '100%', height: '80vh', overflow: 'hidden' }}>
-  <video
-    autoPlay
-    muted
-    loop
-    playsInline
-    style={{
-      position: 'absolute',
-      width: '100%',
-      height: '100%',
-      objectFit: 'cover',
-      top: 0,
-      left: 0,
-      zIndex: 0,
-    }}
-  >
-    <source src={WickedTrailer} type="video/mp4" />
-    Your browser does not support the video tag.
-  </video>
+  
         <header
           style={{
             position: 'relative', 
@@ -153,7 +137,7 @@ const ListeFilms = () => {
       </div>
 
       {/* Movie List Section */}
-      <div className="container text-center mt-0">
+      <div className="container text-center mt-0" style={{paddingTop: '50px'}}>
          
           
 
@@ -245,26 +229,31 @@ const ListeFilms = () => {
               let cheminImage = `https://image.tmdb.org/t/p/w500/${film.poster_path}`;
 
               return (
-                <div key={film.id || index} className="col-lg-3 col-md-4 col-sm-6 mb-4">
-                  <div className="card bg-dark border-0 shadow movie-card" 
+                <div key={film.id || index} className="col-lg-2">
+                  <div className="card border-0 shadow movie-card" 
                     style={{
+                      borderRadius: "0px",
                       transition: 'all 0.3s ease',
-                      transform: 'translateY(0)'
+                      transform: 'translateY(0)',
+                      paddingBottom: "25px",
+                      backgroundColor: "transparent"
                     }}>
                     <Link to={`/movies/${film.id}`} className="text-decoration-none">
                       <img
                         src={cheminImage}
                         alt={film.title}
-                        className="card-img-top rounded"
+                        className="card-img-top"
                         style={{ 
-                          height: "480px", 
+                          height: "300px", 
                           objectFit: "cover",
-                          transition: 'all 0.3s ease'
+                          transition: 'all 0.3s ease',
+                          borderRadius: "0px"
                         }}
                       />
-                      <div className="card-body text-center">
+                      {/* <div className="card-body text-center">
                         <h6 className="card-title text-white">{film.title}</h6>
-                      </div>
+                      </div> */}
+                      
                     </Link>
                   </div>
                 </div>
