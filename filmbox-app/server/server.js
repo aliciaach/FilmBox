@@ -229,6 +229,7 @@ app.get("/api/movies", async (req, res) => {
     method: 'GET',
     headers: {
       accept: 'application/json',
+      //Need to find a way to make this secure !!
       Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0'
     }
   };
@@ -252,7 +253,7 @@ app.get("/api/movies", async (req, res) => {
 /*
     API - Obtenir un film par ID
 */
-app.get("/api/movies/:id", (req, res) => {
+/*app.get("/api/movies/:id", (req, res) => {
   const filmID = Number(req.params.id); //converti le id en nombre au cas ou
   if (isNaN(filmID)) {
     return res.status(400).json({ message: "ID invalide" }); //gestions des erreurs etc
@@ -277,6 +278,32 @@ app.get("/api/movies/:id", (req, res) => {
     }
     res.json(results[0]);
   });
+});*/
+
+app.get("/api/movies/:id", async (req, res) => {
+  const filmID = Number(req.params.id); //Conversion du id en nombbre au cas ou
+  if (isNaN(filmID)) {
+    return res.status(400).json({ message: "ID invalide" }); //gestions des erreurs etc
+  }
+  const options = {
+    method: 'GET',
+    headers: {
+      accept: 'application/json',
+      //Need to find a way to make this secure !!
+      Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0'
+    }
+  };
+
+  try {
+    const response = await fetch(`https://api.themoviedb.org/3/movie/${filmID}`, options);
+    const data = await response.json();
+    
+    res.json(data);
+
+  } catch (error) {
+    console.error("Error fetching movies:", error);
+    res.status(500).json({ message: "Failed to fetch movies" });
+  }
 });
 
 

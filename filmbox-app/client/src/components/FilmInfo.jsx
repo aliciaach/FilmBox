@@ -15,7 +15,7 @@ const FilmInfo = () => {
       return;
     }
 
-    fetch(`http://localhost:4000/api/movies/${filmId}`)
+    fetch(`http://localhost:4000/api/movies/${filmId}`)//this is my parameter 
       .then((response) => {
         if (!response.ok) {
           throw new Error("Film introuvable");
@@ -35,7 +35,7 @@ const FilmInfo = () => {
   if (erreur) return <p className="text-danger text-center">{erreur}</p>;
   if (!film) return <p className="text-center text-white">Chargement...</p>;
 
-  let cheminImage = `/images/${film.titre.replace(/\s+/g, "_").toLowerCase()}.jpg`;
+  let cheminImage = `https://image.tmdb.org/t/p/w500/${film.poster_path}`;
 
   return (
     <div className="min-vh-100 py-5" 
@@ -90,7 +90,7 @@ const FilmInfo = () => {
               <div className="position-relative h-100">
                 <img
                   src={cheminImage}
-                  alt={film.titre}
+                  alt={film.title}
                   className="img-fluid h-100 w-100"
                   style={{ 
                     objectFit: "cover",
@@ -116,7 +116,7 @@ const FilmInfo = () => {
                       letterSpacing: "1px",
                       color: "#FFFFFF"
                     }}>
-                      {film.titre}
+                      {film.title}
                     </h1>
                     
                     
@@ -127,11 +127,11 @@ const FilmInfo = () => {
                     <div className="row" style={{ color: "#FFFFFF" }}>
                       <div className="col-md-6 mb-3">
                         <p className="mb-1"><strong>Durée:</strong></p>
-                        <p>{film.film_duree} minutes</p>
+                        <p>{film.runtime} minutes</p>
                       </div>
                       <div className="col-md-6 mb-3">
                         <p className="mb-1"><strong>Date de sortie:</strong></p>
-                        <p>{new Date(film.date_sortie).toLocaleDateString('fr-FR')}</p>
+                        <p>{new Date(film.release_date).toLocaleDateString('fr-FR')}</p>
                       </div>
                       <div className="col-md-6 mb-3">
                         <p className="mb-1"><strong>Réalisateur:</strong></p>
@@ -139,16 +139,17 @@ const FilmInfo = () => {
                       </div>
                       <div className="col-md-6 mb-3">
                         <p className="mb-1"><strong>Langue originale:</strong></p>
-                        <p>{film.langue_original}</p>
+                        <p>{film.original_language}</p>
                       </div>
                       <div className="col-md-6 mb-3">
                         <p className="mb-1"><strong>Pays origine:</strong></p>
-                        <p>{film.pays_origin_film}</p>
+                        {/*have to fix this, sometimes same country multiple times!! */}
+                        <p>{film.production_companies}</p> 
                       </div>
                       
                       <div className="col-md-6 mb-3">
                         <p className="mb-1"><strong>Genre:</strong></p>
-                        <p>{film.genre}</p>
+                        <p>{film.genres}</p>
                       </div>
 
                     </div>
