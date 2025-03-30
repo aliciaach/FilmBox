@@ -135,7 +135,7 @@ const FilmInfo = () => {
                       </div>
                       <div className="col-md-6 mb-3">
                         <p className="mb-1"><strong>Réalisateur:</strong></p>
-                        <p>{film.nom_directeur}</p>
+                        <p>{film.nom_directeur}</p> {/*not working for now, need to find where to get the info*/}
                       </div>
                       <div className="col-md-6 mb-3">
                         <p className="mb-1"><strong>Langue originale:</strong></p>
@@ -144,12 +144,12 @@ const FilmInfo = () => {
                       <div className="col-md-6 mb-3">
                         <p className="mb-1"><strong>Pays origine:</strong></p>
                         {/*have to fix this, sometimes same country multiple times!! */}
-                        <p>{film.production_companies}</p> 
+                        <p>{film.production_companies.map(c => c.origin_country).join(", ")}</p> 
                       </div>
                       
                       <div className="col-md-6 mb-3">
                         <p className="mb-1"><strong>Genre:</strong></p>
-                        <p>{film.genres}</p>
+                        <p>{film.genres.map(g => g.name).join(", ")}</p>
                       </div>
 
                     </div>
