@@ -109,18 +109,23 @@ const FilmInfo = () => {
       </header>
 
       <div className="container py-5 text-start" style={{
-        marginTop: "60px",
+        marginTop: "20px",
         marginLeft: "30px",  
         marginRight: "auto",        
-        maxWidth: "600px",       
+        maxWidth: "800px",       
       }}>
         {/*<h3 className="mb-4">{filmTitle}</h3>*/}
         {imageLogo && (
-          <img
-            src={`https://image.tmdb.org/t/p/original${imageLogo.file_path}`}
-            alt="Movie logo"
-            style={{ maxWidth: "400px", marginBottom: "20px" }}
-          />
+        <img
+          src={`https://image.tmdb.org/t/p/original${imageLogo.file_path}`}
+          alt="Movie logo"
+          style={{
+            maxWidth: "100%",      
+            maxHeight: "100px",    
+            marginBottom: "20px",
+            objectFit: "contain",  
+          }}
+        />
         )}
         <div className="mb-4" style={{ fontSize: "16px"}}>
           {new Date(film.release_date).getFullYear()} &bull; {film.runtime} min &bull; {genres} 
@@ -150,7 +155,7 @@ const FilmInfo = () => {
   <button className="btn btn-light d-flex align-items-center gap-2 px-4 py-2" style={{backgroundColor: "#fff",
   color: "#000",
   fontWeight: "500",
-  borderRadius: "8px",
+  borderRadius: "3px",
   fontFamily: "Fredoka",}}>
     MARK AS WATCHED
   </button>
@@ -160,7 +165,7 @@ const FilmInfo = () => {
   color: "#fff",
   fontWeight: "500",
   border: "1px solid rgba(255,255,255,0.3)",
-  borderRadius: "8px",
+  borderRadius: "3px",
   fontFamily: "Fredoka",}}>
     WATCHLIST
   </button>
@@ -181,7 +186,6 @@ const FilmInfo = () => {
 </div>
 
 </div>
-
 
           <div
   style={{
