@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import logoFilmBox from '../assets/logoFilmBox.png';
 import arobase from '../assets/icone_arobase.png';
-import cadenas from '../assets/icone_cadenas.png';
+import photoProfil from '../assets/photo_profil.jpg';
 import titanicImage from '../assets/Titanic.png';
 import fondNoir from '../assets/BlackImage.png';
 import '../styles/UserManagement.css';
@@ -44,7 +44,7 @@ return (
         <div className="row" style={{height:'100%'}}>
 
           {/* Colonne gauche */}
-          <div className="col-md-3">
+          <div className="col-md-3 ms-2 me-2">
             <div className="list-group">
               <button className="list-group-item bg-transparent text-white border-light">
                 FirstName LastName
@@ -147,15 +147,21 @@ return (
           </div>
 
           {/* Colonne droite */}
-          <div className="col-md-9" style={{height:'100%'}}>
+          <div className="col-md-8 ms-4" style={{height:'100%'}}>
 
             {/* Ligne haut : Informations */}
             <div className="section-grow" style={{ flexGrow: 2 }}>
               <div>
                   <div className='row justify-content-md-start align-items-end ms-2'>
-                      <img src={cadenas} className="img-fluid col-md-1" />  
-                      <h2 className='col-md-8 '>John Doe</h2>
+                      <img src={photoProfil} className="rounded-circle img-fluid col-md-2" style={{ objectFit: 'cover' }} />  
+                      <h2 className="col-md-8">John Doe</h2>
                   </div>  
+                  <div className="d-flex align-items-center gap-3 ms-2">
+                    <div className="ratio ratio-1x1" style={{ width: '60px' }}>
+                      <img src={photoProfil} className="rounded-circle img-fluid" style={{ objectFit: 'cover' }}/>
+                    </div>
+                    <h2 className="mb-0">John Doe</h2>
+                  </div>
               
                   {/* Ligne séparatrice */}
                   <div className="w-100 mt-3" style={{

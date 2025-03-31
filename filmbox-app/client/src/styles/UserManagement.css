@@ -10,7 +10,7 @@
 #inputInfo:focus {
     outline: none;
     border: 2px solid rgba(95, 67, 255, 0.6);
-    box-shadow: 0 0 15px rgba(59, 25, 248, 0.6);
+    box-shadow: 0 0 15px rgba(68, 0, 255, 0.915);
 }
 
 
@@ -38,4 +38,12 @@ body,
 
 .section-grow {
     flex-grow: 1;
+}
+
+
+.photoProfil {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    object-fit: cover;
 }
