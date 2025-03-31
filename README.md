@@ -11,7 +11,7 @@ b) Ensuite vous pourrez vous connecter à mysql avec la ligne de commande mysql 
    mysql -u root -p
 
 c) Ensuite créer une base de données :
-   CREATE DATABASE FilmBox;
+   CREATE DATABASE filmbox;
    USE FilmBox;
 
 3. Maintenant que tout est prêt, il faut insérer les tables de notre script. ATTENTION : Le script mysql se trouve au milieu du script(indiqué en commentaire).
