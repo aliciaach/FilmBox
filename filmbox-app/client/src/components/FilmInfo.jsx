@@ -117,6 +117,7 @@ const FilmInfo = () => {
         {/*<h3 className="mb-4">{filmTitle}</h3>*/}
         {imageLogo && (
         <img
+          //NEED TO ADD SOMETHING TO GET THE LOGOS IN ENGLISH ONLY !! 
           src={`https://image.tmdb.org/t/p/original${imageLogo.file_path}`}
           alt="Movie logo"
           style={{
