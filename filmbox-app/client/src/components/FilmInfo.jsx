@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import WickedImage from "../assets/wicked.jpg";
+//import WickedImage from "../assets/
 import { Dropdown, DropdownButton } from "react-bootstrap";
-import RedHeartIcon from "../assets/redHeart.png";
-import EmptyHeartIcon from "../assets/emptyHeart.png";
+//import RedHeartIcon from "../assets/redHeart.png";
+//import EmptyHeartIcon from "../assets/emptyHeart.png";
 //import "bootstrap-icons/font/bootstrap-icons.css";
 
 const FilmInfo = () => {
