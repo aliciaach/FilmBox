@@ -122,32 +122,26 @@ const FilmInfo = () => {
             style={{ maxWidth: "400px", marginBottom: "20px" }}
           />
         )}
+        <div className="mb-4" style={{ fontSize: "16px"}}>
+          {new Date(film.release_date).getFullYear()} &bull; {film.runtime} min &bull; {genres} 
+        </div>    
 
         <div className="row">
-          <div className="col-md-6 mb-3">
-            <p className="mb-1"><strong>Durée:</strong></p>
-            <p>{film.runtime} minutes</p>
+          <div>
+            <p>
+              {film.overview};
+            </p>
           </div>
-          <div className="col-md-6 mb-3">
-            <p className="mb-1"><strong>Date de sortie:</strong></p>
-            <p>{new Date(film.release_date).toLocaleDateString("fr-FR")}</p>
+          <div className="col-md-6 mb-3" style={{ fontSize: "16px"}}>
+            <p className="mb-1"><strong>Réalisateur: </strong>A AJOUTER API PAS TROUVER</p>
           </div>
-          <div className="col-md-6 mb-3">
-            <p className="mb-1"><strong>Réalisateur:</strong></p>
-            <p>(non disponible)</p>
+          <div className="mb-3" style={{ fontSize: "16px"}}>
+            <p className="mb-1"><strong>Langue originale:</strong> {film.original_language}</p>
           </div>
-          <div className="col-md-6 mb-3">
-            <p className="mb-1"><strong>Langue originale:</strong></p>
-            <p>{film.original_language}</p>
+          <div className="mb-3" style={{ fontSize: "16px"}}>
+            <p className="mb-1"><strong>Pays d'origine:</strong> {countries}</p>
           </div>
-          <div className="col-md-6 mb-3">
-            <p className="mb-1"><strong>Pays d'origine:</strong></p>
-            <p>{countries}</p>
-          </div>
-          <div className="col-md-6 mb-3">
-            <p className="mb-1"><strong>Genre:</strong></p>
-            <p>{genres}</p>
-          </div>
+
         </div>
         <div>
           {/*gotta add the icons here for each button*/}
