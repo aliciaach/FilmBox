@@ -3,6 +3,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import WickedImage from "../assets/wicked.jpg";
 import { Dropdown, DropdownButton } from "react-bootstrap";
+import RedHeartIcon from "../assets/redHeart.png";
+import EmptyHeartIcon from "../assets/emptyHeart.png";
+//import "bootstrap-icons/font/bootstrap-icons.css";
 
 const FilmInfo = () => {
   const { filmId } = useParams();
@@ -10,6 +13,14 @@ const FilmInfo = () => {
   const [imageLogo, setImageLogo] = useState(null);
   const [erreur, setErreur] = useState(null);
   const navigate = useNavigate();
+
+  const buttonStyle = {
+    borderRadius: "0px",
+    border: "0px",
+    backgroundColor: "#0352fc",
+    color: "white",
+    fontFamily: "Fredoka",
+  };
 
   useEffect(() => {
     if (!filmId || isNaN(Number(filmId))) {
@@ -58,7 +69,7 @@ const FilmInfo = () => {
     <div
       className="min-vh-100"
       style={{
-        backgroundImage: `linear-gradient(to bottom, rgba(7, 0, 66, 0.7), rgba(5, 0, 50, 0.7)), url(${cheminImage})`,
+        backgroundImage: `linear-gradient(to bottom, rgba(7, 0, 66, 0.5), rgba(5, 0, 50, 0.7)), url(${cheminImage})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
@@ -97,14 +108,18 @@ const FilmInfo = () => {
         </nav>
       </header>
 
-      <div className="container py-5 text-start">
-        <h3 className="mb-4">{filmTitle}</h3>
-
+      <div className="container py-5 text-start" style={{
+        marginTop: "60px",
+        marginLeft: "30px",  
+        marginRight: "auto",        
+        maxWidth: "600px",       
+      }}>
+        {/*<h3 className="mb-4">{filmTitle}</h3>*/}
         {imageLogo && (
           <img
             src={`https://image.tmdb.org/t/p/original${imageLogo.file_path}`}
             alt="Movie logo"
-            style={{ maxWidth: "300px", marginBottom: "20px" }}
+            style={{ maxWidth: "400px", marginBottom: "20px" }}
           />
         )}
 
@@ -134,8 +149,60 @@ const FilmInfo = () => {
             <p>{genres}</p>
           </div>
         </div>
+        <div>
+          {/*gotta add the icons here for each button*/}
+          <div className="d-flex align-items-center gap-3 mt-4">
+  {/* Mark as Watched */}
+  <button className="btn btn-light d-flex align-items-center gap-2 px-4 py-2" style={{backgroundColor: "#fff",
+  color: "#000",
+  fontWeight: "500",
+  borderRadius: "8px",
+  fontFamily: "Fredoka",}}>
+    MARK AS WATCHED
+  </button>
+
+  {/* Add to Watchlist */}
+  <button className="btn d-flex align-items-center gap-2 px-4 py-2" style={{backgroundColor: "rgba(255,255,255,0.1)",
+  color: "#fff",
+  fontWeight: "500",
+  border: "1px solid rgba(255,255,255,0.3)",
+  borderRadius: "8px",
+  fontFamily: "Fredoka",}}>
+    WATCHLIST
+  </button>
+
+  {/* Favorite -- AJOUTER UNE ANIMATION POUR DEVENIR ROUGE LORSQUE FAVORIT !!*/}
+  <button
+  className="btn d-flex align-items-center justify-content-center rounded-circle"
+  style={{
+    backgroundColor: "rgba(255,255,255,0.2)",
+    border: "none",
+    width: "40px",
+    height: "40px",
+    padding: "0",
+  }}
+>
+  <img src={EmptyHeartIcon} alt="favorite" style={{ width: "20px", height: "20px" }} />
+</button>
+</div>
+
+</div>
+
+
+          <div
+  style={{
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    width: '100%',
+    height: '120px', // adjust height of fade
+    background: 'linear-gradient(to top, rgba(7, 0, 66, 1), rgba(7, 0, 66, 0))',
+    pointerEvents: 'none', // let clicks pass through
+    zIndex: 1
+  }}
+></div>
+        </div>
       </div>
-    </div>
   );
 };
 
