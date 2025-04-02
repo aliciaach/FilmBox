@@ -5,6 +5,9 @@ import WickedImage from "../assets/wicked.jpg";
 import { Dropdown, DropdownButton } from "react-bootstrap";
 import RedHeartIcon from "../assets/redHeart.png";
 import EmptyHeartIcon from "../assets/emptyHeart.png";
+import imageLogo from "../assets/logo_FilmBox.png";
+
+
 //import "bootstrap-icons/font/bootstrap-icons.css";
  
 const FilmInfo = () => {
@@ -85,7 +88,10 @@ const FilmInfo = () => {
           padding: "10px 20px",
         }}
       >
-        <div style={{ fontSize: "24px", fontWeight: "bold" }}>logo here !!</div>
+        {/* Logo */}
+        <div style={{ fontSize: "24px", fontWeight: "bold" }}>
+          <img src={imageLogo} alt="Logo" style={{ width: "150px", height: "auto" }} />
+        </div>
         <nav style={{ display: "flex", alignItems: "center", gap: "20px" }}>
           <a href="/" style={{ textDecoration: "none", color: "#fff" }}>HOME</a>
           <a href="/movies" style={{ textDecoration: "none", color: "#fff" }}>MY MOVIES</a>
@@ -204,7 +210,12 @@ const FilmInfo = () => {
       </div>
   );
 };
+<<<<<<< HEAD
  
 export default FilmInfo;
  
  
+=======
+
+export default FilmInfo;
+>>>>>>> 908600c211e7e9f6f4eb2fc98a609d9929e22fd2
