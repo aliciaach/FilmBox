@@ -279,12 +279,13 @@ function AdminManagement() {
         {/* Admin Information Form */}
         <h5 className="mb-5 fs-3 fw-light">Admin Information</h5>
         <form>
+          {/**Input pour nom complet */}
           <div className="row mb-3">
             <div className="col-md-6">
               <label className="form-label">First Name</label>
               <input
                 type="text"
-                className="form-control bg-transparent "
+                className="form-control bg-transparent text-white"
                 placeholder="John"
                 style={{ borderColor: "rgba(116,101,247,0.6)" }}
               />
@@ -293,7 +294,7 @@ function AdminManagement() {
               <label className="form-label">Last Name</label>
               <input
                 type="text"
-                className="form-control bg-transparent"
+                className="form-control bg-transparent text-white"
                 placeholder="Doe"
                 style={{ borderColor: "rgba(116,101,247,0.6)" }}
               />
@@ -304,7 +305,7 @@ function AdminManagement() {
             <label className="form-label">Email</label>
             <input
               type="email"
-              className="form-control bg-transparent"
+              className="form-control bg-transparent text-white"
               placeholder="example@gmail.com"
               style={{ borderColor: "rgba(116,101,247,0.6)" }}
             />
@@ -314,7 +315,7 @@ function AdminManagement() {
             <label className="form-label">Phone Number</label>
             <input
               type="tel"
-              className="form-control bg-transparent"
+              className="form-control bg-transparent text-white"
               placeholder="514-123-1234"
               style={{ borderColor: "rgba(116,101,247,0.6)" }}
             />
