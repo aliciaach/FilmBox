@@ -44,7 +44,7 @@ return (
         <div className="row" style={{height:'100%'}}>
 
           {/* Colonne gauche */}
-          <div className="col-md-3 ms-2 me-2">
+          <div className="col-md-3 ms-2 me-2" style={{ maxHeight: '90vh', overflowY: 'auto', scrollbarColor:'red'  }}>
             <div className="list-group">
               <button className="list-group-item bg-transparent text-white border-light">
                 FirstName LastName
@@ -100,9 +100,6 @@ return (
               <button className="list-group-item bg-transparent text-white border-light">
                 FirstName LastName
               </button>
-                            <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
               <button className="list-group-item bg-transparent text-white border-light">
                 FirstName LastName
               </button>
@@ -118,30 +115,7 @@ return (
               <button className="list-group-item bg-transparent text-white border-light">
                 FirstName LastName
               </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
+
 
             </div>
           </div>
@@ -151,11 +125,7 @@ return (
 
             {/* Ligne haut : Informations */}
             <div className="section-grow" style={{ flexGrow: 2 }}>
-              <div>
-                  <div className='row justify-content-md-start align-items-end ms-2'>
-                      <img src={photoProfil} className="rounded-circle img-fluid col-md-2" style={{ objectFit: 'cover' }} />  
-                      <h2 className="col-md-8">John Doe</h2>
-                  </div>  
+              <div> 
                   <div className="d-flex align-items-center gap-3 ms-2">
                     <div className="ratio ratio-1x1" style={{ width: '60px' }}>
                       <img src={photoProfil} className="rounded-circle img-fluid" style={{ objectFit: 'cover' }}/>
@@ -197,7 +167,7 @@ return (
             </div>
             
             {/* Ligne milieu : Statistiques */}            
-            <div className="section-grow" style={{ flexGrow: 1 }}>
+            <div className="section-grow" style={{ flexGrow: 1, marginTop: '20vh' }}>
               
               <div className="row text-center mt-5 mb-4">
 
@@ -241,7 +211,9 @@ return (
               </div>
 
               {/* Ligne séparatrice */}
-              <div className="w-75 mt-5 mb-5 opacity-75 mx-auto" style={{
+              <div className="w-75 opacity-75 mx-auto" style={{
+                marginTop: '10vh',
+                marginBottom:'10vh',
                 height: '1px',
                 backgroundColor: 'rgba(255, 255, 255, 0.5)',
               }}/>

@@ -7,7 +7,7 @@ import Inscription from './components/Inscription';
 import ListeFilms from './components/PageFilm';
 import FilmInfo from './components/FilmInfo';
 import UserSettings from './components/UserSettings';
-import AdminLogin from './components/AdminLogin';
+import AdminLogin from "./components/adminLogin"
 import AdminManagement from './components/adminManagement';
 import UserManagement from './components/UserManagement';
 
@@ -15,7 +15,8 @@ import UserManagement from './components/UserManagement';
 export default function App() {
   return (
   
-    /*<BrowserRouter>
+    /*
+    <BrowserRouter>
       <Routes>
         <Route path="/" element={<BodyAccueil />} />
         <Route path="/connexion" element={<Connexion />} />
@@ -27,7 +28,8 @@ export default function App() {
         <Route path="/adminManagement" element={<AdminManagement />} />
         <Route path="/userManagement" element={<UserManagement />} />        
       </Routes>
-    </BrowserRouter>*/
+    </BrowserRouter>
+    */
     //<UserSettings />
     //<AdminLogin />
     <UserManagement />

@@ -219,6 +219,12 @@ app.delete("/deleteAccount", (req, res) => {
   });
 });*/
 /*
+    API - Obtenir tous les utilisateurs
+*/
+
+app.get("/")
+
+/*
     API - Obtenir tous les films
 */
 import fetch from "node-fetch";
