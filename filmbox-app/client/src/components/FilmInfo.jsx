@@ -9,14 +9,14 @@ import imageLogo from "../assets/logo_FilmBox.png";
 
 
 //import "bootstrap-icons/font/bootstrap-icons.css";
-
+ 
 const FilmInfo = () => {
   const { filmId } = useParams();
   const [film, setFilm] = useState(null);
   const [imageLogo, setImageLogo] = useState(null);
   const [erreur, setErreur] = useState(null);
   const navigate = useNavigate();
-
+ 
   const buttonStyle = {
     borderRadius: "0px",
     border: "0px",
@@ -24,13 +24,13 @@ const FilmInfo = () => {
     color: "white",
     fontFamily: "Fredoka",
   };
-
+ 
   useEffect(() => {
     if (!filmId || isNaN(Number(filmId))) {
       setErreur("ID de film invalide.");
       return;
     }
-
+ 
     fetch(`http://localhost:4000/api/movies/${filmId}`)
       .then((res) => {
         if (!res.ok) throw new Error("Film introuvable");
@@ -44,7 +44,7 @@ const FilmInfo = () => {
         setErreur(err.message);
       });
   }, [filmId]);
-
+ 
   useEffect(() => {
     fetch(`http://localhost:4000/api/movies/${filmId}/images`)
       .then((res) => {
@@ -59,15 +59,15 @@ const FilmInfo = () => {
         setErreur(err.message);
       });
   }, [filmId]);
-
+ 
   if (erreur) return <p className="text-danger text-center">{erreur}</p>;
   if (!film) return <p className="text-center text-white">Chargement...</p>;
-
+ 
   const cheminImage = `https://image.tmdb.org/t/p/original/${film.backdrop_path}`;
   const filmTitle = film.title;
   const genres = film.genres?.map((g) => g.name).join(", ");
   const countries = film.production_companies?.map((c) => c.origin_country).join(", ");
-
+ 
   return (
     <div
       className="min-vh-100"
@@ -113,17 +113,17 @@ const FilmInfo = () => {
           </DropdownButton>
         </nav>
       </header>
-
+ 
       <div className="container py-5 text-start" style={{
         marginTop: "20px",
         marginLeft: "30px",  
         marginRight: "auto",        
-        maxWidth: "800px",       
+        maxWidth: "800px",      
       }}>
         {/*<h3 className="mb-4">{filmTitle}</h3>*/}
         {imageLogo && (
         <img
-          //NEED TO ADD SOMETHING TO GET THE LOGOS IN ENGLISH ONLY !! 
+          //NEED TO ADD SOMETHING TO GET THE LOGOS IN ENGLISH ONLY !!
           src={`https://image.tmdb.org/t/p/original${imageLogo.file_path}`}
           alt="Movie logo"
           style={{
@@ -135,9 +135,9 @@ const FilmInfo = () => {
         />
         )}
         <div className="mb-4" style={{ fontSize: "16px"}}>
-          {new Date(film.release_date).getFullYear()} &bull; {film.runtime} min &bull; {genres} 
+          {new Date(film.release_date).getFullYear()} &bull; {film.runtime} min &bull; {genres}
         </div>    
-
+ 
         <div className="row">
           <div>
             <p>
@@ -153,7 +153,7 @@ const FilmInfo = () => {
           <div className="mb-3" style={{ fontSize: "16px"}}>
             <p className="mb-1"><strong>Pays d'origine:</strong> {countries}</p>
           </div>
-
+ 
         </div>
         <div>
           {/*gotta add the icons here for each button*/}
@@ -166,7 +166,7 @@ const FilmInfo = () => {
   fontFamily: "Fredoka",}}>
     MARK AS WATCHED
   </button>
-
+ 
   {/* Add to Watchlist */}
   <button className="btn d-flex align-items-center gap-2 px-4 py-2" style={{backgroundColor: "rgba(255,255,255,0.1)",
   color: "#fff",
@@ -176,7 +176,7 @@ const FilmInfo = () => {
   fontFamily: "Fredoka",}}>
     WATCHLIST
   </button>
-
+ 
   {/* Favorite -- AJOUTER UNE ANIMATION POUR DEVENIR ROUGE LORSQUE FAVORIT !!*/}
   <button
   className="btn d-flex align-items-center justify-content-center rounded-circle"
@@ -191,9 +191,9 @@ const FilmInfo = () => {
   <img src={EmptyHeartIcon} alt="favorite" style={{ width: "20px", height: "20px" }} />
 </button>
 </div>
-
+ 
 </div>
-
+ 
           <div
   style={{
     position: 'absolute',
