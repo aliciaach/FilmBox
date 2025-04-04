@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import imageProfil from "../assets/icone_utilisateur.png";
 import fondNoir from "../assets/BlackImage.png";
@@ -8,7 +8,26 @@ import search from "../assets/search-13-512 1.png";
 function AdminManagement() {
   // Code from ChatGPT
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+  const [searchValue, setSearchValue] = useState("");
+  //Mon code
+  const [username, setUsername] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [lastLogin, setLastLogin] = useState("");
+  const [role, setRole] = useState("");
+  const [password, setPassword] = useState("");
+  const nomComplet = { firstName, lastName };
+  const [admins, setAdmins] = useState([]);
 
+  useEffect(() => {
+    fetch("http://localhost:4000/api/admins")
+      .then((res) => res.json())
+      .then((data) => setAdmins(data))
+      .catch((err) => console.error("Erreur fetch des admins :", err));
+  }, []);
+  //Back to code from ChatGPT
   const sortArrow = (key) => {
     if (sortConfig.key !== key) return "▲";
     return sortConfig.direction === "asc" ? "▲" : "▼";
@@ -23,7 +42,7 @@ function AdminManagement() {
     console.log("Searching for:", query);
     // You can add real search logic here when data is ready
   };
-  const [searchValue, setSearchValue] = useState("");
+
   return (
     <div
       className="bg-dark text-white min-vh-100"
@@ -243,12 +262,21 @@ function AdminManagement() {
             <tbody>
               {[...Array(6)].map((_, idx) => (
                 <tr key={idx} className="bg-transparent border-bottom">
-                  <td className="bg-transparent "></td>
-                  <td className="bg-transparent "></td>
-                  <td className="bg-transparent "></td>
-                  <td className="bg-transparent "></td>
-                  <td className="bg-transparent "></td>
-                  <td className="bg-transparent "></td>
+                  <td className="bg-transparent text-white">
+                    {admins.username}
+                  </td>
+                  <td className="bg-transparent text-white">
+                    {admins.nomComplet}
+                  </td>
+                  <td className="bg-transparent text-white">{admins.email}</td>
+                  <td className="bg-transparent text-white">
+                    {admins.phoneNumber}
+                  </td>
+                  <td className="bg-transparent text-white">
+                    {admins.lastLogin?.split("T")[0]}
+                  </td>
+                  <td className="bg-transparent text-white">{admins.role}</td>
+
                   <td className="text-center bg-transparent ">
                     <button className="btn p-0 border-0 bg-transparent">
                       <i className="bi bi-trash">

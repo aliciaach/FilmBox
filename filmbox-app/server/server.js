@@ -8,11 +8,11 @@ import { fileURLToPath } from "url";
 import mysql from "mysql";
 import { body, validationResult } from "express-validator";
 import dateFormat from "dateformat";
-import { MongoClient } from "mongodb"; 
+import { MongoClient } from "mongodb";
 import { config } from "dotenv";
-import bcrypt from 'bcrypt';
+import bcrypt from "bcrypt";
 
-config(); 
+config();
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -110,12 +110,10 @@ app.post("/login", (req, res) => {
         .json({ succes: true, message: "Login Succesful !" });
     } else {
       console.log("USER NOTTT FOUNDDD");
-      return res
-        .status(401)
-        .json({
-          succes: false,
-          message: "Access denied, wrong password or email",
-        });
+      return res.status(401).json({
+        succes: false,
+        message: "Access denied, wrong password or email",
+      });
     }
   });
 });
@@ -137,13 +135,11 @@ app.post("/LoginRegister", (req, res) => {
       }
       if (results.affectedRows && results.affectedRows > 0) {
         console.log("New User created ");
-        return res
-          .status(200)
-          .json({
-            success: true,
-            message: "New user created!",
-            redirectUrl: "/PageFilm",
-          });
+        return res.status(200).json({
+          success: true,
+          message: "New user created!",
+          redirectUrl: "/PageFilm",
+        });
       } else {
         console.log("Error, couldnt create new user");
         return res
@@ -226,16 +222,20 @@ import fetch from "node-fetch";
 app.get("/api/movies", async (req, res) => {
   //Methode given by the TMBD API, its to authenticate yourself to get access to the API
   const options = {
-    method: 'GET',
+    method: "GET",
     headers: {
-      accept: 'application/json',
+      accept: "application/json",
       //Need to find a way to make this secure !!
-      Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0'
-    }
+      Authorization:
+        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+    },
   };
 
   try {
-    const response = await fetch("https://api.themoviedb.org/3/discover/movie", options);
+    const response = await fetch(
+      "https://api.themoviedb.org/3/discover/movie",
+      options
+    );
     const data = await response.json();
 
     if (data && data.results) {
@@ -248,7 +248,6 @@ app.get("/api/movies", async (req, res) => {
     res.status(500).json({ message: "Failed to fetch movies" });
   }
 });
-
 
 /*
     API - Obtenir un film par ID
@@ -286,20 +285,23 @@ app.get("/api/movies/:id", async (req, res) => {
     return res.status(400).json({ message: "ID invalide" }); //gestions des erreurs etc
   }
   const options = {
-    method: 'GET',
+    method: "GET",
     headers: {
-      accept: 'application/json',
+      accept: "application/json",
       //Need to find a way to make this secure !!
-      Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0'
-    }
+      Authorization:
+        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+    },
   };
 
   try {
-    const response = await fetch(`https://api.themoviedb.org/3/movie/${filmID}`, options);
+    const response = await fetch(
+      `https://api.themoviedb.org/3/movie/${filmID}`,
+      options
+    );
     const data = await response.json();
-    
-    res.json(data);
 
+    res.json(data);
   } catch (error) {
     console.error("Error fetching movies:", error);
     res.status(500).json({ message: "Failed to fetch movies" });
@@ -312,58 +314,87 @@ app.get("/api/movies/:id/images", async (req, res) => {
     return res.status(400).json({ message: "ID invalide" }); //gestions des erreurs etc
   }
   const options = {
-    method: 'GET',
+    method: "GET",
     headers: {
-      accept: 'application/json',
+      accept: "application/json",
       //Need to find a way to make this secure !!
-      Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0'
-    }
+      Authorization:
+        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+    },
   };
 
   try {
-    const response = await fetch(`https://api.themoviedb.org/3/movie/${filmID}/images`, options);
+    const response = await fetch(
+      `https://api.themoviedb.org/3/movie/${filmID}/images`,
+      options
+    );
     const data = await response.json();
-    
-    res.json(data);
 
+    res.json(data);
   } catch (error) {
     console.error("Error fetching images of movies:", error);
     res.status(500).json({ message: "Failed to fetch movie images" });
   }
 });
 
-
 /* ============================= REQUETE NOSQL =========================== */
 
-//Pour permettre à un admin de se connecter 
+//Pour permettre à un admin de se connecter
 app.post("/adminLogin", async (req, res) => {
   const { username, password } = req.body;
-  
-  const uri = process.env.DB_URI; 
+
+  const uri = process.env.DB_URI;
   const client = new MongoClient(uri);
-  
+
   try {
     await client.connect();
-    const db = client.db("FilmBox"); 
+    const db = client.db("FilmBox");
     const adminUsers = db.collection("AdminUsers");
-    
+
     const admin = await adminUsers.findOne({ username });
     if (!admin) {
       return res.status(401).json({ message: "Admin not found" });
     }
-    
+
     //const isPasswordValid = await compare(password, admin.password);
     const isPasswordValid = password === admin.password;
     if (!isPasswordValid) {
       return res.status(401).json({ message: "Mot de passe invalide" });
-    } else {console.log("The admin connexion was succesful");}
-    
+    } else {
+      console.log("The admin connexion was succesful");
+    }
+
     return res.json({ message: "Admin Connexion Succesful" });
   } catch (error) {
     console.error("Error during admin connexion:", error);
     return res.status(500).json({ message: "Server Error" });
   } finally {
     await client.close();
+  }
+});
+
+//Pour afficher les admins dans le tableau d'admins
+//constantes
+const uri = "mongodb://localhost:27017";
+const client = new MongoClient(uri);
+const dbName = "FilmBox";
+app.get("/api/admins", async (req, res) => {
+  try {
+    console.log("PAS ENCORE CONNECTÉ");
+    await client.connect();
+    console.log("CONNECTÉ !!");
+    const db = client.db(dbName);
+    const collection = db.collection("AdminUsers");
+    const admins = await collection.find({ deletedAt: null }).toArray();
+
+    res.json(admins);
+    console.log("RENVOIE LA LISTE D'ADMINS");
+  } catch (error) {
+    console.error(
+      "OOPS Il y a eu une erreur dans la récupération des admins : ",
+      error
+    );
+    res.status(500).json({ message: "erreur serveur" });
   }
 });
 
