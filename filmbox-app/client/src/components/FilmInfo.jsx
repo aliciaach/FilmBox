@@ -210,17 +210,9 @@ const FilmInfo = () => {
       </div>
   );
 };
-<<<<<<< HEAD
-<<<<<<< HEAD
- 
-export default FilmInfo;
+
  
  
-=======
 
 export default FilmInfo;
->>>>>>> 908600c211e7e9f6f4eb2fc98a609d9929e22fd2
-=======
 
-export default FilmInfo;
->>>>>>> edf339f67f25749a6613417a5a313e9c7cdcdce1
