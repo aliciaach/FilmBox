@@ -16,9 +16,12 @@ const ListeFilms = () => {
   const [films, setFilms] = useState([]);
   const [erreur, setErreur] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
+  const [actionFilms, setActionFilms] = useState([]);
+  const [comedyFilms, setComedyFilms] = useState([]);
   const videoRef = useRef();
 
   useEffect(() => {
+    //this one is getting the popular movies, adding other ones later for more categories
     fetch("http://localhost:4000/api/movies")
       .then((response) => {
         if (!response.ok) {
@@ -28,7 +31,30 @@ const ListeFilms = () => {
       })
       .then(donnees => setFilms(donnees))
       .catch(erreur => setErreur(erreur.message));
-      }, []);
+      
+      //this one is getting the action movies
+    fetch("http://localhost:4000/api/movies?genre=action")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Problème dans le chargement des films d'action");
+      }
+      return response.json();
+    })
+    .then(donnees => setActionFilms(donnees))
+    .catch(erreur => setErreur(erreur.message));
+
+    //films de comedies
+    fetch("http://localhost:4000/api/movies?genre=comedy")
+    .then((response) => {
+      if (!response.ok) throw new Error("Problème dans le chargement des films de comédie");
+      return response.json();
+    })
+    .then(donnees => setComedyFilms(donnees))
+    .catch(erreur => setErreur(erreur.message));
+
+
+    }, []);
+
 
   return (
     <div className="min-vh-100" 
@@ -271,59 +297,104 @@ const ListeFilms = () => {
         {erreur ? (
           <p className="text-danger">{erreur}</p>
         ) : (
-          <div className="row mt-3">
-            {films.map((film, index) => {
-              // How to get access to the poster image with the TMDB API, source => https://developer.themoviedb.org/docs/image-basics
-              let cheminImage = `https://image.tmdb.org/t/p/w500/${film.poster_path}`;
 
-              return (
-                <div key={film.id || index} className="col-lg-2" 
-                  style={{
-                    paddingBottom: "25px",
-                  }}>
-                  <div className="card border-0 shadow movie-card" 
-                    style={{
-                      borderRadius: "0px",
-                      transition: 'all 0.3s ease',
-                      transform: 'translateY(0)',
-                      backgroundColor: "transparent"
-                    }}>
-                    <Link to={`/movies/${film.id}`} className="text-decoration-none">
+          //Popular movies
+          <div className="text-start">
+            <h4 className="text-white">Popular Movies</h4>
+              <div className="scroll-container">
+                {films.map((film, index) => {
+                let cheminImage = `https://image.tmdb.org/t/p/w500/${film.poster_path}`;
+                return (
+                  <div key={film.id || index} className="movie-item">
+                    <Link to={`/movies/${film.id}`}>
                       <img
                         src={cheminImage}
                         alt={film.title}
-                        className="card-img-top"
-                        style={{ 
-                          height: "300px", 
-                          objectFit: "cover",
-                          transition: 'all 0.3s ease',
-                          borderRadius: "0px"
-                        }}
+                        className="movie-img"
                       />
-                      {/* <div className="card-body text-center">
-                        <h6 className="card-title text-white">{film.title}</h6>
-                      </div> */}
-                      
                     </Link>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
+                );
+              })}
+            </div>
 
-      {/* styles personnalisés pour l'effet de survol */}
+            
+            <div className="text-start mt-5">
+              <h4 className="text-white">Action Movies</h4>
+                <div className="scroll-container">
+                  {actionFilms.map((film, index) => {
+                    let cheminImage = `https://image.tmdb.org/t/p/w500/${film.poster_path}`;
+                    return (
+                      <div key={film.id || index} className="movie-item">
+                        <Link to={`/movies/${film.id}`}>
+                          <img
+                            src={cheminImage}
+                            alt={film.title}
+                            className="movie-img"
+                          />
+                        </Link>
+                      </div>
+                    );
+                  })}
+                </div>
+
+
+                <div className="text-start mt-5">
+  <h4 className="text-white">Comedy Movies</h4>
+  <div className="scroll-container">
+    {comedyFilms.map((film, index) => {
+      let cheminImage = `https://image.tmdb.org/t/p/w500/${film.poster_path}`;
+      return (
+        <div key={film.id || index} className="movie-item">
+          <Link to={`/movies/${film.id}`}>
+            <img
+              src={cheminImage}
+              alt={film.title}
+              className="movie-img"
+            />
+          </Link>
+        </div>
+      );
+    })}
+  </div>
+</div>
+
+              </div>
+            </div>
+          )}
+      </div>
+      
       <style>{`
-        .movie-card:hover {
-          border: 2px solid #4a6bff !important;
-          transform: translateY(-5px) !important;
-          box-shadow: 0 10px 20px rgba(74, 107, 255, 0.3) !important;
-        }
-        .movie-card:hover img {
-          opacity: 0.9;
-        }
-      `}</style>
+  .scroll-container {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    gap: 20px;
+    padding: 10px 0;
+  }
+
+  .scroll-container::-webkit-scrollbar {
+    display: none;
+  }
+
+  .movie-item {
+    flex: 0 0 auto;
+    width: 200px;
+  }
+
+  .movie-img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 5px;
+    transition: transform 0.3s;
+  }
+
+  .movie-img:hover {
+    transform: scale(1.05);
+  }
+`}</style>
+
     </div>
   );
 };
