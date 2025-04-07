@@ -22,7 +22,7 @@ export default function App() {
         <Route path="/listeFilms" element={<ListeFilms />} />
         <Route path="/movies/:filmId" element={<FilmInfo />} />
         <Route path="/userSettings" element={<UserSettings />} />
-        <Route path="/adminLogin" element={<AdminLogin />} />
+        <Route path="/AdminLogin" element={<AdminLogin />} />
         <Route path="/adminManagement" element={<AdminManagement />} />
         <Route path="/AdminManagementPage" element={<AdminManagementPage />} />
       </Routes>
