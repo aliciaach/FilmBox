@@ -226,32 +226,12 @@ app.get("/getUsers", async (req, res) => { //Cette ligne permet au serveur d'éc
       console.error("Erreur de la BDD : ", erreur);
       return res.status(500).json({ message: "Erreur du serveur" });
     }
-    res.json(resultats);
-  });
-});
-
-//Quand on fait la requête on va demander l'id (pour ça qu'il est dans l'URL)
-app.get("/getUsersInformations/:id", async (req, res) => { //Cette ligne permet au serveur d'écouter les requêtes GET envoyées à l'URL /getUsers et d'exécuter une fonction lorsque cette requête est reçue.
-  const userId = req.params.id;//récupères l'id provenant de l'URL
-
-  const sql = "SELECT * FROM utilisateur WHERE utilisateur_id = ?";  // Requête SQL pour récupérer infos des utilisateurs
-  const params = [userId]; //remplace le "?"
-
-  //con query : méthode de connexion à la BDD MySQL dans Node.js. Elle est utilisée pour envoyer une requête SQL à la base de données 
-  // et récupérer des données ou effectuer des actions (comme INSERT, UPDATE, DELETE, ou SELECT).
-  con.query(sql, params, (erreur, resultats) => {
-    if (erreur) {
-      console.error("Erreur de la BDD : ", erreur);
-      return res.status(500).json({ message: "Erreur du serveur" });
-    }
-
     if (resultats.length === 0) {
       // Si aucun utilisateur n'a été trouvé avec cet ID, on renvoie une erreur 404
       return res.status(404).json({ message: "Utilisateur non trouvé" });
     }
 
-    // Si tout se passe bien, on renvoie les résultats (les informations de l'utilisateur)
-    res.json(resultats[0]);
+    res.json(resultats);
   });
 });
 

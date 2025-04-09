@@ -28,13 +28,10 @@ function ManageUsers(){
   }, []);
 
     const clickObtenirInformationsUser = (userId) => {
-    fetch(`http://localhost:4000/getUsersInformations/${userId}`)  // Envoie une requête GET
-      .then((response) => response.json())
-      .then((data) => { 
-        console.log(data);    
-        setUserSelectionne(data)})  // Met à jour l'état avec les détails de l'utilisateur
-      .catch((err) => setError("Erreur lors de la récupération des informations de l'utilisateur"));  // Gérer les erreurs
-  };
+    const user = users.find(u => u.utilisateur_id === userId);
+    setUserSelectionne(user);
+}; 
+  
 
 return (
     <div className="text-white"
@@ -79,79 +76,6 @@ return (
                       {user.nom} {user.prenom}
                     </button> ))
                 }
-
-            {/*
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              */}
-
             </div>
           </div>
 
