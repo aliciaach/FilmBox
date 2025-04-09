@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import logoFilmBox from '../assets/logoFilmBox.png';
 import arobase from '../assets/icone_arobase.png';
@@ -10,6 +10,32 @@ import { useNavigate } from 'react-router-dom';
 
 
 function ManageUsers(){
+
+  const [users, setUsers] = useState([]);  // État pour stocker la liste des utilisateurs
+  const [error, setError] = useState(null);  // État pour gérer les erreurs
+  const [userSelectionne, setUserSelectionne] = useState(null);  // Détails de l'utilisateur sélectionné
+
+  useEffect(() => {
+    fetch("http://localhost:4000/getUsers") //requête GET pour récupérer les utilisateurs depuis l'URL
+      .then((response) => { //permet de traiter la reponse quand elle arrive
+        if (!response.ok) throw new Error("Erreur dans la récupération des utilisateurs"); //vérifie si la réponse HTTP est valide (statut 200 à 299).
+        return response.json(); //convertir la reponse en JSON si elle est valide
+      })
+      .then((data) => { //récupères la liste des utilisateurs renvoyée par le serveur sous forme de JSON
+        setUsers(data);  // Mettre à jour la liste des utilisateurs avec les nouvelles données
+      })
+      .catch((erreur) => setError(erreur.message));  // Gérer les erreurs
+  }, []);
+
+    const clickObtenirInformationsUser = (userId) => {
+    fetch(`http://localhost:4000/getUsersInformations/${userId}`)  // Envoie une requête GET
+      .then((response) => response.json())
+      .then((data) => { 
+        console.log(data);    
+        setUserSelectionne(data)})  // Met à jour l'état avec les détails de l'utilisateur
+      .catch((err) => setError("Erreur lors de la récupération des informations de l'utilisateur"));  // Gérer les erreurs
+  };
+
 return (
     <div className="text-white"
         style={{
@@ -45,77 +71,86 @@ return (
 
           {/* Colonne gauche */}
           <div className="col-md-3 ms-2 me-2" style={{ maxHeight: '90vh', overflowY: 'auto', scrollbarColor:'red'  }}>
-            <div className="list-group">
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white border-light">
-                FirstName LastName
-              </button>
 
+
+            <div className="list-group" >
+                {users.map((user, index) => (
+                    <button key={index} className="list-group-item bg-transparent text-white border-light" onClick={() => clickObtenirInformationsUser(user.utilisateur_id)}>
+                      {user.nom} {user.prenom}
+                    </button> ))
+                }
+
+            {/*
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white border-light">
+                FirstName LastName
+              </button>
+              */}
 
             </div>
           </div>
@@ -143,25 +178,29 @@ return (
               <div className="row mb-3" style={{marginTop:'8vh', fontSize:'22px'}}>
                 <div className="col-md-6">
                   <label id="titresInfo" className="mb-2"> First Name </label>
-                  <input id="inputInfo" type="text" className="w-100 p-2 pe-5 ps-3 text-white bg-transparent border-1 rounded-4" placeholder="John" />
+                  <input id="inputInfo" type="text" className="w-100 p-2 pe-5 ps-3 text-white bg-transparent border-1 rounded-4" placeholder="John" 
+                  value={userSelectionne ? userSelectionne.prenom : ""} readOnly />
                 </div>
                 <div className="col-md-6">
                   <label id="titresInfo" className="mb-2"> Last Name </label>
-                  <input id="inputInfo" type="text" className="w-100 p-2 pe-5 ps-3 text-white bg-transparent border-1 rounded-4" placeholder="Doe" />
+                  <input id="inputInfo" type="text" className="w-100 p-2 pe-5 ps-3 text-white bg-transparent border-1 rounded-4" placeholder="Doe" 
+                   value={userSelectionne ? userSelectionne.nom : ""} readOnly />
                 </div>
               </div>
 
               <div className="row mb-3" style={{marginTop:'8vh', fontSize:'22px'}}>
                 <div className="col">
                   <label id="titresInfo" className="mb-2"> Email </label>
-                  <input id="inputInfo" type="text" className="w-100 p-2 pe-5 ps-3 text-white bg-transparent border-1 rounded-4" placeholder="example@gmail.com" />
+                  <input id="inputInfo" type="text" className="w-100 p-2 pe-5 ps-3 text-white bg-transparent border-1 rounded-4" placeholder="example@gmail.com" 
+                  value={userSelectionne ? userSelectionne.courriel : ""} readOnly />
                 </div>
               </div>
 
               <div className="row mb-3" style={{marginTop:'8vh', fontSize:'22px'}}>
                 <div className="col">
                   <label id="titresInfo" className="mb-2"> Phone Number </label>
-                  <input id="inputInfo" type="text" className="w-100 p-2 pe-5 ps-3 text-white bg-transparent border-1 rounded-4" placeholder="514-123-1234" />
+                  <input id="inputInfo" type="text" className="w-100 p-2 pe-5 ps-3 text-white bg-transparent border-1 rounded-4" placeholder="514-123-1234" 
+                  value={userSelectionne ? userSelectionne.telephone : ""} readOnly />
                 </div>
               </div>
             </div>

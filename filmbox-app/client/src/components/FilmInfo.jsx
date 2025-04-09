@@ -211,8 +211,4 @@ const FilmInfo = () => {
   );
 };
 
- 
- 
-
 export default FilmInfo;
-
