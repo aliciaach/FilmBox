@@ -8,10 +8,10 @@ a) Pour créer le conteneur (instance de l’image) qui exécutera mysql dans do
    docker run -d -p 3306:3306 --name mysql-server -e MYSQL_ROOT_PASSWORD=oracle -e MYSQL_DATABASE=scott -e MYSQL_USER=scott -e MYSQL_PASSWORD=oracle mysql/mysql-server:latest
 
 b) Ensuite vous pourrez vous connecter à mysql avec la ligne de commande mysql et le mot de passe oracle
-   mysql -u scott -p
+   mysql -u root -p
 
 c) Ensuite créer une base de données :
-   CREATE DATABASE FilmBox;
+   CREATE DATABASE filmbox;
    USE FilmBox;
 
 3. Maintenant que tout est prêt, il faut insérer les tables de notre script. ATTENTION : Le script mysql se trouve au milieu du script(indiqué en commentaire).

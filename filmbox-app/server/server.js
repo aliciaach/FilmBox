@@ -11,7 +11,9 @@ import dateFormat from "dateformat";
 import { MongoClient } from "mongodb";
 import { config } from "dotenv";
 import bcrypt from "bcrypt";
+
 import cors from "cors";
+
 
 config();
 
@@ -28,7 +30,7 @@ const con = mysql.createConnection({
   host: "localhost",
   user: "scott",
   password: "oracle",
-  database: "filmbox",
+  database: "prototype",
 });
 
 con.connect(function (err) {
@@ -215,6 +217,12 @@ app.delete("/deleteAccount", (req, res) => {
     res.json(results);
   });
 });*/
+/*
+    API - Obtenir tous les utilisateurs
+*/
+
+app.get("/")
+
 /*
     API - Obtenir tous les films
 */
