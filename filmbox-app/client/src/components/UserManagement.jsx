@@ -57,8 +57,88 @@ return (
             backgroundRepeat: 'no-repeat',
         }}    
     >
+      <nav
+        className="d-flex align-items-center px-4"
+        style={{
+          //   background: "linear-gradient(to right, #02002E, #030046)",
+          color: "white",
+          height: "60px",
+          fontWeight: "500",
+        }}
+      >
+        {/* Logo */}
+        <div className="d-flex align-items-center me-4">
+          <span className="fw-bold text-white fs-4">FILM</span>
+          <span className="fw-bold text-primary fs-4">BOX</span>
+        </div>
+         {/* séparateur */}
+        <div
+          className="border-start border-white opacity-50 mx-3"
+          style={{ height: "30px" }}
+        />
+
+        {/* liens pages */}
+          <div className="d-flex justify-content-center flex-grow-1">
+          <div className="d-flex gap-5">
+            <a href="/userManagement" className="text-white text-decoration-none fw-light">
+              ADMINS MANAGEMENT
+            </a> {/* CHANGER À LINKKKKKKK <Link to="#" */}
+            <a href="#" className="text-white text-decoration-none fw-light">
+              USERS MANAGEMENT
+            </a>{/* CHANGER À LINKKKKKKK <Link to="#" */}
+          </div>
+        </div>
+
+          {/* séparateur */}
+        <div
+          className="border-start border-white opacity-50 mx-3"
+          style={{ height: "30px" }}
+        />
+        
+                {/* Profile */}
+        <div className="dropdown">
+          <button
+            className="btn dropdown-toggle d-flex align-items-center gap-2 border-0 bg-transparent text-white"
+            type="button"
+            id="profileDropdown"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <img
+              src={photoProfil}
+              alt="icone_profil"
+              width="40px"
+              height="40px"
+              className="me-2 rounded-circle "
+            />
+            <i className="bi bi-person-circle fs-5" />
+            <span>Profil</span>
+            <i className="bi bi-caret-down-fill small" />
+          </button>
+          <ul
+            className="dropdown-menu dropdown-menu-end mt-2"
+            aria-labelledby="profileDropdown"
+          >
+            <li>
+              <a className="dropdown-item" href="#">
+                Mon profil
+              </a>
+            </li>
+            <li>
+              <hr className="dropdown-divider" />
+            </li>
+            <li>
+              <a className="dropdown-item" href="#">
+                Déconnexion
+              </a>
+            </li>
+          </ul>
+        </div>
+
+      </nav>
+      
       {/* Header */}
-      <div className="d-flex justify-content-between align-items-center p-4">
+      <div className="d-flex justify-content-between align-items-center p-4 mt-4">
         <h1>Admin Name - Role Level</h1>
         <button className="btn btn-outline-light">Logout</button>
       </div>

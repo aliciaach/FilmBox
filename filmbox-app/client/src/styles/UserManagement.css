@@ -49,7 +49,7 @@ body,
 }
 
 .list-group-item{
-min-height: clamp(3rem, 5vh, 7vh); /* s’adapte à la hauteur de l’écran */
+    min-height: clamp(3rem, 5vh, 7vh); /* s’adapte à la hauteur de l’écran */
     display: flex;
     align-items: center;
 }

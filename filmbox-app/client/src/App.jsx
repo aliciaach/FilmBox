@@ -15,7 +15,7 @@ import UserManagement from './components/UserManagement';
 export default function App() {
   return (
   
-    /*
+    
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<BodyAccueil />} />
@@ -29,10 +29,10 @@ export default function App() {
         <Route path="/userManagement" element={<UserManagement />} />        
       </Routes>
     </BrowserRouter>
-    */
+    
     //<UserSettings />
     //<AdminLogin />
-    <UserManagement />
+    //<UserManagement />
   );
 }
 
