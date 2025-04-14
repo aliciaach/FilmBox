@@ -66,8 +66,8 @@ function PageWatchList() {
             variant="transparent"
             style={{ border: "none" }}
           >
-            <Dropdown.Item href="/settings">Settings</Dropdown.Item>
-            <Dropdown.Item href="/logout">Logout</Dropdown.Item>
+            <Dropdown.Item href="/userSettings">Settings</Dropdown.Item>
+            <Dropdown.Item href="/connexion">Logout</Dropdown.Item>
           </DropdownButton>
         </nav>
       </header>
@@ -89,9 +89,9 @@ function PageWatchList() {
                     src={movie.poster_path ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}` : "https://via.placeholder.com/500x750?text=No+Poster"}
                     alt={movie.title}
                     className="card-img-top"
-                    style={{ height: 450, width: 25, objectFit: "cover", borderRadius: 8 }}
+                    style={{ height: 450, width: 300, objectFit: "cover", borderRadius: 8 }}
                     onError={(e) => {
-                      e.target.src = "  ";
+                      e.target.src = "https://via.placeholder.com/500x750?text=No+Poster ";
                     }}
                   />
                   <div className="card-body px-0">

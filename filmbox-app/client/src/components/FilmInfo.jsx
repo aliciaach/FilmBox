@@ -6,6 +6,10 @@ import RedHeartIcon from "../assets/redHeart.png";
 import EmptyHeartIcon from "../assets/emptyHeart.png";
 import imageLogo from "../assets/logo_FilmBox.png";
 
+
+//import "bootstrap-icons/font/bootstrap-icons.css";
+ 
+
 const FilmInfo = () => {
   const { filmId } = useParams();
   const [film, setFilm] = useState(null);
@@ -14,8 +18,13 @@ const FilmInfo = () => {
   const [isInWatchlist, setIsInWatchlist] = useState(false);
   const navigate = useNavigate();
 
-  // Get user ID - you'll need to replace this with your actual auth system
-  const userId = 1; // Temporary - replace with your user ID retrieval logic
+  const buttonStyle = {
+    borderRadius: "0px",
+    border: "0px",
+    backgroundColor: "#0352fc",
+    color: "white",
+    fontFamily: "Fredoka",
+  };
 
   useEffect(() => {
     if (!filmId || isNaN(Number(filmId))) {
@@ -23,7 +32,6 @@ const FilmInfo = () => {
       return;
     }
 
-    // Fetch movie data
     fetch(`http://localhost:4000/api/movies/${filmId}`)
       .then((res) => {
         if (!res.ok) throw new Error("Film introuvable");
@@ -36,8 +44,9 @@ const FilmInfo = () => {
         console.error("Erreur API:", err);
         setErreur(err.message);
       });
+  }, [filmId]);
 
-    // Fetch movie images
+  useEffect(() => {
     fetch(`http://localhost:4000/api/movies/${filmId}/images`)
       .then((res) => {
         if (!res.ok) throw new Error("Images introuvables");
@@ -50,48 +59,15 @@ const FilmInfo = () => {
         console.error("Erreur API:", err);
         setErreur(err.message);
       });
-
-    // Check watchlist status
-    fetch(`http://localhost:4000/api/watchlist/${userId}`)
-      .then(response => response.json())
-      .then(watchlist => {
-        setIsInWatchlist(watchlist.some(movie => movie.film_id === Number(filmId)));
-      })
-      .catch(error => {
-        console.error("Error checking watchlist:", error);
-      });
-
-  }, [filmId, userId]);
-
-  const handleWatchlist = async () => {
-    try {
-      if (isInWatchlist) {
-        // Remove from watchlist
-        await fetch(`http://localhost:4000/api/watchlist/${userId}/${filmId}`, {
-          method: "DELETE"
-        });
-        setIsInWatchlist(false);
-      } else {
-        // Add to watchlist
-        await fetch("http://localhost:4000/api/watchlist", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId, movieId: filmId })
-        });
-        setIsInWatchlist(true);
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
+  }, [filmId]);
 
   if (erreur) return <p className="text-danger text-center">{erreur}</p>;
   if (!film) return <p className="text-center text-white">Chargement...</p>;
-
+ 
   const cheminImage = `https://image.tmdb.org/t/p/original/${film.backdrop_path}`;
   const genres = film.genres?.map((g) => g.name).join(", ");
   const countries = film.production_companies?.map((c) => c.origin_country).join(", ");
-
+ 
   return (
     <div
       className="min-vh-100"
@@ -136,29 +112,31 @@ const FilmInfo = () => {
           </DropdownButton>
         </nav>
       </header>
-
+ 
       <div className="container py-5 text-start" style={{
         marginTop: "20px",
         marginLeft: "30px",  
         marginRight: "auto",        
-        maxWidth: "800px",       
+        maxWidth: "800px",      
       }}>
-        {movieLogo && (
-          <img
-            src={`https://image.tmdb.org/t/p/original${movieLogo.file_path}`}
-            alt="Movie logo"
-            style={{
-              maxWidth: "100%",      
-              maxHeight: "100px",    
-              marginBottom: "20px",
-              objectFit: "contain",  
-            }}
-          />
+        {/*<h3 className="mb-4">{filmTitle}</h3>*/}
+        {imageLogo && (
+        <img
+          //NEED TO ADD SOMETHING TO GET THE LOGOS IN ENGLISH ONLY !! 
+          src={`https://image.tmdb.org/t/p/original${imageLogo.file_path}`}
+          alt="Movie logo"
+          style={{
+            maxWidth: "100%",      
+            maxHeight: "100px",    
+            marginBottom: "20px",
+            objectFit: "contain",  
+          }}
+        />
         )}
         <div className="mb-4" style={{ fontSize: "16px"}}>
-          {new Date(film.release_date).getFullYear()} &bull; {film.runtime} min &bull; {genres} 
+          {new Date(film.release_date).getFullYear()} &bull; {film.runtime} min &bull; {genres}
         </div>    
-
+ 
         <div className="row">
           <div>
             <p>
@@ -174,63 +152,60 @@ const FilmInfo = () => {
           <div className="mb-3" style={{ fontSize: "16px"}}>
             <p className="mb-1"><strong>Pays d'origine:</strong> {countries}</p>
           </div>
+
         </div>
         <div>
           <div className="d-flex align-items-center gap-3 mt-4">
-            <button className="btn btn-light d-flex align-items-center gap-2 px-4 py-2" style={{
-              backgroundColor: "#fff",
-              color: "#000",
-              fontWeight: "500",
-              borderRadius: "3px",
-              fontFamily: "Fredoka",
-            }}>
-              MARK AS WATCHED
-            </button>
+  {/* Mark as Watched */}
+  <button className="btn btn-light d-flex align-items-center gap-2 px-4 py-2" style={{backgroundColor: "#fff",
+  color: "#000",
+  fontWeight: "500",
+  borderRadius: "3px",
+  fontFamily: "Fredoka",}}>
+    MARK AS WATCHED
+  </button>
 
-            <button 
-              className="btn d-flex align-items-center gap-2 px-4 py-2" 
-              style={{
-                backgroundColor: isInWatchlist ? "#0352fc" : "rgba(255,255,255,0.1)",
-                color: "#fff",
-                fontWeight: "500",
-                border: "1px solid rgba(255,255,255,0.3)",
-                borderRadius: "3px",
-                fontFamily: "Fredoka",
-              }}
-              onClick={handleWatchlist}
-            >
-              {isInWatchlist ? "IN WATCHLIST" : "ADD TO WATCHLIST"}
-            </button>
+  {/* Add to Watchlist */}
+  <button className="btn d-flex align-items-center gap-2 px-4 py-2" style={{backgroundColor: "rgba(255,255,255,0.1)",
+  color: "#fff",
+  fontWeight: "500",
+  border: "1px solid rgba(255,255,255,0.3)",
+  borderRadius: "3px",
+  fontFamily: "Fredoka",}}>
+    WATCHLIST
+  </button>
 
-            <button
-              className="btn d-flex align-items-center justify-content-center rounded-circle"
-              style={{
-                backgroundColor: "rgba(255,255,255,0.2)",
-                border: "none",
-                width: "40px",
-                height: "40px",
-                padding: "0",
-              }}
-            >
-              <img src={EmptyHeartIcon} alt="favorite" style={{ width: "20px", height: "20px" }} />
-            </button>
-          </div>
+  {/* Favorite -- AJOUTER UNE ANIMATION POUR DEVENIR ROUGE LORSQUE FAVORIT !!*/}
+  <button
+  className="btn d-flex align-items-center justify-content-center rounded-circle"
+  style={{
+    backgroundColor: "rgba(255,255,255,0.2)",
+    border: "none",
+    width: "40px",
+    height: "40px",
+    padding: "0",
+  }}
+>
+  <img src={EmptyHeartIcon} alt="favorite" style={{ width: "20px", height: "20px" }} />
+</button>
+</div>
+
+</div>
+
+          <div
+  style={{
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    width: '100%',
+    height: '120px', // adjust height of fade
+    background: 'linear-gradient(to top, rgba(7, 0, 66, 1), rgba(7, 0, 66, 0))',
+    pointerEvents: 'none', // let clicks pass through
+    zIndex: 1
+  }}
+></div>
         </div>
-
-        <div
-          style={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            width: '100%',
-            height: '120px',
-            background: 'linear-gradient(to top, rgba(7, 0, 66, 1), rgba(7, 0, 66, 0))',
-            pointerEvents: 'none',
-            zIndex: 1
-          }}
-        ></div>
       </div>
-    </div>
   );
 };
 

@@ -1,0 +1,55 @@
+#inputInfo {
+    border: solid rgba(116, 101, 247, 0.6);
+    outline: none;
+    background-position: right 10px center;
+    background-repeat: no-repeat;
+    background-size: 20px;
+    color: white;
+}
+
+#inputInfo:focus {
+    outline: none;
+    border: 2px solid rgba(95, 67, 255, 0.6);
+    box-shadow: 0 0 15px rgba(68, 0, 255, 0.915);
+}
+
+
+
+html,
+body,
+#root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.page-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+
+.col-stretch {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.section-grow {
+    flex-grow: 1;
+}
+
+
+.photoProfil {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.list-group-item{
+min-height: clamp(3rem, 5vh, 7vh); /* s’adapte à la hauteur de l’écran */
+    display: flex;
+    align-items: center;
+}

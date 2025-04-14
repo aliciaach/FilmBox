@@ -1,6 +1,5 @@
-import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap/dist/js/bootstrap.bundle.min.js";
-import ReactDOM from "react-dom/client";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import React from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import BodyAccueil from "./components/BodyAccueil";
 import Connexion from "./components/Connexion";
@@ -12,8 +11,9 @@ import AdminLogin from "./components/AdminLogin";
 import AdminManagement from "./components/adminManagement";
 import AdminManagementPage from "./components/AdminManagementPage";
 import PageWatchList from "./components/PageWatchList";
+// import UserManagement from "./components/UserManagement"; 
 
-export default function App() {
+function App() {
   return (
     <BrowserRouter>
       <Routes>
@@ -23,16 +23,13 @@ export default function App() {
         <Route path="/listeFilms" element={<ListeFilms />} />
         <Route path="/movies/:filmId" element={<FilmInfo />} />
         <Route path="/userSettings" element={<UserSettings />} />
-        <Route path="/adminLogin" element={<AdminLogin />} />
+        <Route path="/AdminLogin" element={<AdminLogin />} />
         <Route path="/adminManagement" element={<AdminManagement />} />
         <Route path="/AdminManagementPage" element={<AdminManagementPage />} />
-        <Route path="/PageWatchList" element={<PageWatchList />} />
+        <Route path="/PageWatchlist" element={<PageWatchList />} />
       </Routes>
     </BrowserRouter>
-    //<UserSettings />
-    //<AdminLogin />
   );
 }
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<App />);
+export default App;

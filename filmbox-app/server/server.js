@@ -12,6 +12,8 @@ import { MongoClient } from "mongodb";
 import { config } from "dotenv";
 import bcrypt from "bcrypt";
 
+import cors from "cors";
+
 config();
 
 const app = express();
@@ -214,6 +216,12 @@ app.delete("/deleteAccount", (req, res) => {
     res.json(results);
   });
 });*/
+/*
+    API - Obtenir tous les utilisateurs
+*/
+
+app.get("/");
+
 /*
     API - Obtenir tous les films
 */
@@ -456,6 +464,42 @@ app.delete("/api/watchlist/:userId/:movieId", (req, res) => {
 });
 
 //////////////////////////////////////////////////////////////////////////////////////
+
+//Pour afficher les admins dans le tableau d'admins
+//constantes
+const uri = "mongodb://localhost:27017";
+const client = new MongoClient(uri);
+const dbName = "FilmBox";
+
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Allow only requests from React's local dev server
+  })
+);
+
+// API to fetch admins
+app.get("/adminsTab", async (req, res) => {
+  try {
+    console.log("PAS ENCORE CONNECTÉ");
+    await client.connect();
+    console.log("CONNECTÉ !!");
+    const db = client.db(dbName);
+    const collection = db.collection("AdminUsers");
+    const admins = await collection.find({ deletedAt: null }).toArray();
+
+    res.json(admins);
+    console.log("RENVOIE LA LISTE D'ADMINS");
+    // console.log(admins);
+  } catch (error) {
+    console.error(
+      "OOPS Il y a eu une erreur dans la récupération des admins : ",
+      error
+    );
+    res.status(500).json({ message: "erreur serveur" });
+  } finally {
+    await client.close();
+  }
+});
 
 /*
     Description des routes
