@@ -72,8 +72,8 @@ const ListeFilms = () => {
   
   const durationOptions = [
     { value: '', label: 'Toutes les durées' },
-    { value: 'short', label: 'Moins de 90 min' },
-    { value: 'medium', label: '90-120 min' },
+    { value: 'court', label: 'Moins de 90 min' },
+    { value: 'moyen', label: '90-120 min' },
     { value: 'long', label: 'Plus de 120 min' }
   ];
 
@@ -140,8 +140,8 @@ const ListeFilms = () => {
       result = result.filter(film => {
         
         if (!film.runtime) return false;
-        if (filters.duration === 'short') return film.runtime < 90;
-        if (filters.duration === 'medium') return film.runtime >= 90 && film.runtime <= 120;
+        if (filters.duration === 'court') return film.runtime < 90;
+        if (filters.duration === 'moyen') return film.runtime >= 90 && film.runtime <= 120;
         if (filters.duration === 'long') return film.runtime > 120;
         return true;
       });
@@ -222,7 +222,7 @@ const ListeFilms = () => {
                 HOME
               </a>
               <a
-                href="/movies"
+                href="/PageWatchList"
                 style={{ textDecoration: 'none', color: '#fff', fontSize: '18px', marginTop:'-50px'}}
               >
                 MY MOVIES

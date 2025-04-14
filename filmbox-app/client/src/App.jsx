@@ -11,6 +11,7 @@ import UserSettings from "./components/UserSettings";
 import AdminLogin from "./components/AdminLogin";
 import AdminManagement from "./components/adminManagement";
 import AdminManagementPage from "./components/AdminManagementPage";
+import PageWatchList from "./components/PageWatchList";
 
 export default function App() {
   return (
@@ -25,6 +26,7 @@ export default function App() {
         <Route path="/adminLogin" element={<AdminLogin />} />
         <Route path="/adminManagement" element={<AdminManagement />} />
         <Route path="/AdminManagementPage" element={<AdminManagementPage />} />
+        <Route path="/PageWatchList" element={<PageWatchList />} />
       </Routes>
     </BrowserRouter>
     //<UserSettings />
