@@ -147,12 +147,12 @@ return (
         <div className="row" style={{height:'100%'}}>
 
           {/* Colonne gauche */}
-          <div className="col-md-3 ms-2 me-2" style={{ maxHeight: '90vh', overflowY: 'auto', scrollbarColor:'red'  }}>
+          <div className="col-md-3 ms-2 me-2 colonne-scrollable " style={{ maxHeight: '90vh', overflowY: 'auto'}}>
 
-
+{/* Liste de boutons */} 
             <div className="list-group" >
                 {users.map((user, index) => (
-                    <button key={index} className="list-group-item bg-transparent text-white border-light" onClick={() => clickObtenirInformationsUser(user.utilisateur_id)}>
+                    <button key={index} className="list-group-item bg-transparent text-white btnUser" onClick={() => clickObtenirInformationsUser(user.utilisateur_id)}>
                       {user.nom} {user.prenom}
                     </button> ))
                 }
