@@ -16,6 +16,8 @@ const ListeFilms = () => {
   const [erreur, setErreur] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
   const videoRef = useRef();
+  const [topRatedMovies, setTopRatedMovies] = useState([]);
+
 
   
   //Filter states
@@ -90,6 +92,20 @@ const ListeFilms = () => {
         setFilteredFilms(donnees);
       })
       .catch(erreur => setErreur(erreur.message));
+
+
+      //this one is getting the action movies
+    fetch("http://localhost:4000/api/topRatedMovies")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Problème dans le chargement des films d'action");
+      }
+      return response.json();
+    })
+    .then(donnees => setTopRatedMovies(donnees))
+    .catch(erreur => setErreur(erreur.message));
+
+    
   }, []);
 
   useEffect(() => {
@@ -426,6 +442,8 @@ const ListeFilms = () => {
         {erreur ? (
           <p className="text-danger">{erreur}</p>
         ) : (
+          <div>
+            <h1>Movies to Discover</h1>
           <div className="horizontal-scroll">
   {filteredFilms.map((film, index) => {
     let cheminImage = film.poster_path 
@@ -445,6 +463,31 @@ const ListeFilms = () => {
       </div>
     );
   })}
+      </div>
+
+
+  <h1>Top Rated Movies</h1>
+  <div className="horizontal-scroll">
+    {topRatedMovies.map((film, index) => {
+      let cheminImage = film.poster_path 
+        ? `https://image.tmdb.org/t/p/w500/${film.poster_path}`
+        : BlackImage;
+
+      return (
+        <div key={`second-${film.id || index}`} className="movie-card">
+          <Link to={`/movies/${film.id}`}>
+            <img
+              src={cheminImage}
+              alt={film.title}
+              style={{ width: "150px", height: "225px", objectFit: "cover" }}
+              onError={(e) => { e.target.src = BlackImage; }}
+            />
+          </Link>
+        </div>
+      );
+    })}
+  </div>
+
 </div>
         )}
       </div>
@@ -461,15 +504,11 @@ const ListeFilms = () => {
         }
 
         .horizontal-scroll {
-  display: flex;
-  overflow-x: auto;
-  gap: 16px;
-  padding: 10px;
-}
-
-.movie-card-simple {
-  flex: 0 0 auto;
-}
+          display: flex;
+          overflow-x: auto;
+          gap: 16px;
+          padding: 10px;
+        }
       `}</style>
     </div>
   );
