@@ -308,6 +308,10 @@ INSERT INTO droit (nom, type_droit) VALUES
 ('Admin', 'Full Access'), 
 ('User', 'Read Only');
 
+INSERT INTO films (titre, film_duree, date_sortie, pays_origin_film, langue_original, status, directeur_directeur_id) VALUES 
+('Inception', 148, '2010-07-16', 'États-Unis', 'Anglais', 'Vu', 1), 
+('Pulp Fiction', 154, '1994-10-14', 'États-Unis', 'Anglais', 'Non vu', 2);
+
 INSERT INTO genre (genre, films_film_id) VALUES 
 ('Science Fiction', 1), 
 ('Crime', 2);
@@ -354,26 +358,3 @@ VALUES
 (20, 'Spider-Man: No Way Home', 148, '2021-12-17', 'USA', 'English', 'vu', 1),
 (21, 'Django Unchained', 165, '2012-12-25', 'USA', 'English', 'non vu', 2),
 (22, 'The Wolf of Wall Street', 180, '2013-12-25', 'USA', 'English', 'vu', 1);
-
-INSERT INTO genre (genre, films_film_id)
-VALUES
-('Action', 3),
-('Sci-Fi', 4),
-('Sci-Fi', 5),
-('Romance', 6),
-('Crime', 7),
-('Crime', 8),
-('Drama', 9),
-('Drama', 10),
-('Action', 11),
-('Fantasy', 12),
-('Fantasy', 13),
-('Fantasy', 14),
-('Drama', 15),
-('Action', 16),
-('Action', 17),
-('Sci-Fi', 18),
-('Drama', 19),
-('Action', 20),
-('Western', 21),
-('Drama', 22);
