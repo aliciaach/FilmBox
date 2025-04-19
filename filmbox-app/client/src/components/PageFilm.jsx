@@ -74,7 +74,7 @@ const ListeFilms = () => {
           
       <div className="text-center mt-0">
       <div style={{ position: 'relative', width: '100%', height: '90vh', overflow: 'hidden' }}>
-        {/* <video
+        <video
         autoPlay
         muted
         loop
@@ -91,7 +91,7 @@ const ListeFilms = () => {
       >
         <source src={WickedTrailer} type="video/mp4" />
         Your browser does not support the video tag.
-      </video> */}
+      </video>
       
         <header
           style={{

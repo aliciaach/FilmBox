@@ -34,6 +34,7 @@ function BodyAccueil() {
           style={{
             width: "100%",
             paddingTop: "40px",
+            minHeight: "100vh",
             backgroundColor: "black",
             backgroundImage: `url(${fondAffiches})`,
             backgroundSize: "cover",
