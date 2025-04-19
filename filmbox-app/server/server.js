@@ -246,6 +246,7 @@ app.get("/getUsers", async (req, res) => { //Cette ligne permet au serveur d'éc
 */
 import fetch from "node-fetch";
 
+
 app.get("/api/movies", async (req, res) => {
   //Methode given by the TMBD API, its to authenticate yourself to get access to the API
   const options = {
