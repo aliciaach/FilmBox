@@ -28,15 +28,9 @@ function App() {
         <Route path="/AdminManagementPage" element={<AdminManagementPage />} />
         <Route path="/PageWatchlist" element={<PageWatchList />} />
       </Routes>
-<<<<<<< HEAD
     </BrowserRouter>
-=======
-    </BrowserRouter>*/
-    
     //<UserSettings />
     //<AdminLogin />
-    <UserManagement />
->>>>>>> 8d19093a9aae8f157dd36048428a8c8dbc46b003
   );
 }
 

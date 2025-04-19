@@ -426,45 +426,26 @@ const ListeFilms = () => {
         {erreur ? (
           <p className="text-danger">{erreur}</p>
         ) : (
-          <div className="row mt-3">
-            {filteredFilms.map((film, index) => {
-              let cheminImage = film.poster_path 
-                ? `https://image.tmdb.org/t/p/w500/${film.poster_path}`
-                : BlackImage;
+          <div className="horizontal-scroll">
+  {filteredFilms.map((film, index) => {
+    let cheminImage = film.poster_path 
+      ? `https://image.tmdb.org/t/p/w500/${film.poster_path}`
+      : BlackImage;
 
-              return (
-                <div key={film.id || index} className="col-lg-2" 
-                  style={{
-                    paddingBottom: "25px",
-                  }}>
-                  <div className="card border-0 shadow movie-card" 
-                    style={{
-                      borderRadius: "0px",
-                      transition: 'all 0.3s ease',
-                      transform: 'translateY(0)',
-                      backgroundColor: "transparent"
-                    }}>
-                    <Link to={`/movies/${film.id}`} className="text-decoration-none">
-                      <img
-                        src={cheminImage}
-                        alt={film.title}
-                        className="card-img-top"
-                        style={{ 
-                          height: "300px", 
-                          objectFit: "cover",
-                          transition: 'all 0.3s ease',
-                          borderRadius: "0px"
-                        }}
-                        onError={(e) => {
-                          e.target.src = BlackImage;
-                        }}
-                      />
-                    </Link>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+    return (
+      <div key={film.id || index} className="movie-card">
+        <Link to={`/movies/${film.id}`}>
+          <img
+            src={cheminImage}
+            alt={film.title}
+            style={{ width: "150px", height: "225px", objectFit: "cover" }}
+            onError={(e) => { e.target.src = BlackImage; }}
+          />
+        </Link>
+      </div>
+    );
+  })}
+</div>
         )}
       </div>
 
@@ -478,6 +459,17 @@ const ListeFilms = () => {
         .movie-card:hover img {
           opacity: 0.9;
         }
+
+        .horizontal-scroll {
+  display: flex;
+  overflow-x: auto;
+  gap: 16px;
+  padding: 10px;
+}
+
+.movie-card-simple {
+  flex: 0 0 auto;
+}
       `}</style>
     </div>
   );

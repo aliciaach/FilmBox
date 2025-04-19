@@ -219,7 +219,6 @@ app.delete("/deleteAccount", (req, res) => {
 /*
     API - Obtenir tous les utilisateurs             -------------------------------------------------------------------------------------------------------------------
 
-<<<<<<< HEAD
 app.get("/");
 =======
 */
@@ -239,13 +238,13 @@ app.get("/getUsers", async (req, res) => { //Cette ligne permet au serveur d'éc
     res.json(resultats);
   });
 });
->>>>>>> 8d19093a9aae8f157dd36048428a8c8dbc46b003
 
 /*
     API - Obtenir tous les films                    -------------------------------------------------------------------------------------------------------------------
 */
 import fetch from "node-fetch";
 
+///////////////////////////MOVIES RESQUEST ///////////////////////////////////////
 
 app.get("/api/movies", async (req, res) => {
   //Methode given by the TMBD API, its to authenticate yourself to get access to the API
@@ -276,6 +275,30 @@ app.get("/api/movies", async (req, res) => {
     res.status(500).json({ message: "Failed to fetch movies" });
   }
 });
+
+//Popular movies 
+app.get("/api/popularMovies", async (req, res) => {
+  const response = await fetch("https://api.themoviedb.org/3/movie/popular?...", options);
+  const data = await response.json();
+  res.json(data.results);
+});
+
+//Top rated movies 
+app.get("/api/topRatedMovies", async (req, res) => {
+  const response = await fetch("https://api.themoviedb.org/3/movie/top_rated?...", options);
+  const data = await response.json();
+  res.json(data.results);
+});
+
+
+//Upcoming movies 
+app.get("/api/upcomingMovies", async (req, res) => {
+  const response = await fetch("https://api.themoviedb.org/3/movie/upcoming?...", options);
+  const data = await response.json();
+  res.json(data.results);
+});
+
+
 
 /*
     API - Obtenir un film par ID
