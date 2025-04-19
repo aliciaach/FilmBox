@@ -17,6 +17,8 @@ const ListeFilms = () => {
   const [showFilters, setShowFilters] = useState(false);
   const videoRef = useRef();
   const [topRatedMovies, setTopRatedMovies] = useState([]);
+  const [upcomingMovies, setUpcomingMovies] = useState([]);
+
 
 
   
@@ -94,16 +96,28 @@ const ListeFilms = () => {
       .catch(erreur => setErreur(erreur.message));
 
 
-      //this one is getting the action movies
+      //this one is for getting the top rated movies
     fetch("http://localhost:4000/api/topRatedMovies")
     .then((response) => {
       if (!response.ok) {
-        throw new Error("Problème dans le chargement des films d'action");
+        throw new Error("Problème dans le chargement des top rated movies");
       }
       return response.json();
     })
     .then(donnees => setTopRatedMovies(donnees))
     .catch(erreur => setErreur(erreur.message));
+
+
+     //this one is for getting upcoming movies 
+     fetch("http://localhost:4000/api/upcomingMovies")
+     .then((response) => {
+       if (!response.ok) {
+         throw new Error("Problème dans le chargement des upcoming movies");
+       }
+       return response.json();
+     })
+     .then(donnees => setUpcomingMovies(donnees))
+     .catch(erreur => setErreur(erreur.message));
 
     
   }, []);
@@ -487,6 +501,30 @@ const ListeFilms = () => {
       );
     })}
   </div>
+
+  <h1>Upcoming Movies</h1>
+  <div className="horizontal-scroll">
+    {upcomingMovies.map((film, index) => {
+      let cheminImage = film.poster_path 
+        ? `https://image.tmdb.org/t/p/w500/${film.poster_path}`
+        : BlackImage;
+
+      return (
+        <div key={`second-${film.id || index}`} className="movie-card">
+          <Link to={`/movies/${film.id}`}>
+            <img
+              src={cheminImage}
+              alt={film.title}
+              style={{ width: "150px", height: "225px", objectFit: "cover" }}
+              onError={(e) => { e.target.src = BlackImage; }}
+            />
+          </Link>
+        </div>
+      );
+    })}
+  </div>
+
+  
 
 </div>
         )}

@@ -308,9 +308,24 @@ app.get("/api/topRatedMovies", async (req, res) => {
 
 //Upcoming movies 
 app.get("/api/upcomingMovies", async (req, res) => {
-  const response = await fetch("https://api.themoviedb.org/3/movie/upcoming?...", options);
-  const data = await response.json();
-  res.json(data.results);
+  try {
+    const response = await fetch(
+      "https://api.themoviedb.org/3/movie/upcoming?language=en-US&page=1",
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+        }
+      }
+    );
+
+    const data = await response.json();
+    res.json(data.results);
+  } catch (error) {
+    console.error("Error fetching upcoming movies:", error);
+    res.status(500).json({ error: "Failed to fetch upcoming movies" });
+  }
 });
 
 
