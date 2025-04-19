@@ -29,7 +29,7 @@ const con = mysql.createConnection({
   host: "localhost",
   user: "scott",
   password: "oracle",
-  database: "prototype",
+  database: "filmbox",
 });
 
 con.connect(function (err) {
@@ -217,13 +217,32 @@ app.delete("/deleteAccount", (req, res) => {
   });
 });*/
 /*
-    API - Obtenir tous les utilisateurs
-*/
+    API - Obtenir tous les utilisateurs             -------------------------------------------------------------------------------------------------------------------
 
+<<<<<<< HEAD
 app.get("/");
+=======
+*/
+app.get("/getUsers", async (req, res) => { //Cette ligne permet au serveur d'écouter les requêtes GET envoyées à l'URL /getUsers et d'exécuter une fonction lorsque cette requête est reçue.
+  const sql = "SELECT * FROM utilisateur";  // Requête SQL pour récupérer tous les utilisateurs
+
+  con.query(sql, (erreur, resultats) => {
+    if (erreur) {
+      console.error("Erreur de la BDD : ", erreur);
+      return res.status(500).json({ message: "Erreur du serveur" });
+    }
+    if (resultats.length === 0) {
+      // Si aucun utilisateur n'a été trouvé avec cet ID, on renvoie une erreur 404
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+    }
+
+    res.json(resultats);
+  });
+});
+>>>>>>> 8d19093a9aae8f157dd36048428a8c8dbc46b003
 
 /*
-    API - Obtenir tous les films
+    API - Obtenir tous les films                    -------------------------------------------------------------------------------------------------------------------
 */
 import fetch from "node-fetch";
 

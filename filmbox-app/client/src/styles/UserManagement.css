@@ -48,8 +48,55 @@ body,
     object-fit: cover;
 }
 
-.list-group-item{
-min-height: clamp(3rem, 5vh, 7vh); /* s’adapte à la hauteur de l’écran */
+.list-group-item{ 
+    min-height: clamp(3rem, 5vh, 7vh); /* s’adapte à la hauteur de l’écran */
     display: flex;
     align-items: center;
+
+    border: 1px solid rgba(255, 255, 255, 0.5) !important; /* BOUTON NORMAL */
+    transition: 0.2s ease-in-out !important;
 }
+
+
+
+.list-group .btnUser:hover { /* PASSE SUR LE BOUTON */
+    color: rgba(255, 255, 255, 1) !important;
+    background-color: rgba(68, 0, 255, 0.25) !important;
+    border-color: rgba(227, 216, 255, 0.5) !important;
+}
+
+
+.list-group .btnUser:focus { /* CLIQUE SUR BOUTON */
+    border: 3px solid rgba(95, 67, 255, 0.6);
+    box-shadow: 0px 0px 15px 1px  rgba(68, 0, 255, 0.7);
+
+    background-color: rgba(68, 0, 255, 0.25) !important;
+}
+
+
+
+.colonne-scrollable::-webkit-scrollbar {
+    width: 10px;
+}
+
+.colonne-scrollable::-webkit-scrollbar-track {
+    background: rgba(130, 126, 255, 0.2); /*rgba(255, 255, 255, 0.1);*/ /* fond (long) */
+    border-radius: 10px;
+}
+
+.colonne-scrollable::-webkit-scrollbar-thumb {
+    /*background: rgba(111, 84, 255, 0.6); /* le petit truc  PAS DE DÉGRADÉ*/
+    border-radius: 20px;
+    border: 1px solid rgba(42, 3, 151, 0.796); /* border du petit truc */
+
+    /*background: linear-gradient(to bottom,  rgba(36, 0, 136, 0.796), rgba(0, 76, 255, 0.796),  rgba(36, 0, 136, 0.796)); BLEU*/
+    background: linear-gradient(to bottom, rgba(58, 38, 148, 0.796), rgba(111, 84, 255, 0.796), rgba(58, 38, 148, 0.796)); /* MAUVE*/
+}
+
+.colonne-scrollable::-webkit-scrollbar-thumb:hover {
+    /*background: rgba(154, 134, 255, 0.9); /* quand tu passes la souris sur le petit truc */
+    background: linear-gradient(to bottom, rgba(107, 67, 252, 0.9), rgba(149, 128, 255, 0.9), rgba(107, 67, 252, 0.9));
+}
+
+
+
