@@ -18,6 +18,8 @@ const ListeFilms = () => {
   const videoRef = useRef();
   const [topRatedMovies, setTopRatedMovies] = useState([]);
   const [upcomingMovies, setUpcomingMovies] = useState([]);
+  const [actionMovies, setActionMovies] = useState([]);
+
 
 
 
@@ -117,6 +119,17 @@ const ListeFilms = () => {
        return response.json();
      })
      .then(donnees => setUpcomingMovies(donnees))
+     .catch(erreur => setErreur(erreur.message));
+
+     //this one is for getting actions movies 
+     fetch("http://localhost:4000/api/moviesByGenres?genre=28")
+     .then((response) => {
+       if (!response.ok) {
+         throw new Error("Problème dans le chargement des films d'actions");
+       }
+       return response.json();
+     })
+     .then(donnees => setActionMovies(donnees))
      .catch(erreur => setErreur(erreur.message));
 
     
@@ -524,7 +537,49 @@ const ListeFilms = () => {
     })}
   </div>
 
-  
+  <h1>Top Rated Movies</h1>
+  <div className="horizontal-scroll">
+    {topRatedMovies.map((film, index) => {
+      let cheminImage = film.poster_path 
+        ? `https://image.tmdb.org/t/p/w500/${film.poster_path}`
+        : BlackImage;
+
+      return (
+        <div key={`second-${film.id || index}`} className="movie-card">
+          <Link to={`/movies/${film.id}`}>
+            <img
+              src={cheminImage}
+              alt={film.title}
+              style={{ width: "150px", height: "225px", objectFit: "cover" }}
+              onError={(e) => { e.target.src = BlackImage; }}
+            />
+          </Link>
+        </div>
+      );
+    })}
+  </div>
+
+  <h1>Action Movies</h1>
+  <div className="horizontal-scroll">
+    {actionMovies.map((film, index) => {
+      let cheminImage = film.poster_path 
+        ? `https://image.tmdb.org/t/p/w500/${film.poster_path}`
+        : BlackImage;
+
+      return (
+        <div key={`second-${film.id || index}`} className="movie-card">
+          <Link to={`/movies/${film.id}`}>
+            <img
+              src={cheminImage}
+              alt={film.title}
+              style={{ width: "150px", height: "225px", objectFit: "cover" }}
+              onError={(e) => { e.target.src = BlackImage; }}
+            />
+          </Link>
+        </div>
+      );
+    })}
+  </div>
 
 </div>
         )}

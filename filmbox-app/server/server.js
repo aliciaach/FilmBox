@@ -329,6 +329,36 @@ app.get("/api/upcomingMovies", async (req, res) => {
 });
 
 
+//Pour appeler cet api, ajouter le genre après en utilisant ?genre=ID. Ex.: http://localhost:4000/api/moviesByGenres?genre=28
+app.get("/api/moviesByGenres", async (req, res) => {
+  const genreId = req.query.genre;
+
+  if (!genreId) {
+    return res.status(400).json({ error: "Missing Genre ID !!" });
+  }
+
+  try {
+    const response = await fetch(
+      `https://api.themoviedb.org/3/discover/movie?with_genres=${genreId}&language=en-US&page=1`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+        }
+      }
+    );
+
+    const data = await response.json();
+    res.json(data.results);
+  } catch (error) {
+    console.error("Error fetching movies by genre:", error);
+    res.status(500).json({ error: "Failed to fetch movies by genre" });
+  }
+});
+
+
+
 
 /*
     API - Obtenir un film par ID
