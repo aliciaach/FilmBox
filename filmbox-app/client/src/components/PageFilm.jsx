@@ -585,6 +585,14 @@ const ListeFilms = () => {
         )}
       </div>
 
+      {/* Fadding pour que la page et le footer blend ensemble */}
+      <div
+        style={{
+          height: "40px",
+          background: "linear-gradient(to bottom, rgba(7, 0, 66, 0), rgba(7, 0, 66, 1))",
+        }}
+        />
+
       {/* styles personnalisés pour l'effet de survol */}
       <style>{`
         .movie-card:hover {

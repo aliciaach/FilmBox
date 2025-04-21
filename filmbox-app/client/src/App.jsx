@@ -11,11 +11,13 @@ import AdminLogin from "./components/AdminLogin";
 import AdminManagement from "./components/adminManagement";
 import AdminManagementPage from "./components/AdminManagementPage";
 import PageWatchList from "./components/PageWatchList";
+import Footer from './components/Footer';
 // import UserManagement from "./components/UserManagement"; 
 
 function App() {
   return (
     <BrowserRouter>
+    <div>
       <Routes>
         <Route path="/" element={<BodyAccueil />} />
         <Route path="/connexion" element={<Connexion />} />
@@ -28,6 +30,8 @@ function App() {
         <Route path="/AdminManagementPage" element={<AdminManagementPage />} />
         <Route path="/PageWatchlist" element={<PageWatchList />} />
       </Routes>
+      <Footer/>
+    </div>
     </BrowserRouter>
     //<UserSettings />
     //<AdminLogin />

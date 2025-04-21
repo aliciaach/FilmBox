@@ -357,7 +357,22 @@ app.get("/api/moviesByGenres", async (req, res) => {
   }
 });
 
+app.get("/api/genres", async (req, res) => {
+  try {
+    const response = await fetch("https://api.themoviedb.org/3/genre/movie/list?language=en-US", {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${process.env.TMDB_TOKEN}`
+      }
+    });
 
+    const data = await response.json();
+    res.json(data.genres);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch genre list" });
+  }
+});
 
 
 /*
