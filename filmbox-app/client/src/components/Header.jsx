@@ -2,9 +2,30 @@ import imageLogo from "../assets/logo_FilmBox.png";
 import imageProfil from "../assets/icone_utilisateur.png";
 import { Link } from 'react-router-dom';
 import '../styles/Header.css';
+import { useState, useEffect } from "react";
+
 
 function Header() {
-  return (
+  const [searchInput, setSearchInput] = useState("");
+  const [results, setResults] = useState([]);
+
+  useEffect(() => {
+    if (searchInput === "") {
+      setResults([]);
+      return;
+    }
+    
+    fetch(`/api/searchMovie?query=${searchInput}`)
+    .then((res) => res.json())
+    .then((data) => {
+      setResults(data);
+    })
+    .catch((err) => {
+      console.error("Error while fetching search results:", err);
+    });
+}, [searchInput]);
+    
+    return (
     <header
       className="pb-5"
       style={{
@@ -42,15 +63,25 @@ function Header() {
             <Link to="/PageWatchList" className="text-white text-decoration-none fw-light nav-link-custom">
               MY MOVIES
             </Link>
-            <form action="" className="search-form">
+            <div className="search-form" style={{ position: 'relative' }}>
               <input
-                type="search"
-                name="search"
+                type="text"
                 className="search-input"
                 placeholder="Search here ..."
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
               />
-            <i className="fa fa-search"></i>
-          </form>
+              <i className="fa fa-search"></i>
+
+              {/* Search results -- CORRECT FRONT END NOT DONE YET */}
+              {searchInput && results.length > 0 && (
+                <ul className="search-results">
+                  {results.map((movie) => (
+                    <li key={movie.id} className="text-white">{movie.title}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
         </div>
 

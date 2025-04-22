@@ -415,7 +415,14 @@ const ListeFilms = () => {
           <p className="text-danger">{erreur}</p>
         ) : (
           <div>
-            <h1>Movies to Discover</h1>
+
+        <div style={{
+          fontSize: "30px",
+          textAlign: "left",
+          lineHeight: "1.2"
+        }}>
+          Start your next discovery here
+        </div>
           <div className="horizontal-scroll">
   {filteredFilms.map((film, index) => {
     let cheminImage = film.poster_path 
@@ -437,7 +444,13 @@ const ListeFilms = () => {
   })}
       </div>
 
-  <h1>Upcoming Movies</h1>
+      <div style={{
+        fontSize: "30px",
+        textAlign: "left",
+        lineHeight: "1.2"
+      }}>
+        Sneak a peek at the future – Coming soon...
+      </div>
   <div className="horizontal-scroll">
     {upcomingMovies.map((film, index) => {
       let cheminImage = film.poster_path 
@@ -459,7 +472,14 @@ const ListeFilms = () => {
     })}
   </div>
 
-  <h1>Top Rated Movies</h1>
+
+        <div style={{
+          fontSize: "30px",
+          textAlign: "left",
+          lineHeight: "1.2"
+        }}>
+          Top of the charts. Top of your list
+        </div>
   <div className="horizontal-scroll">
     {topRatedMovies.map((film, index) => {
       let cheminImage = film.poster_path 
@@ -481,7 +501,13 @@ const ListeFilms = () => {
     })}
   </div>
 
-  <h1>Action Movies</h1>
+        <div style={{
+          fontSize: "30px",
+          textAlign: "left",
+          lineHeight: "1.2"
+        }}>
+          Action Movies
+        </div>
   <div className="horizontal-scroll">
     {actionMovies.map((film, index) => {
       let cheminImage = film.poster_path 
