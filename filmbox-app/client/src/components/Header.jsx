@@ -34,24 +34,21 @@ function Header() {
         />
 
         {/* liens pages */}
-        <div className="d-flex justify-content-center flex-grow-1">
+        <div className="d-flex align-items-center gap-4 ms-auto me-5">
           <div className="d-flex gap-5">
-            <Link to="/" className="text-white text-decoration-none fw-light">
+            <Link to="/" className="text-white text-decoration-none fw-light nav-link-custom">
               HOME
             </Link>
-            <Link to="/PageWatchList" className="text-white text-decoration-none fw-light">
+            <Link to="/PageWatchList" className="text-white text-decoration-none fw-light nav-link-custom">
               MY MOVIES
             </Link>
-            <Link to="/PageWatchList" className="text-white text-decoration-none fw-light">
-              REASEARCH
-            </Link>
             <form action="" className="search-form">
-          <input
-            type="search"
-            name="search"
-            className="search-input"
-            placeholder="Search here ..."
-          />
+              <input
+                type="search"
+                name="search"
+                className="search-input"
+                placeholder="Search here ..."
+              />
             <i className="fa fa-search"></i>
           </form>
           </div>
