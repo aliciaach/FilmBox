@@ -1,6 +1,7 @@
 import imageLogo from "../assets/logo_FilmBox.png";
 import imageProfil from "../assets/icone_utilisateur.png";
 import { Link } from 'react-router-dom';
+import '../styles/Header.css';
 
 function Header() {
   return (
@@ -35,14 +36,30 @@ function Header() {
         {/* liens pages */}
         <div className="d-flex justify-content-center flex-grow-1">
           <div className="d-flex gap-5">
-            <Link to="/adminManagementPage" className="text-white text-decoration-none fw-light">
-              ADMINS MANAGEMENT
+            <Link to="/" className="text-white text-decoration-none fw-light">
+              HOME
             </Link>
-            <Link to="/userManagement" className="text-white text-decoration-none fw-light">
-              USER MANAGEMENT
+            <Link to="/PageWatchList" className="text-white text-decoration-none fw-light">
+              MY MOVIES
             </Link>
+            <Link to="/PageWatchList" className="text-white text-decoration-none fw-light">
+              REASEARCH
+            </Link>
+            <form action="" className="search-form">
+          <input
+            type="search"
+            name="search"
+            className="search-input"
+            placeholder="Search here ..."
+          />
+            <i className="fa fa-search"></i>
+          </form>
           </div>
         </div>
+
+          {/* Source pour comment faire animation search bar:  https://github.com/devression/animated-search-bar/blob/main/style.css */}
+          
+
 
         {/* séparateur */}
         <div
