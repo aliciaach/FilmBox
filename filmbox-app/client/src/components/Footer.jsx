@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 function Footer() {
   return (
     <>
@@ -46,27 +48,39 @@ function Footer() {
 
           <div className="col-md-4 text-center">
             <h6>Account</h6>
-            <ul className="list-unstyled">
-              <li>
-                <a href="#" className="text-light text-decoration-none">
-                  Create Account
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-light text-decoration-none">
-                  Log In
-                </a>
-              </li>
-            </ul>
+              <ul className="list-unstyled">
+                <li>
+                  <Link
+                    to="/inscription"
+                    className="text-light text-decoration-none"
+                    style={{ fontSize: "16px" }}
+                  >
+                    Create Account
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/connexion"
+                    className="text-light text-decoration-none"
+                    style={{ fontSize: "16px" }}
+                  >
+                    Log In
+                  </Link>
+                </li>
+              </ul>
           </div>
 
           <div className="col-md-4 text-center">
             <h6>Gestion</h6>
             <ul className="list-unstyled">
               <li>
-                <a href="#" className="text-light text-decoration-none">
-                  Admin Login
-                </a>
+              <Link
+                    to="/AdminLogin"
+                    className="text-light text-decoration-none"
+                    style={{ fontSize: "16px" }}
+                  >
+                    Admin login
+                  </Link>
               </li>
             </ul>
           </div>

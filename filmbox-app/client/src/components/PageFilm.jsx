@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import Header from '../components/Header'; 
 import "bootstrap/dist/css/bootstrap.min.css";
 import imageLogo from "../assets/logo_FilmBox.png";
 import BlackImage from '../assets/BlackImage.png';
@@ -219,7 +220,12 @@ const ListeFilms = () => {
         }}>
           
       <div className="text-center mt-0">
-        <div style={{ position: 'relative', width: '100%', height: '90vh', overflow: 'hidden' }}>
+        <div style={{ 
+          position: 'relative', 
+          width: '100%', 
+          minHeight: '70vh',
+          overflow: 'hidden' }}>
+          
           <video
             autoPlay
             muted
@@ -236,75 +242,14 @@ const ListeFilms = () => {
             }}
             ref={videoRef}
           >
+            
             <source src={WickedTrailer} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
           
-          <header
-            style={{
-              position: 'relative', 
-              zIndex: 1,            
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              padding: '10px 20px',
-              backgroundColor: 'rgba(116, 101, 247, 0)',
-              color: '#fff'
-            }}
-          >
-            {/* Logo */}
-            <div style={{ fontSize: "24px", fontWeight: "bold" }}>
-              <img src={imageLogo} alt="Logo" style={{ width: "150px", height: "auto" }} />
-            </div>
-            {/* Navigation */}
-            <nav style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-              <a
-                href="/"
-                style={{ textDecoration: 'none', color: '#fff', fontSize: '18px', marginTop:'-50px' }}
-              >
-                HOME
-              </a>
-              <a
-                href="/PageWatchList"
-                style={{ textDecoration: 'none', color: '#fff', fontSize: '18px', marginTop:'-50px'}}
-              >
-                MY MOVIES
-              </a>
-              <span style={{ fontSize: '18px', marginTop:'-50px' }}>|</span>
-
-              {/* Profile Section */}
-              <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginTop:'-25px'}}>
-                <DropdownButton 
-                  id="dropdown-basic-button" 
-                  align="end"
-                  title={
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <div
-                        style={{
-                        width: '32px',
-                        height: '32px',
-                        borderRadius: '50%',
-                        backgroundColor: '#fff',
-                        marginRight: '8px'
-                      }}
-                      ></div>
-                      <span style={{ fontSize: '18px', color: '#fff'}}>Profil</span>
-                    </div>
-                  }
-                  variant="transparent"
-                  style={{
-                    background: "transparent",
-                    border: "none",
-                    margin: "0px",
-                    padding: "0px"
-                  }}
-                >
-                  <Dropdown.Item href="/UserSettings">Settings</Dropdown.Item>
-                  <Dropdown.Item href="/connexion">Logout</Dropdown.Item>
-                </DropdownButton>
-              </div>
-            </nav>
-          </header>
+          <div style={{ position: 'relative', zIndex: 2 }}>
+            <Header />
+          </div>
           
           <div className="movie-info" 
             style={{ 
@@ -491,29 +436,6 @@ const ListeFilms = () => {
     );
   })}
       </div>
-
-
-  <h1>Top Rated Movies</h1>
-  <div className="horizontal-scroll">
-    {topRatedMovies.map((film, index) => {
-      let cheminImage = film.poster_path 
-        ? `https://image.tmdb.org/t/p/w500/${film.poster_path}`
-        : BlackImage;
-
-      return (
-        <div key={`second-${film.id || index}`} className="movie-card">
-          <Link to={`/movies/${film.id}`}>
-            <img
-              src={cheminImage}
-              alt={film.title}
-              style={{ width: "150px", height: "225px", objectFit: "cover" }}
-              onError={(e) => { e.target.src = BlackImage; }}
-            />
-          </Link>
-        </div>
-      );
-    })}
-  </div>
 
   <h1>Upcoming Movies</h1>
   <div className="horizontal-scroll">

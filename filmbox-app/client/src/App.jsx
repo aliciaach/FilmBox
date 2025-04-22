@@ -10,6 +10,7 @@ import UserSettings from "./components/UserSettings";
 import AdminLogin from "./components/AdminLogin";
 import AdminManagement from "./components/adminManagement";
 import AdminManagementPage from "./components/AdminManagementPage";
+import UserManagement from "./components/UserManagement";
 import PageWatchList from "./components/PageWatchList";
 import Footer from './components/Footer';
 // import UserManagement from "./components/UserManagement"; 
@@ -26,6 +27,7 @@ function App() {
         <Route path="/movies/:filmId" element={<FilmInfo />} />
         <Route path="/userSettings" element={<UserSettings />} />
         <Route path="/AdminLogin" element={<AdminLogin />} />
+        <Route path="/userManagement" element={<UserManagement />} />
         <Route path="/adminManagement" element={<AdminManagement />} />
         <Route path="/AdminManagementPage" element={<AdminManagementPage />} />
         <Route path="/PageWatchlist" element={<PageWatchList />} />
