@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import BlackImage from '../assets/BlackImage.png'
 import Header from '../components/Header'; 
+import { useNavigate } from 'react-router-dom';
 
 /*
     https://www.youtube.com/watch?v=oYGhoHW7zqI
@@ -14,6 +15,7 @@ function UserSettings() {
   const [message, setMessage] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [tempoUser, setTempoUser] = useState({});
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -65,7 +67,15 @@ function UserSettings() {
         body: JSON.stringify({ userId: user.id }),
       });
       const data = await response.json();
-      setMessage(data.success ? "User deleted" : "Error, couldn't delete account");
+
+      if (data.success)
+      {
+        await fetch('http://localhost:4000/end-session', { method: 'POST' });
+        navigate('/');
+      } else {
+        setMessage("Error, couldn't delete account");
+      }
+
     } catch (error) {
       console.error('Error deleting account:', error);
       setMessage("An error occurred while deleting account");
@@ -89,6 +99,7 @@ function UserSettings() {
       const data = await response.json();
       if (data.success)
       {
+        console.log("RESPONSE DATA:", data);
         setUser(tempoUser);
         setMessage("USER INFORMATIONS UDPATED!!");
       } else {  
@@ -354,9 +365,7 @@ function UserSettings() {
             Delete Account
           </button>
         </form>
-
         
-
         <p style={{ fontSize: '10px'}}>Ce site est protégé par reCAPTCHA et la politique de confidentialité et les conditions d'utilisation de FilmBox s'appliquent.</p>
       </div>
     </div>

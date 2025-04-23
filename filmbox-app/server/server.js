@@ -220,7 +220,7 @@ app.delete("/deleteAccount", (req, res) => {
         .status(200)
         .json({ success: true, message: "Your account was deleted !" });
     } else {
-      console.log("Error, couldnt update password");
+      console.log("Error, couldnt delete password");
       return res
         .status(404)
         .json({ succes: false, message: "Error, couldnt delete user..." });
