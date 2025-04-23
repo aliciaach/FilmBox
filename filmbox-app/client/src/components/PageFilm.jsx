@@ -21,9 +21,6 @@ const ListeFilms = () => {
   const [upcomingMovies, setUpcomingMovies] = useState([]);
   const [actionMovies, setActionMovies] = useState([]);
 
-
-
-
   
   //Filter states
   const [filters, setFilters] = useState({

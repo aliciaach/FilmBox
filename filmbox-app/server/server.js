@@ -152,6 +152,33 @@ app.post("/LoginRegister", (req, res) => {
   );
 });
 
+app.post("/saveUserAccountChanges", (req, res) => {
+  console.log("Trying to update user information");
+  const { id, prenom, nom, courriel, telephone } = req.body;
+
+  const sql = `UPDATE utilisateur SET prenom = ?, nom = ?, courriel = ?, telephone = ? WHERE utilisateur_id = ?`;
+
+  con.query(sql, [prenom, nom, courriel, telephone, id], (err, results) => {
+    if (err) {
+      console.error("Database error: ", err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+
+    if (results.affectedRows > 0) {
+      console.log("USER INFO UPDATED!");
+      return res
+        .status(200)
+        .json({ success: true, message: "User information updated." });
+    } else {
+      console.log("Error, couldn't update user information");
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found or no changes made." });
+    }
+  });
+});
+
+
 app.post("/ChangePassword", (req, res) => {
   console.log("Trying to update password");
   const { email, newPassword } = req.body;
@@ -175,6 +202,7 @@ app.post("/ChangePassword", (req, res) => {
     }
   });
 });
+
 
 app.delete("/deleteAccount", (req, res) => {
   console.log("trying to delete account");
@@ -394,7 +422,7 @@ app.get("/api/searchMovie", async (req, res) => {
     res.status(500).json({ error: "Failed while searching movies" });
   }
 })
-
+ 5
 /*
     API - Obtenir un film par ID
 */
