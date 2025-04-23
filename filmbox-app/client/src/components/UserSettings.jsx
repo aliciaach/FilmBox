@@ -100,6 +100,13 @@ function UserSettings() {
     }
   };
 
+  const handleSubmitCancel = (e) => {
+    e.preventDefault();
+    setTempoUser(user);
+    setMessage("Changes cancelled.");
+  };
+  
+
   return (
 
     <>
@@ -315,6 +322,31 @@ function UserSettings() {
             Update Password
           </button>
         </form>*/}
+<div className="row justify-content-center">
+  <div className="col-auto">
+    <form onSubmit={handleSubmitCancel}>
+      <button type="submit" className="btn me-2" style={{ color: "white" }}>
+        Cancel
+      </button>
+    </form>
+  </div>
+
+  <div className="col-auto">
+    <form onSubmit={handleSubmitSave}>
+      <button
+        type="submit"
+        className="btn w-100"
+        style={{
+          backgroundColor: "rgba(111, 79, 255, 0.3)",
+          color: "white",
+        }}
+      >
+        Save
+      </button>
+    </form>
+  </div>
+</div>
+
 
         {/* Delete Account Form */}
         <form onSubmit={handleSubmitDelete}>
@@ -323,11 +355,7 @@ function UserSettings() {
           </button>
         </form>
 
-        <form onSubmit={handleSubmitSave}>
-          <button type="submit" className="btn">
-            Save Changes
-          </button>
-        </form>
+        
 
         <p style={{ fontSize: '10px'}}>Ce site est protégé par reCAPTCHA et la politique de confidentialité et les conditions d'utilisation de FilmBox s'appliquent.</p>
       </div>
