@@ -8,12 +8,11 @@ import { fileURLToPath } from "url";
 import mysql from "mysql";
 import { body, validationResult } from "express-validator";
 import dateFormat from "dateformat";
-import { MongoClient } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 import { config } from "dotenv";
 import bcrypt from "bcrypt";
 
 import cors from "cors";
-
 
 config();
 
@@ -221,7 +220,7 @@ app.delete("/deleteAccount", (req, res) => {
     API - Obtenir tous les utilisateurs
 */
 
-app.get("/")
+app.get("/");
 
 /*
     API - Obtenir tous les films
@@ -410,6 +409,43 @@ app.get("/adminsTab", async (req, res) => {
   } catch (error) {
     console.error(
       "OOPS Il y a eu une erreur dans la récupération des admins : ",
+      error
+    );
+    res.status(500).json({ message: "erreur serveur" });
+  } finally {
+    await client.close();
+  }
+});
+
+//Pour les changements d<information des Admins
+//API pour update des admins
+app.put("/adminsTab/:id", async (req, res) => {
+  const adminId = req.params.id; //Cherche ID du admin du URL
+  const adminChange = req.body;
+
+  // On ne veux pas changer date de creation
+  const { dateCreation, ...informationsChanges } = adminChange;
+  try {
+    //Connexion a la base de donnees
+    await client.connect();
+    const db = client.db(dbName);
+    const collection = db.collection("AdminUsers");
+
+    const resultats = await collection.updateOne(
+      { _id: new ObjectId(adminId) },
+      { $set: informationsChanges }
+    );
+
+    //Assurer que changement successful :
+    if (resultats.matchedCount > 0) {
+      console.log("Update du Admin est fait successfully");
+      res.json({ message: "Update du Admin est fait successfully" });
+    } else {
+      res.status(404).json({ message: "Admin pas trouver" });
+    }
+  } catch (error) {
+    console.error(
+      "OOPS Il y a eu une erreur dans le changement des infos d'un admin ",
       error
     );
     res.status(500).json({ message: "erreur serveur" });

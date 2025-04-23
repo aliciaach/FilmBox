@@ -72,6 +72,41 @@ function AdminManagement() {
     // You can add real search logic here when data is ready
   };
 
+  //UPDATE
+  const handleUpdateSave = async (e) => {
+    e.preventDefault(); //Devrait empecher de refresh la page
+
+    if (!adminChoisi) {
+      console.log("Pas d'admin choisi pour modifier");
+      return;
+    }
+  };
+
+  const informationsAdminModifies = {};
+
+  const champsVerifier = [
+    "username",
+    "name",
+    "lastName",
+    "email",
+    "phoneNumber",
+    "role",
+  ];
+
+  champsVerifier.forEach((champ) => {
+    if (
+      adminChoisi[champ] !== adminChoisi[`old${capitalizeFirstLetter(champ)}`]
+    ) {
+      informationsAdminModifies[champ] = adminChoisi[champ];
+      console.log("Chamgement de ce champ : " + champ);
+    }
+  });
+
+  if (Object.keys(informationsAdminModifies).length === 0) {
+    console.log("Pas de changement!!!");
+    return;
+  }
+
   return (
     <div
       className="bg-dark text-white min-vh-100"
@@ -443,17 +478,7 @@ function AdminManagement() {
                         ? new Date(adminChoisi.createdAt).getDate()
                         : ""
                     }
-                    onChange={(e) => {
-                      const day = e.target.value;
-                      setAdminChoisi((prevAdmin) => ({
-                        ...prevAdmin,
-                        createdAt: updateDateField(
-                          prevAdmin.createdAt,
-                          "DD",
-                          day
-                        ),
-                      }));
-                    }}
+                    readOnly
                     className="form-control bg-transparent text-white text-center"
                     style={{ borderColor: "rgba(116,101,247,0.6)" }}
                   />
@@ -469,17 +494,7 @@ function AdminManagement() {
                         ? new Date(adminChoisi.createdAt).getMonth() + 1
                         : ""
                     }
-                    onChange={(e) => {
-                      const month = e.target.value;
-                      setAdminChoisi((prevAdmin) => ({
-                        ...prevAdmin,
-                        createdAt: updateDateField(
-                          prevAdmin.createdAt,
-                          "MM",
-                          month
-                        ),
-                      }));
-                    }}
+                    readOnly
                     className="form-control bg-transparent text-white text-center"
                     style={{ borderColor: "rgba(116,101,247,0.6)" }}
                   />
@@ -495,17 +510,7 @@ function AdminManagement() {
                         ? new Date(adminChoisi.createdAt).getFullYear()
                         : ""
                     }
-                    onChange={(e) => {
-                      const annee = e.target.value;
-                      setAdminChoisi((prevAdmin) => ({
-                        ...prevAdmin,
-                        createdAt: updateDateField(
-                          prevAdmin.createdAt,
-                          "YYYY",
-                          annee
-                        ),
-                      }));
-                    }}
+                    readOnly
                     className="form-control bg-transparent text-white text-center"
                     style={{ borderColor: "rgba(116,101,247,0.6)" }}
                   />
