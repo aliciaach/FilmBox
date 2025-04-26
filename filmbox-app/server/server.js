@@ -620,7 +620,8 @@ app.post("/api/watchlist", (req, res) => {
             return res.status(500).json({ message: "Internal server error adding to watchlist" });
           }
 
-          res.status(201).json({ success: true, message: "Film added to watchlist" });
+          console.log(`SUCCES!!!!!!!!!! : Movie with ID ${movieId} added to watchlist for user ${userId}`);
+          res.status(201).json({ success: true, message: "Film added to watchlist", });
         });
       }
     });
