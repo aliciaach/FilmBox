@@ -562,7 +562,6 @@ app.post("/api/watchlist", (req, res) => {
       .status(400)
       .json({ message: "User ID et Movie ID sont requisent" });
   }
-  try {
     //Check if the movie exist in our database first
     const verificationSQL = "SELECT * FROM films WHERE film_id = ?";
     con.query(verificationSQL, [movieId], async (err, results) => {
@@ -611,7 +610,24 @@ app.post("/api/watchlist", (req, res) => {
       } else {
         insertIntoWatchlist();
       }  
+
+
       function insertIntoWatchlist() {
+
+        //Check if the movie isnt already in the user's watchlist
+        const findMovieSql = `SELECT * FROM film_watchlist WHERE film_id = ? AND utilisateur_utilisateur_id = ?`;
+
+        con.query(findMovieSql, [movieId, userId], (checkErr, checkResults) => {
+          if (checkErr) {
+            console.error("Database error checking watchlist:", checkErr);
+            return res.status(500).json({ message: "Internal server error checking watchlist" });
+          }
+          
+          if (checkResults.length > 0) {
+            console.log(`Movie ID ${movieId} already in watchlist for user ${userId}`);
+            return res.status(409).json({ success: false, message: "Movie already in watchlist" });
+          }
+
         const insertWatchlistSql = `INSERT INTO film_watchlist (film_id, utilisateur_utilisateur_id) VALUES (?, ?)`;
         
         con.query(insertWatchlistSql, [movieId, userId], (watchlistErr) => {
@@ -623,13 +639,11 @@ app.post("/api/watchlist", (req, res) => {
           console.log(`SUCCES!!!!!!!!!! : Movie with ID ${movieId} added to watchlist for user ${userId}`);
           res.status(201).json({ success: true, message: "Film added to watchlist", });
         });
-      }
-    });
-  } catch (error) {
-    console.error("Error:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
+      });
+    }
+  });
 });
+
 
   /*const sql =
     "INSERT INTO film_watchlist (film_id, utilisateur_utilisateur_id) VALUES (?, ?)";
