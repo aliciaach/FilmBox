@@ -14,7 +14,7 @@ const FilmInfo = () => {
   const [isInWatchlist, setIsInWatchlist] = useState(false);
   const navigate = useNavigate();
 
-  const userId = localStorage.getItem("userId");
+  const userId = localStorage.getItem("userId"); //local storage idea given by chatgpt
 
   useEffect(() => {
     if (!filmId || isNaN(Number(filmId))) {

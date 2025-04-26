@@ -75,10 +75,47 @@ function Header() {
 
               {/* Search results -- CORRECT FRONT END NOT DONE YET */}
               {searchInput && results.length > 0 && (
-                <ul className="search-results">
-                  {results.map((movie) => (
-                    <li key={movie.id} className="text-white">{movie.title}</li>
-                  ))}
+                <ul style={{listStyleType: "none", paddingLeft: 0 }} className="search-results bg-blue-900 mt-5">
+                  {results.slice(0, 5).map((movie) => (
+                     <li key={movie.id}>
+                     <button
+                       onClick={() => navigate(`/movie/${movie.id}`)}
+                       className="w-full text-left px-4 py-3 bg-blue-900 text-white"
+                       style={{
+                         width: "100%",
+                         height: "100%",
+                         background: "rgb(5, 14, 66)",
+                         fontSize: "12px"
+                       }}
+                     >
+                      {/* Movie Poster */}
+                      {movie.poster_path && (<img src={`https://image.tmdb.org/t/p/w92${movie.poster_path}`} alt={movie.title}
+                        style={{
+                          width: "40px",
+                          height: "60px",
+                          objectFit: "cover",
+                          borderRadius: "4px",
+                        }}
+                      />
+                    )}
+                       {movie.title}
+                     </button>
+                   </li>
+                 ))}
+                 {results.length > 3 && (
+                   <li>
+                     <button
+                       onClick={() => navigate(`/search?query=${searchInput}`)}
+                       className="w-full text-left px-4 py-3 hover:bg-gray-700 text-blue-400"
+                       style={{
+                        width: "100%",
+                        height: "25px"
+                       }}
+                     >
+                       See all results...
+                     </button>
+                   </li>
+                 )}
                 </ul>
               )}
             </div>
