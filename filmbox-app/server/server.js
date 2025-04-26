@@ -109,7 +109,11 @@ app.post("/login", (req, res) => {
       console.log("USER FOUNDDDDDD" + results[0].courriel);
       return res
         .status(200)
-        .json({ succes: true, message: "Login Succesful !" });
+        .json({ 
+          success: true, 
+          message: "Login Successful!", 
+          userId: results[0].utilisateur_id 
+        });
     } else {
       console.log("USER NOTTT FOUNDDD");
       return res.status(401).json({
@@ -558,8 +562,75 @@ app.post("/api/watchlist", (req, res) => {
       .status(400)
       .json({ message: "User ID et Movie ID sont requisent" });
   }
+  try {
+    //Check if the movie exist in our database first
+    const verificationSQL = "SELECT * FROM films WHERE film_id = ?";
+    con.query(verificationSQL, [movieId], async (err, results) => {
+      if (err) {
+        console.error("Database problem:", err);
+        return res.status(500).json({ message: "Internal server problem"});
+      }
 
-  const sql =
+      //If the movies doesnt exist yet, we create it 
+      if (results.length === 0){
+        const options = {
+          method: "GET",
+          headers: {
+            accept: "application/json",
+            Authorization:
+              "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+          },
+        };
+
+        const tmdbResponse = await fetch(
+          `https://api.themoviedb.org/3/movie/${movieId}`,
+          options
+        );
+
+        if (!tmdbResponse.ok) {
+          console.error("Failed to fetch movie from TMDB");
+          return res.status(404).json({ message: "Movie not found in TMDB" });
+        }
+
+        const movieData = await tmdbResponse.json();
+
+        //This is the data that will be saved on our local database
+        const newFilmSQL = `INSERT INTO films (film_id, titre, film_duree, date_sortie, pays_origin_film, langue_original, status, directeur_directeur_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+
+        const filmValues = [movieData.id, movieData.title, movieData.runtime || 0, movieData.release_date || null, movieData.production_countries?.[0]?.name || 'Unknown', movieData.original_language || 'Unknown', movieData.status || 'Unknown', null]; //director is null for now, have to fix a bug first
+        
+        
+        con.query(newFilmSQL, filmValues, (insertErr) => {
+          if (insertErr) {
+            console.error("Database error inserting film:", insertErr);
+            return res.status(500).json({ message: "Internal server error inserting film" });
+          }
+
+          insertIntoWatchlist();
+        });
+      } else {
+        insertIntoWatchlist();
+      }  
+      function insertIntoWatchlist() {
+        const insertWatchlistSql = `INSERT INTO film_watchlist (film_id, utilisateur_utilisateur_id) VALUES (?, ?)`;
+        
+        con.query(insertWatchlistSql, [movieId, userId], (watchlistErr) => {
+          if (watchlistErr) {
+            console.error("Database error inserting into watchlist:", watchlistErr);
+            return res.status(500).json({ message: "Internal server error adding to watchlist" });
+          }
+
+          res.status(201).json({ success: true, message: "Film added to watchlist" });
+        });
+      }
+    });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+  /*const sql =
     "INSERT INTO film_watchlist (film_id, utilisateur_utilisateur_id) VALUES (?, ?)";
   con.query(sql, [movieId, userId], (err, results) => {
     if (err) {
@@ -570,7 +641,7 @@ app.post("/api/watchlist", (req, res) => {
       .status(201)
       .json({ success: true, message: "Film ajoute dans watchlist" });
   });
-});
+});*/
 
 // Get Watchlist
 // Get Watchlist - Updated to use TMDB API
