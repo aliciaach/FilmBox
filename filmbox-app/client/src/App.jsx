@@ -32,7 +32,7 @@ function App() {
         <Route path="/adminManagement" element={<AdminManagement />} />
         <Route path="/AdminManagementPage" element={<AdminManagementPage />} />
         <Route path="/PageWatchlist" element={<PageWatchList />} />
-        <Route path="/searchResults" element={<SearchResults/>} />
+        <Route path="/SearchResults/:searchQuery" element={<SearchResults/>} />
       </Routes>
       <Footer/>
     </div>

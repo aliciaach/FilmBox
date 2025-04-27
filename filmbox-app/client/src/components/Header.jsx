@@ -78,6 +78,7 @@ function Header() {
                 {/* Search results -- CORRECT FRONT END NOT DONE YET */}
                 {searchInput && results.length > 0 && (
                   <ul style={{
+                    paddingLeft: 0,
                     width: "300px",
                     listStyleType: "none",
                     border: "1px solid white",
@@ -131,7 +132,7 @@ function Header() {
                     {results.length > 3 && (
                       <li>
                         <button
-                          onClick={() => navigate(`/search?query=${searchInput}`)}
+                          onClick={() =>navigate(`/searchResults/${searchInput}`)}
                           className="w-full text-left hover:bg-gray-700 text-blue-400"
                           style={{
                             width: "100%",
