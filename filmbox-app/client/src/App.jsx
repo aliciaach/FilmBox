@@ -13,6 +13,7 @@ import AdminManagementPage from "./components/AdminManagementPage";
 import UserManagement from "./components/UserManagement";
 import PageWatchList from "./components/PageWatchList";
 import Footer from './components/Footer';
+import SearchResults from './components/SearchResults';
 // import UserManagement from "./components/UserManagement"; 
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
         <Route path="/adminManagement" element={<AdminManagement />} />
         <Route path="/AdminManagementPage" element={<AdminManagementPage />} />
         <Route path="/PageWatchlist" element={<PageWatchList />} />
+        <Route path="/searchResults" element={<SearchResults/>} />
       </Routes>
       <Footer/>
     </div>
