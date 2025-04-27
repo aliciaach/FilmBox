@@ -46,6 +46,23 @@ function ManageUsers(){
     const clickObtenirInformationsUser = (userId) => {
     const user = users.find(u => u.utilisateur_id === userId);
     setUserSelectionne(user);
+
+    //Changer compte à suspended //COMME CHANGE PASSWORD dans UserSettings
+    const suspendAccount = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch('http://localhost:4000/suspendAccount', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: userSelectionne.utilisateur_id }),
+      });
+      const data = await response.json();
+      setMessage(data.success ? "User suspended" : "Error, couldn't suspend user");
+    } catch (error) {
+      console.error('Error suspending user:', error);
+      setMessage("An error occurred while  suspending the user.");
+    }
+  };
 }; 
   
 
@@ -360,11 +377,11 @@ return (
             <div className='section-grow d-flex justify-content-center align-items-center'>
 
               {/* Bouton Suspend Account */}
-              <div className="text-center">
-                <button className="btn btn-outline-light btnCustom" style={{ fontSize: '30px' }}>
+              <form onSubmit={suspendAccount} className="text-center">
+                <button className=" btnCustom " style={{ fontSize: '30px' }}> {/*btn btn-outline-light*/}
                   Suspend Account
                 </button>
-              </div>
+              </form>
               
             </div>
 

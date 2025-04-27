@@ -237,7 +237,33 @@ app.get("/getUsers", async (req, res) => { //Cette ligne permet au serveur d'éc
     res.json(resultats);
   });
 });
+/*
+    Inspiré de changePassword- Modifier état compte à suspended             -------------------------------------------------------------------------------------------------------------------
 
+*/
+app.post("/suspendAccount", (req, res) => {
+  console.log("Trying to suspend account");
+  const { userId } = req.body;
+  const sql = "UPDATE utilisateur SET accountState = 'suspended' WHERE utilisateur_id = ?";
+
+  con.query(sql, [userId], (err, results) => {
+    if (err) {
+      console.error("Database error: ", err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+    if (results.affectedRows > 0) {
+      console.log("Account suspended !!!!!");
+      return res
+        .status(200)
+        .json({ success: true, message: "this account was suspended !" });
+    } else {
+      console.log("Error, couldnt suspended account");
+      return res
+        .status(404)
+        .json({ succes: false, message: "Error, couldnt create user..." });
+    }
+  });
+});
 /*
     API - Obtenir tous les films                    -------------------------------------------------------------------------------------------------------------------
 */
