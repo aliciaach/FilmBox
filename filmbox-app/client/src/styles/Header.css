@@ -22,14 +22,14 @@
     width: 100%;
     height: 42.5px;
     line-height: 30px;
+    color: white;
     outline: 0;
     border: 0;
     display: none;
     font-size: 1em;
-    border-radius: 20px;
     padding: 0 20px;
-    background-color: transparent;
-    border: 2px solid white;
+    background: rgb(5, 14, 66, 0.8);
+    border: 1px solid white;
   }
   
   .search-form:hover .search-input {
@@ -44,11 +44,10 @@
     position: absolute;
     top: 0;
     right: 0;
-    border-radius: 50%;
     text-align: center;
     font-size: 1.2em;
     transition: all 1s;
-    border: 2px solid white;
+    border: 1px solid white;
   }
   
   .search-form:hover .fa {

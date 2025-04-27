@@ -75,7 +75,14 @@ function Header() {
 
                 {/* Search results -- CORRECT FRONT END NOT DONE YET */}
                 {searchInput && results.length > 0 && (
-                  <ul style={{ listStyleType: "none"}} className="search-results bg-blue-900 mt-5">
+                  <ul style={{
+                    width: "300px",
+                    listStyleType: "none",
+                    border: "1px solid white",
+                    marginTop: "37px",
+                    marginLeft: "-5px",
+                  }}
+                    className="search-results bg-blue-900"> 
                     {results.slice(0, 5).map((movie) => (
                       <li key={movie.id}>
                         <Link to={`/movies/${movie.id}`} style={{ textDecoration: "none" }}>
@@ -84,6 +91,7 @@ function Header() {
                             style={{
                               width: "100%",
                               height: "90px",
+                              padding: "0px",
                               background: "rgb(5, 14, 66)",
                               fontSize: "12px",
                               display: "flex",
@@ -98,11 +106,12 @@ function Header() {
                                   src={`https://image.tmdb.org/t/p/w92${movie.poster_path}`}
                                   alt={movie.title}
                                   style={{
-                                    width: "100%",
-                                    height: "100%", 
-                                    objectFit: "contain",
+                                    width: "100%",          
+                                    height: "100%",            
+                                    objectFit: "contain",      
+                                    objectPosition: "left",   
+                                    display: "block",        
                                     transition: "transform 0.3s ease",
-                                    objectPosition: "left",
                                   }}
                                   onError={(e) => { e.target.src = BlackImage; }}
                                 />
