@@ -100,3 +100,32 @@ body,
 
 
 
+
+
+
+/* Style général du bouton */
+.btnCustom {
+    border: 2px solid transparent;
+    background-image: linear-gradient(to left, #ff5e62, #ff9966);
+    color: white;
+    font-size: 18px;
+    padding: 12px 24px;
+    border-radius: 30px;
+    transition: 0.4s ease;
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+}
+
+/* Effet de survol */
+.btnCustom:hover {
+    background-image: linear-gradient(to left, #ff9966, #ff5e62);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
+}
+
+/* Effet de focus */
+.btnCustom:focus {
+    outline: none;
+    border: 2px solid rgba(95, 67, 255, 0.6);
+    box-shadow: 0 0 15px rgba(68, 0, 255, 0.915);
+}
