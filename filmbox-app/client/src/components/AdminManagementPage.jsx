@@ -12,15 +12,15 @@ function AdminManagement() {
   //Mon code
   const [admins, setAdmins] = useState([]);
   const [adminChoisi, setAdminChoisi] = useState(null);
+  const [adminOriginal, setAdminOriginal] = useState(null);
 
   const handleClickRow = (admin) => {
     setAdminChoisi(admin);
+    setAdminOriginal(admin);
   };
-
-  useEffect(() => {
-    fetchAdmins();
-  }, []);
-
+  const handleCancel = () => {
+    setAdminChoisi(adminOriginal);
+  };
   const fetchAdmins = async () => {
     console.log("Fetching admins...");
     fetch("http://localhost:4000/adminsTab")
@@ -71,7 +71,16 @@ function AdminManagement() {
     console.log("Searching for:", query);
     // You can add real search logic here when data is ready
   };
-
+  const adminsFiltres = admins.filter((admin) => {
+    const recherche = searchValue.toLowerCase();
+    return (
+      admin.username.toLowerCase().includes(recherche) ||
+      (admin.name && admin.lastName.toLowerCase().includes(recherche))
+    );
+  });
+  useEffect(() => {
+    fetchAdmins();
+  }, []);
   //UPDATE
   const handleUpdateSave = async (e) => {
     e.preventDefault(); //Devrait empecher de refresh la page
@@ -80,32 +89,69 @@ function AdminManagement() {
       console.log("Pas d'admin choisi pour modifier");
       return;
     }
+    const informationsAdminModifies = {};
+
+    const champsVerifier = [
+      "username",
+      "name",
+      "lastName",
+      "email",
+      "phoneNumber",
+      "role",
+    ];
+
+    champsVerifier.forEach((champ) => {
+      if (
+        adminChoisi[champ] !==
+        adminChoisi[`old${premiereLettreMajuscule(champ)}`]
+      ) {
+        informationsAdminModifies[champ] = adminChoisi[champ];
+        console.log("Chamgement de ce champ : " + champ);
+      }
+    });
+
+    //S'il n'y a aucun changement
+    if (Object.keys(informationsAdminModifies).length === 0) {
+      console.log("Pas de changement!!!");
+      return;
+    }
+
+    try {
+      const reponse = await fetch(
+        `http://localhost:4000/adminsTab/${adminChoisi._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(informationsAdminModifies),
+        }
+      );
+
+      if (reponse.ok) {
+        //update fonctionne
+        const data = await reponse.json();
+        console.log("Changement Admin reussi: ", data);
+
+        setAdmins((prevAdmin) =>
+          prevAdmin.map((admin) =>
+            admin.id === adminChoisi.id
+              ? { ...admin, ...informationsAdminModifies }
+              : admin
+          )
+        );
+      } else {
+        console.error("Erreur dans le changement admin: ", reponse.statusText);
+      }
+    } catch (error) {
+      console.error("Erreur durant le UPDATE: ", error);
+    }
   };
 
-  const informationsAdminModifies = {};
-
-  const champsVerifier = [
-    "username",
-    "name",
-    "lastName",
-    "email",
-    "phoneNumber",
-    "role",
-  ];
-
-  champsVerifier.forEach((champ) => {
-    if (
-      adminChoisi[champ] !== adminChoisi[`old${capitalizeFirstLetter(champ)}`]
-    ) {
-      informationsAdminModifies[champ] = adminChoisi[champ];
-      console.log("Chamgement de ce champ : " + champ);
-    }
-  });
-
-  if (Object.keys(informationsAdminModifies).length === 0) {
-    console.log("Pas de changement!!!");
-    return;
-  }
+  //function pour mettre premiere lettre majuscule
+  const premiereLettreMajuscule = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
 
   return (
     <div
@@ -324,10 +370,10 @@ function AdminManagement() {
               </tr>
             </thead>
             <tbody>
-              {admins && admins.length > 0 ? (
-                admins.map((admin) => (
+              {adminsFiltres && adminsFiltres.length > 0 ? (
+                adminsFiltres.map((admin) => (
                   <tr
-                    key={admin._id}
+                    key={admin.id}
                     className="bg-transparent border-bottom text-white"
                     onClick={() => handleClickRow(admin)}
                     style={{ cursor: "pointer" }}
@@ -546,6 +592,7 @@ function AdminManagement() {
                 <button
                   type="button"
                   className="btn bg-transparent"
+                  onClick={handleCancel}
                   style={{ color: "rgb(82,75,119)" }}
                 >
                   Cancel
@@ -553,6 +600,7 @@ function AdminManagement() {
                 <button
                   type="submit"
                   className="btn text-white rounded-2 w-25"
+                  onClick={handleUpdateSave}
                   style={{
                     background: "rgba(111,79,255,0.3)",
                     borderColor: "rgb(111,79,255)",

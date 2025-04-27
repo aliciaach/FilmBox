@@ -11,7 +11,6 @@ import dateFormat from "dateformat";
 import { MongoClient, ObjectId } from "mongodb";
 import { config } from "dotenv";
 import bcrypt from "bcrypt";
-
 import cors from "cors";
 
 config();
@@ -29,7 +28,7 @@ const con = mysql.createConnection({
   host: "localhost",
   user: "scott",
   password: "oracle",
-  database: "prototype",
+  database: "filmbox",
 });
 
 con.connect(function (err) {

@@ -9,6 +9,7 @@ import FilmInfo from "./components/FilmInfo";
 import UserSettings from "./components/UserSettings";
 import AdminLogin from "./components/adminLogin";
 import AdminManagement from "./components/adminManagement";
+import AdminManagementPage from "./components/AdminManagementPage";
 import UserManagement from "./components/UserManagement";
 
 export default function App() {
@@ -23,6 +24,7 @@ export default function App() {
         <Route path="/userSettings" element={<UserSettings />} />
         <Route path="/AdminLogin" element={<AdminLogin />} />
         <Route path="/adminManagement" element={<AdminManagement />} />
+        <Route path="/adminManagementPage" element={<AdminManagementPage />} />
         <Route path="/userManagement" element={<UserManagement />} />
       </Routes>
     </BrowserRouter>
