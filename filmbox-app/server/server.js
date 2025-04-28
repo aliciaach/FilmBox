@@ -426,13 +426,13 @@ app.get("/api/searchMovie", async (req, res) => {
     res.status(500).json({ error: "Failed while searching movies" });
   }
 })
-
-//=================== GET LES FILMS A PARTIR DUN SEARCH QUERY ==========================
+// ================== GET MOVIES WITH PAGINATION ==================
 app.get("/api/getMoviesResults/:searchQuery", async (req, res) => {
-  const userInput = req.params.searchQuery;;
+  const userInput = req.params.searchQuery;
+  const page = req.query.page || 1; // Read the page query param (default 1)
 
   try {
-    const response = await fetch(`https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(userInput)}`, {
+    const response = await fetch(`https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(userInput)}&page=${page}`, {
       method: "GET",
       headers: {
         accept: "application/json",
@@ -441,12 +441,36 @@ app.get("/api/getMoviesResults/:searchQuery", async (req, res) => {
     });
 
     const data = await response.json();
-    res.json(data.results);
+    res.json(data); // Send full TMDB object, not only .results
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed while searching movies" });
   }
-})
+});
+
+
+/*app.get("/api/getMoviesResults/:searchQuery", async (req, res) => {
+  const userInput = req.params.searchQuery;
+  const page = req.query.page || 1; 
+
+  try {
+    const response = await fetch(`https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(userInput)}&page=${page}`, {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization: "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+      }
+    });
+
+    const data = await response.json();
+    res.json(data.results); 
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed while searching movies" });
+  }
+});*/
+
+
 /*
     API - Obtenir un film par ID
 */
