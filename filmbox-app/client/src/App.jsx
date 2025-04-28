@@ -14,6 +14,7 @@ import UserManagement from "./components/UserManagement";
 import PageWatchList from "./components/PageWatchList";
 import Footer from './components/Footer';
 import SearchResults from './components/SearchResults';
+import BrowseMovies from './components/BrowseMoviePage';
 // import UserManagement from "./components/UserManagement"; 
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
         <Route path="/AdminManagementPage" element={<AdminManagementPage />} />
         <Route path="/PageWatchlist" element={<PageWatchList />} />
         <Route path="/SearchResults/:searchQuery" element={<SearchResults/>} />
+        <Route path="/BrowseMovies" element={<BrowseMovies/>} />
       </Routes>
       <Footer/>
     </div>

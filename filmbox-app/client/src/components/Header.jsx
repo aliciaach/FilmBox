@@ -59,11 +59,14 @@ function Header() {
           {/* liens pages */}
           <div className="d-flex align-items-center gap-4 ms-auto me-5">
             <div className="d-flex gap-5">
-              <Link to="/" className="text-white text-decoration-none fw-light nav-link-custom">
+              <Link to=" /" className="text-white text-decoration-none fw-light nav-link-custom">
                 HOME
               </Link>
               <Link to="/PageWatchList" className="text-white text-decoration-none fw-light nav-link-custom">
                 MY MOVIES
+              </Link>
+              <Link to="/BrowseMovies" className="text-white text-decoration-none fw-light nav-link-custom">
+                BROWSE MOVIES
               </Link>
               <div className="search-form" style={{ position: 'relative' }}>
                 <input
