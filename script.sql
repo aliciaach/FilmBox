@@ -246,9 +246,11 @@ CREATE TABLE note (
     films_film_id INT NOT NULL,
     utilisateur_utilisateur_id INT NOT NULL,
     PRIMARY KEY (note_id),
+    UNIQUE KEY unique_user_movie (films_film_id, utilisateur_utilisateur_id),
     FOREIGN KEY (films_film_id) REFERENCES films(film_id) ON DELETE CASCADE,
     FOREIGN KEY (utilisateur_utilisateur_id) REFERENCES utilisateur(utilisateur_id) ON DELETE CASCADE
 );
+
 
 CREATE TABLE permission (
     permission_id INT NOT NULL AUTO_INCREMENT,
