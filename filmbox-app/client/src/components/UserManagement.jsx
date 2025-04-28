@@ -12,10 +12,12 @@ import { useNavigate } from 'react-router-dom';
 function ManageUsers(){
 
   const [users, setUsers] = useState([]);  // État pour stocker la liste des utilisateurs
+  const [admin, setAdmin] = useState([]);  // État pour stocker l'admin connecté
   const [error, setError] = useState(null);  // État pour gérer les erreurs
   const [userSelectionne, setUserSelectionne] = useState(null);  // Détails de l'utilisateur sélectionné
 
   useEffect(() => {
+    // Récupérer la liste des utilisateurs
     fetch("http://localhost:4000/getUsers") //requête GET pour récupérer les utilisateurs depuis l'URL
       .then((response) => { //permet de traiter la reponse quand elle arrive
         if (!response.ok) throw new Error("Erreur dans la récupération des utilisateurs"); //vérifie si la réponse HTTP est valide (statut 200 à 299).
@@ -27,9 +29,40 @@ function ManageUsers(){
       .catch((erreur) => setError(erreur.message));  // Gérer les erreurs
   }, []);
 
+    // Récupérer l'admin connecté
+    fetch("http://localhost:4000/get-session", { credentials: 'include' }) //pour envoyer les cookies avec la requête
+      .then((response) => { 
+        if (!response.ok) throw new Error("Erreur dans la récupération de la session");
+        return response.json(); 
+      })
+      .then((data) => { 
+        if(data.loggedIn){
+          setAdmin(data.user);
+        }
+
+      })
+      .catch((erreur) => setError(erreur.message));  // Gérer les erreurs
+
     const clickObtenirInformationsUser = (userId) => {
     const user = users.find(u => u.utilisateur_id === userId);
     setUserSelectionne(user);
+
+    //Changer compte à suspended //COMME CHANGE PASSWORD dans UserSettings
+    const suspendAccount = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch('http://localhost:4000/suspendAccount', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: userSelectionne.utilisateur_id }),
+      });
+      const data = await response.json();
+      setMessage(data.success ? "User suspended" : "Error, couldn't suspend user");
+    } catch (error) {
+      console.error('Error suspending user:', error);
+      setMessage("An error occurred while  suspending the user.");
+    }
+  };
 }; 
   
 
@@ -139,7 +172,8 @@ return (
       
       {/* Header */}
       <div className="d-flex justify-content-between align-items-center p-4 mt-4">
-        <h1>Admin Name - Role Level</h1>
+        <h1> {admin ? `${admin.prenom} ${admin.nom} - Admin` : "Admin Name - Role Level"} </h1> {/* Je mets par défaut que le role c'est "admin" mais je vois pas d'Autre 
+                                                                                                  choix dans la BDD que Admin, je fais quoiiii  AAAAAA */}
         <button className="btn btn-outline-light">Logout</button>
       </div>
 
@@ -156,6 +190,82 @@ return (
                       {user.nom} {user.prenom}
                     </button> ))
                 }
+              {/*
+              <button className="list-group-item bg-transparent text-white btnUser">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white btnUser">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white btnUser">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white btnUser">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white btnUser">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white btnUser">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white btnUser">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white btnUser">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white btnUser">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white btnUser">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white btnUser">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white btnUser">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white btnUser">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white btnUser">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white btnUser">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white btnUser">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white btnUser">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white btnUser">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white btnUser">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white btnUser">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white btnUser">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white btnUser">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white btnUser">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white btnUser">
+                FirstName LastName
+              </button>
+              <button className="list-group-item bg-transparent text-white btnUser">
+                FirstName LastName
+              </button> */}
             </div>
           </div>
 
@@ -169,7 +279,7 @@ return (
                     <div className="ratio ratio-1x1" style={{ width: '60px' }}>
                       <img src={photoProfil} className="rounded-circle img-fluid" style={{ objectFit: 'cover' }}/>
                     </div>
-                    <h2 className="mb-0">John Doe</h2>
+                      <h2 className="mb-0">{userSelectionne ? `${userSelectionne.prenom} ${userSelectionne.nom}` : "John Doe"}</h2>
                   </div>
               
                   {/* Ligne séparatrice */}
@@ -267,11 +377,11 @@ return (
             <div className='section-grow d-flex justify-content-center align-items-center'>
 
               {/* Bouton Suspend Account */}
-              <div className="text-center">
-                <button className="btn btn-outline-light" style={{ fontSize: '30px' }}>
+              <form onSubmit={suspendAccount} className="text-center">
+                <button className=" btnCustom " style={{ fontSize: '30px' }}> {/*btn btn-outline-light*/}
                   Suspend Account
                 </button>
-              </div>
+              </form>
               
             </div>
 
