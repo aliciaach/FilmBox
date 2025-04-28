@@ -28,7 +28,7 @@ function ManageUsers(){
       })
       .catch((erreur) => setError(erreur.message));  // Gérer les erreurs
   }, []);
-
+/*
     // Récupérer l'admin connecté
     fetch("http://localhost:4000/get-session", { credentials: 'include' }) //pour envoyer les cookies avec la requête
       .then((response) => { 
@@ -42,7 +42,7 @@ function ManageUsers(){
 
       })
       .catch((erreur) => setError(erreur.message));  // Gérer les erreurs
-
+*/
     const clickObtenirInformationsUser = (userId) => {
     const user = users.find(u => u.utilisateur_id === userId);
     setUserSelectionne(user);
@@ -172,8 +172,9 @@ return (
       
       {/* Header */}
       <div className="d-flex justify-content-between align-items-center p-4 mt-4">
-        <h1> {admin ? `${admin.prenom} ${admin.nom} - Admin` : "Admin Name - Role Level"} </h1> {/* Je mets par défaut que le role c'est "admin" mais je vois pas d'Autre 
+       {/* <h1> {admin ? `${admin.prenom} ${admin.nom} - Admin` : "Admin Name - Role Level"} </h1> {/* Je mets par défaut que le role c'est "admin" mais je vois pas d'Autre 
                                                                                                   choix dans la BDD que Admin, je fais quoiiii  AAAAAA */}
+        <h1> Admin Name - Role Level</h1>
         <button className="btn btn-outline-light">Logout</button>
       </div>
 
