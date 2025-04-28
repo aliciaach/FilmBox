@@ -463,6 +463,108 @@ app.delete("/api/watchlist/:userId/:movieId", (req, res) => {
   });
 });
 
+app.post("/api/watched", (req, res) => {
+  const { userId, movieId, rating, comment } = req.body;
+
+  // 1. Check if the film exists
+  const checkFilmSql = "SELECT film_id FROM films WHERE film_id = ?";
+  con.query(checkFilmSql, [movieId], (err, result) => {
+    if (err) return res.status(500).json({ message: "Error checking film" });
+
+    if (result.length === 0) {
+      // 2. Insert placeholder film if not found
+      const insertFilmSql = `
+        INSERT INTO films (film_id, titre, film_duree, date_sortie, pays_origin_film, langue_original, status, directeur_directeur_id)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      `;
+      const now = new Date().toISOString().split("T")[0]; // format YYYY-MM-DD
+
+      con.query(
+        insertFilmSql,
+        [
+          movieId,
+          "TMDB Film", // Placeholder title
+          100, // Placeholder duration
+          now, // Today's date
+          "USA", // Placeholder country
+          "en", // Placeholder language
+          "vu", // Placeholder status
+          1, // Default director (must exist)
+        ],
+        (err2) => {
+          if (err2) {
+            console.error("Insert film error:", err2);
+            return res.status(500).json({ message: "Error inserting film" });
+          }
+          insertRating(); // now insert the rating
+        }
+      );
+    } else {
+      insertRating(); // film already exists, proceed
+    }
+  });
+
+  // 3.  Function to insert or update the rating
+  function insertRating() {
+    const ratingSql = `
+      INSERT INTO note (valeur_note, commentaire, films_film_id, utilisateur_utilisateur_id)
+      VALUES (?, ?, ?, ?)
+      ON DUPLICATE KEY UPDATE valeur_note = VALUES(valeur_note), commentaire = VALUES(commentaire)
+    `;
+    con.query(ratingSql, [rating, comment || "", movieId, userId], (err3) => {
+      if (err3) {
+        console.error("Error saving rating:", err3);
+        return res.status(500).json({ message: "Error saving rating" });
+      }
+      res.json({ success: true });
+    });
+  }
+});
+
+// Get watched movies
+app.get("/api/watched/:userId", (req, res) => {
+  const { userId } = req.params;
+  const sql = `SELECT films_film_id, valeur_note FROM note WHERE utilisateur_utilisateur_id = ?`;
+  con.query(sql, [userId], async (err, results) => {
+    if (err) return res.status(500).json({ message: "Error fetching watched" });
+
+    const options = {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization:
+          "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+      },
+    };
+
+    const watchedMovies = await Promise.all(
+      results.map(async (row) => {
+        const res = await fetch(
+          `https://api.themoviedb.org/3/movie/${row.films_film_id}`,
+          options
+        );
+        const movie = await res.json();
+        return { ...movie, rating: row.valeur_note };
+      })
+    );
+
+    res.json(watchedMovies);
+  });
+});
+
+app.delete("/api/watched/:userId/:movieId", (req, res) => {
+  const { userId, movieId } = req.params;
+  const sql = `DELETE FROM note WHERE utilisateur_utilisateur_id = ? AND films_film_id = ?`;
+
+  con.query(sql, [userId, movieId], (err, result) => {
+    if (err) {
+      console.error("Error removing watched:", err);
+      return res.status(500).json({ message: "Error removing watched status" });
+    }
+    res.json({ success: true });
+  });
+});
+
 //////////////////////////////////////////////////////////////////////////////////////
 
 //Pour afficher les admins dans le tableau d'admins
