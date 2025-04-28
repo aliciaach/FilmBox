@@ -6,29 +6,83 @@ import { Dropdown, DropdownButton } from "react-bootstrap";
 
 function PageWatchList() {
   const [watchlist, setWatchlist] = useState([]);
+  const [watched, setWatched] = useState([]);
+  const [highestRated, setHighestRated] = useState([]);
+  const [lowestRated, setLowestRated] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   const userId = localStorage.getItem("userId"); 
 
+
   useEffect(() => {
-    const fetchWatchlist = async () => {
+    const fetchData = async () => {
       try {
-        setLoading(true);
-        const response = await fetch(`http://localhost:4000/api/watchlist/${userId}`);
-        if (!response.ok) throw new Error(`Failed to fetch: ${response.status}`);
-        const data = await response.json();
-        if (!Array.isArray(data)) throw new Error("Invalid response type");
-        setWatchlist(data);
+        const [watchlistRes, watchedRes] = await Promise.all([
+          fetch(`http://localhost:4000/api/watchlist/${userId}`),
+          fetch(`http://localhost:4000/api/watched/${userId}`),
+        ]);
+
+        if (!watchlistRes.ok || !watchedRes.ok) throw new Error("Failed to fetch watchlist or watched movies");
+
+        const watchlistData = await watchlistRes.json();
+        const watchedData = await watchedRes.json();
+
+        const watchedIds = watchedData.map(m => m.id);
+        const filteredWatchlist = watchlistData.filter(m => !watchedIds.includes(m.id));
+
+        const highest = watchedData.filter(m => m.rating >= 3 && m.rating <= 5);
+        const lowest = watchedData.filter(m => m.rating >= 0 && m.rating <= 2);
+
+        setWatchlist(filteredWatchlist);
+        setWatched(watchedData);
+        setHighestRated(highest);
+        setLowestRated(lowest);
       } catch (err) {
         setError(err.message);
       } finally {
         setLoading(false);
       }
     };
-    fetchWatchlist();
+    fetchData();
   }, [userId]);
+
+  const renderMovieRow = (movies) => (
+    <div style={{ display: "flex", overflowX: "auto", gap: "1rem", paddingBottom: "1rem" }}>
+      {movies.map((movie) => (
+        <div key={movie.id} style={{ minWidth: 200, flex: "0 0 auto" }}>
+          <div
+            className="card bg-transparent border-0 h-100"
+            style={{ cursor: "pointer", transition: "transform 0.3s" }}
+            onClick={() => navigate(`/movies/${movie.id}`)}
+            onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)" )}
+            onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)" )}
+          >
+            <img
+              src={movie.poster_path ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}` : "https://via.placeholder.com/500x750?text=No+Poster"}
+              alt={movie.title}
+              className="card-img-top"
+              style={{ height: 300, width: 200, objectFit: "cover", borderRadius: 8 }}
+              onError={(e) => { e.target.src = "https://via.placeholder.com/500x750?text=No+Poster"; }}
+            />
+            <div className="card-body px-0">
+              <h6 className="card-title fw-bold text-white" style={{ fontSize: "1rem" }}>{movie.title}</h6>
+              <p className="card-text fw-bold text-white">
+                {movie.release_date ? new Date(movie.release_date).getFullYear() : "N/A"}
+                {movie.vote_average && (
+                  <span className="float-end">⭐ {movie.vote_average.toFixed(1)}</span>
+                )}
+              </p>
+              {movie.rating && (
+                <div className="text-warning small">Your rating: {movie.rating} ⭐</div>
+              )}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
 
   const backgroundStyle = {
     background: "linear-gradient(to bottom, #070042, #050032)",
@@ -41,7 +95,7 @@ function PageWatchList() {
   if (loading || error) {
     return (
       <div className="d-flex justify-content-center align-items-center min-vh-100" style={backgroundStyle}>
-        <div className={error ? "text-danger" : "text-white"}>{error ? `Error: ${error}` : "Chargement du watchlist..."}</div>
+        <div className={error ? "text-danger" : "text-white"}>{error ? `Error: ${error}` : "Chargement..."}</div>
       </div>
     );
   }
@@ -56,16 +110,10 @@ function PageWatchList() {
           onClick={() => navigate("/listeFilms")}
         />
         <nav className="d-flex align-items-center gap-4">
-          <a href="/" className="text-white text-decoration-none" style={{ marginTop: "-25px" }}>HOME</a>
-          <a href="/PageWatchlist" className="text-white text-decoration-none" style={{ marginTop: "-25px" }}>MY MOVIES</a>
-          <span className="text-white" style={{ marginTop: "-25px" }}>|</span>
-          <DropdownButton
-            id="profile-dropdown"
-            align="end"
-            title={<div className="d-flex align-items-center"><div className="bg-white rounded-circle me-2" style={{ width: 32, height: 32 }}></div><span className="text-white">Profil</span></div>}
-            variant="transparent"
-            style={{ border: "none" }}
-          >
+          <a href="/" className="text-white text-decoration-none">HOME</a>
+          <a href="/PageWatchlist" className="text-white text-decoration-none">MY MOVIES</a>
+          <span className="text-white">|</span>
+          <DropdownButton id="profile-dropdown" align="end" title={<span className="text-white">Profil</span>} variant="transparent">
             <Dropdown.Item href="/userSettings">Settings</Dropdown.Item>
             <Dropdown.Item href="/connexion">Logout</Dropdown.Item>
           </DropdownButton>
@@ -74,45 +122,16 @@ function PageWatchList() {
 
       <div className="container">
         <h2 className="fw-bold mb-4">My Watchlist</h2>
-        {watchlist.length > 0 ? (
-          <div className="row">
-            {watchlist.map((movie) => (
-              <div key={movie.id} className="col-sm-6 col-md-4 col-lg-3 mb-4">
-                <div
-                  className="card bg-transparent border-0 h-100"
-                  style={{ cursor: "pointer", transition: "transform 0.3s" }}
-                  onClick={() => navigate(`/movies/${movie.id}`)}
-                  onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
-                  onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
-                >
-                  <img
-                    src={movie.poster_path ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}` : "https://via.placeholder.com/500x750?text=No+Poster"}
-                    alt={movie.title}
-                    className="card-img-top"
-                    style={{ height: 450, width: 300, objectFit: "cover", borderRadius: 8 }}
-                    onError={(e) => {
-                      e.target.src = "https://via.placeholder.com/500x750?text=No+Poster ";
-                    }}
-                  />
-                  <div className="card-body px-0">
-                    <h5 className="card-title fw-bold text-white">{movie.title}</h5>
-                    <p className="card-text fw-bold text-white">
-                      {movie.release_date ? new Date(movie.release_date).getFullYear() : "N/A"}
-                      {movie.vote_average && (
-                        <span className="float-end">⭐ {movie.vote_average.toFixed(1)}</span>
-                      )}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-5">
-            <p className="fs-5 mb-3">Your watchlist is empty</p>
-            <button className="btn btn-primary px-4 py-2 fw-bold" style={{ backgroundColor: "#0352fc", border: "none" }} onClick={() => navigate("/")}>Browse Movies</button>
-          </div>
-        )}
+        {watchlist.length > 0 ? renderMovieRow(watchlist) : <p>Your watchlist is empty.</p>}
+
+        <h2 className="fw-bold mt-5 mb-4">Watched Movies</h2>
+        {watched.length > 0 ? renderMovieRow(watched) : <p>No movies marked as watched yet.</p>}
+
+        <h2 className="fw-bold mt-5 mb-4">Highest Rated (3-5 ⭐)</h2>
+        {highestRated.length > 0 ? renderMovieRow(highestRated) : <p>No high rated movies yet.</p>}
+
+        <h2 className="fw-bold mt-5 mb-4">Lowest Rated (0-2 ⭐)</h2>
+        {lowestRated.length > 0 ? renderMovieRow(lowestRated) : <p>No low rated movies yet.</p>}
       </div>
     </div>
   );

@@ -2,81 +2,67 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Dropdown, DropdownButton } from "react-bootstrap";
-import RedHeartIcon from "../assets/redHeart.png";
-import EmptyHeartIcon from "../assets/emptyHeart.png";
 import imageLogo from "../assets/logo_FilmBox.png";
 
 const FilmInfo = () => {
   const { filmId } = useParams();
+  const numericFilmId = Number(filmId);
   const [film, setFilm] = useState(null);
   const [movieLogo, setMovieLogo] = useState(null);
   const [erreur, setErreur] = useState(null);
   const [isInWatchlist, setIsInWatchlist] = useState(false);
+  const [markedWatched, setMarkedWatched] = useState(false);
+  const [rating, setRating] = useState(5);
   const navigate = useNavigate();
 
   const userId = localStorage.getItem("userId"); //local storage idea given by chatgpt
 
   useEffect(() => {
-    if (!filmId || isNaN(Number(filmId))) {
+    if (!filmId || isNaN(numericFilmId)) {
       setErreur("ID de film invalide.");
       return;
     }
-
-    // Fetch movie data
-    fetch(`http://localhost:4000/api/movies/${filmId}`)
-      .then((res) => {
-        if (!res.ok) throw new Error("Film introuvable");
-        return res.json();
-      })
-      .then((data) => {
-        setFilm(data);
-      })
-      .catch((err) => {
-        console.error("Erreur API:", err);
-        setErreur(err.message);
-      });
-
-    // Fetch movie images
-    fetch(`http://localhost:4000/api/movies/${filmId}/images`)
-      .then((res) => {
-        if (!res.ok) throw new Error("Images introuvables");
-        return res.json();
-      })
-      .then((data) => {
-        setMovieLogo(data.logos?.[0]);
-      })
-      .catch((err) => {
-        console.error("Erreur API:", err);
-        setErreur(err.message);
-      });
-
-    // Check watchlist status
+  
+    fetch(`http://localhost:4000/api/movies/${numericFilmId}`)
+      .then((res) => res.json())
+      .then(setFilm)
+      .catch((err) => setErreur(err.message));
+  
+    fetch(`http://localhost:4000/api/movies/${numericFilmId}/images`)
+      .then((res) => res.json())
+      .then((data) => setMovieLogo(data.logos?.[0]))
+      .catch((err) => setErreur(err.message));
+  
     fetch(`http://localhost:4000/api/watchlist/${userId}`)
-      .then(response => response.json())
-      .then(watchlist => {
-        setIsInWatchlist(watchlist.some(movie => movie.film_id === Number(filmId)));
-      })
-      .catch(error => {
-        console.error("Error checking watchlist:", error);
+      .then((res) => res.json())
+      .then((watchlist) => {
+        setIsInWatchlist(watchlist.some((movie) => movie.id === numericFilmId));
       });
-
-  }, [filmId, userId]);
+  
+    fetch(`http://localhost:4000/api/watched/${userId}`)
+      .then(res => res.json())
+      .then(data => {
+        const watched = data.find(movie => movie.id === numericFilmId);
+        if (watched) {
+          setMarkedWatched(true);
+          setRating(watched.rating);
+        }
+      });
+  });
 
 
   const handleWatchlist = async () => {
     try {
       if (isInWatchlist) {
-        // Remove from watchlist
-        await fetch(`http://localhost:4000/api/watchlist/${userId}/${filmId}`, {
-          method: "DELETE"
+        await fetch(`http://localhost:4000/api/watchlist/${userId}/${numericFilmId}`, {
+          method: "DELETE",
         });
         setIsInWatchlist(false);
       } else {
-        // Add to watchlist
         await fetch("http://localhost:4000/api/watchlist", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId, movieId: filmId })
+          body: JSON.stringify({ userId, movieId: numericFilmId }),
         });
         setIsInWatchlist(true);
       }
@@ -85,150 +71,97 @@ const FilmInfo = () => {
     }
   };
 
+  const handleWatched = async () => {
+    if (markedWatched) {
+      // User is unmarking it — remove rating from DB
+      try {
+        await fetch(`http://localhost:4000/api/watched/${userId}/${numericFilmId}`, {
+          method: "DELETE",
+        });
+        setMarkedWatched(false);
+      } catch (err) {
+        console.error("Failed to remove from watched:", err);
+      }
+    } else {
+      // Just toggle on visually — rating is saved only on submit
+      setMarkedWatched(true);
+    }
+  };
+
+  const handleRatingSubmit = async () => {
+    try {
+      await fetch("http://localhost:4000/api/watched", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId,
+          movieId: numericFilmId,
+          rating,
+          comment: "",
+        }),
+      });
+      alert("Rating saved!");
+    } catch (err) {
+      console.error("Error saving rating:", err);
+    }
+  };
+
   if (erreur) return <p className="text-danger text-center">{erreur}</p>;
   if (!film) return <p className="text-center text-white">Chargement...</p>;
 
   const cheminImage = `https://image.tmdb.org/t/p/original/${film.backdrop_path}`;
   const genres = film.genres?.map((g) => g.name).join(", ");
-  const countries = film.production_companies?.map((c) => c.origin_country).join(", ");
+  const countries = film.production_countries?.map((c) => c.name).join(", ");
 
   return (
-    <div
-      className="min-vh-100"
-      style={{
-        backgroundImage: `linear-gradient(to bottom, rgba(7, 0, 66, 0.5), rgba(5, 0, 50, 0.7)), url(${cheminImage})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        color: "#fff",
-        fontFamily: "Fredoka",
-      }}
-    >
-      <header
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "10px 20px",
-        }}
-      >
-        <div style={{ fontSize: "24px", fontWeight: "bold" }}>
-          <img src={imageLogo} alt="LoFgo" style={{ width: "150px", height: "auto" }} />
-        </div>
-        <nav style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-          <a href="/" style={{ textDecoration: "none", color: "#fff", marginTop:"-25px" }}>HOME</a>
-          <a href="/PageWatchlist" style={{ textDecoration: "none", color: "#fff", marginTop:"-25px" }}>MY MOVIES</a>
-          <span style={{ marginTop:"-25px" }}>|</span>
-          <DropdownButton
-            id="dropdown-basic-button"
-            align="end"
-            title={
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <div style={{ width: 32, height: 32, borderRadius: "50%", backgroundColor: "#fff", marginRight: 8 }}></div>
-                <span style={{ color: "#fff" }}>Profil</span>
-              </div>
-            }
-            variant="transparent"
-            style={{ background: "transparent", border: "none" }}
-          >
+    <div className="min-vh-100" style={{
+      backgroundImage: `linear-gradient(to bottom, rgba(7, 0, 66, 0.5), rgba(5, 0, 50, 0.7)), url(${cheminImage})`,
+      backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat",
+      color: "#fff", fontFamily: "Fredoka",
+    }}>
+      <header className="d-flex justify-content-between align-items-center p-3">
+        <img src={imageLogo} alt="Logo" style={{ width: "150px" }} />
+        <nav className="d-flex align-items-center gap-3">
+          <a href="/" className="text-white text-decoration-none">HOME</a>
+          <a href="/PageWatchlist" className="text-white text-decoration-none">MY MOVIES</a>
+          <DropdownButton id="profile-dropdown" align="end" title={<span className="text-white">Profil</span>} variant="transparent">
             <Dropdown.Item href="/settings">Settings</Dropdown.Item>
             <Dropdown.Item href="/logout">Logout</Dropdown.Item>
           </DropdownButton>
         </nav>
       </header>
 
-      <div className="container py-5 text-start" style={{
-        marginTop: "20px",
-        marginLeft: "30px",  
-        marginRight: "auto",        
-        maxWidth: "800px",       
-      }}>
-        {movieLogo && (
-          <img
-            src={`https://image.tmdb.org/t/p/original${movieLogo.file_path}`}
-            alt="Movie logo"
-            style={{
-              maxWidth: "100%",      
-              maxHeight: "100px",    
-              marginBottom: "20px",
-              objectFit: "contain",  
-            }}
-          />
+      <div className="container py-5 text-start" style={{ maxWidth: "800px" }}>
+        {movieLogo && <img src={`https://image.tmdb.org/t/p/original${movieLogo.file_path}`} alt="Logo" style={{ maxHeight: 100, marginBottom: 20 }} />}
+        <p>{new Date(film.release_date).getFullYear()} • {film.runtime} min • {genres}</p>
+        <p>{film.overview}</p>
+        <p><strong>Langue:</strong> {film.original_language}</p>
+        <p><strong>Pays:</strong> {countries}</p>
+
+        <div className="d-flex align-items-center gap-3 mt-4">
+          <button className="btn btn-light" onClick={handleWatched}>
+            {markedWatched ? "Unmark Watched" : "Mark as Watched"}
+          </button>
+          <button className="btn btn-outline-light" onClick={handleWatchlist}>
+            {isInWatchlist ? "In Watchlist" : "Add to Watchlist"}
+          </button>
+        </div>
+
+        {markedWatched && (
+          <div className="mt-3">
+            <label htmlFor="rating" className="form-label">Rate this movie:</label>
+            <select
+              id="rating"
+              className="form-select"
+              style={{ maxWidth: "120px" }}
+              value={rating}
+              onChange={(e) => setRating(Number(e.target.value))}
+            >
+              {[1, 2, 3, 4, 5].map((r) => <option key={r} value={r}>{r} ⭐</option>)}
+            </select>
+            <button className="btn btn-primary mt-2" onClick={handleRatingSubmit}>Submit Rating</button>
+          </div>
         )}
-        <div className="mb-4" style={{ fontSize: "16px"}}>
-          {new Date(film.release_date).getFullYear()} &bull; {film.runtime} min &bull; {genres} 
-        </div>    
-
-        <div className="row">
-          <div>
-            <p>
-              {film.overview}
-            </p>
-          </div>
-          <div className="col-md-6 mb-3" style={{ fontSize: "16px"}}>
-            <p className="mb-1"><strong>Réalisateur: </strong>A AJOUTER API PAS TROUVER</p>
-          </div>
-          <div className="mb-3" style={{ fontSize: "16px"}}>
-            <p className="mb-1"><strong>Langue originale:</strong> {film.original_language}</p>
-          </div>
-          <div className="mb-3" style={{ fontSize: "16px"}}>
-            <p className="mb-1"><strong>Pays d'origine:</strong> {countries}</p>
-          </div>
-        </div>
-        <div>
-          <div className="d-flex align-items-center gap-3 mt-4">
-            <button className="btn btn-light d-flex align-items-center gap-2 px-4 py-2" style={{
-              backgroundColor: "#fff",
-              color: "#000",
-              fontWeight: "500",
-              borderRadius: "3px",
-              fontFamily: "Fredoka",
-            }}>
-              MARK AS WATCHED
-            </button>
-
-            <button 
-              className="btn d-flex align-items-center gap-2 px-4 py-2" 
-              style={{
-                backgroundColor: isInWatchlist ? "#0352fc" : "rgba(255,255,255,0.1)",
-                color: "#fff",
-                fontWeight: "500",
-                border: "1px solid rgba(255,255,255,0.3)",
-                borderRadius: "3px",
-                fontFamily: "Fredoka",
-              }}
-              onClick={handleWatchlist}
-            >
-              {isInWatchlist ? "IN WATCHLIST" : "ADD TO WATCHLIST"}
-            </button>
-
-            <button
-              className="btn d-flex align-items-center justify-content-center rounded-circle"
-              style={{
-                backgroundColor: "rgba(255,255,255,0.2)",
-                border: "none",
-                width: "40px",
-                height: "40px",
-                padding: "0",
-              }}
-            >
-              <img src={EmptyHeartIcon} alt="favorite" style={{ width: "20px", height: "20px" }} />
-            </button>
-          </div>
-        </div>
-
-        <div
-          style={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            width: '100%',
-            height: '120px',
-            background: 'linear-gradient(to top, rgba(7, 0, 66, 1), rgba(7, 0, 66, 0))',
-            pointerEvents: 'none',
-            zIndex: 1
-          }}
-        ></div>
       </div>
     </div>
   );
