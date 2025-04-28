@@ -14,7 +14,6 @@ import bcrypt from "bcrypt";
 
 import cors from "cors";
 
-
 config();
 
 const app = express();
@@ -219,7 +218,6 @@ app.delete("/deleteAccount", (req, res) => {
 });*/
 /*
     API - Obtenir tous les utilisateurs             -------------------------------------------------------------------------------------------------------------------
-
 */
 app.get("/getUsers", async (req, res) => { //Cette ligne permet au serveur d'écouter les requêtes GET envoyées à l'URL /getUsers et d'exécuter une fonction lorsque cette requête est reçue.
   const sql = "SELECT * FROM utilisateur";  // Requête SQL pour récupérer tous les utilisateurs
@@ -237,10 +235,8 @@ app.get("/getUsers", async (req, res) => { //Cette ligne permet au serveur d'éc
     res.json(resultats);
   });
 });
-/*
-    Inspiré de changePassword- Modifier état compte à suspended             -------------------------------------------------------------------------------------------------------------------
 
-*/
+
 app.post("/suspendAccount", (req, res) => {
   console.log("Trying to suspend account");
   const { userId } = req.body;
@@ -265,7 +261,7 @@ app.post("/suspendAccount", (req, res) => {
   });
 });
 /*
-    API - Obtenir tous les films                    -------------------------------------------------------------------------------------------------------------------
+    API - Obtenir tous les films -------------------------------------------------------------------------------------------------------------------
 */
 import fetch from "node-fetch";
 
@@ -422,6 +418,90 @@ app.post("/adminLogin", async (req, res) => {
     await client.close();
   }
 });
+
+/////////////////////////////////////////WATCHLIST///////////////////////////////////////////
+
+// Add to Watchlist
+app.post("/api/watchlist", (req, res) => {
+  const { userId, movieId } = req.body;
+
+  if (!userId || !movieId) {
+    return res
+      .status(400)
+      .json({ message: "User ID et Movie ID sont requisent" });
+  }
+
+  const sql =
+    "INSERT INTO film_watchlist (film_id, utilisateur_utilisateur_id) VALUES (?, ?)";
+  con.query(sql, [movieId, userId], (err, results) => {
+    if (err) {
+      console.error("Database error:", err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+    res
+      .status(201)
+      .json({ success: true, message: "Film ajoute dans watchlist" });
+  });
+});
+
+// Get Watchlist
+// Get Watchlist - Updated to use TMDB API
+app.get("/api/watchlist/:userId", async (req, res) => {
+  const userId = req.params.userId;
+  const options = {
+    method: "GET",
+    headers: {
+      accept: "application/json",
+      Authorization:
+        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+    },
+  };
+
+  try {
+    // First get the movie IDs from the watchlist
+    const sql =
+      "SELECT film_id FROM film_watchlist WHERE utilisateur_utilisateur_id = ?";
+    con.query(sql, [userId], async (err, results) => {
+      if (err) {
+        console.error("Database error:", err);
+        return res.status(500).json({ message: "Internal server error" });
+      }
+
+      // Fetch details for each movie from TMDB API
+      const watchlistMovies = await Promise.all(
+        results.map(async (item) => {
+          const response = await fetch(
+            `https://api.themoviedb.org/3/movie/${item.film_id}`,
+            options
+          );
+          return response.json();
+        })
+      );
+
+      res.json(watchlistMovies);
+    });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ message: "Erreur pour fetch le watchlist" });
+  }
+});
+
+// Remove from Watchlist
+app.delete("/api/watchlist/:userId/:movieId", (req, res) => {
+  const { userId, movieId } = req.params;
+  const sql =
+    "DELETE FROM film_watchlist WHERE utilisateur_utilisateur_id = ? AND film_id = ?";
+
+  con.query(sql, [userId, movieId], (err, results) => {
+    if (err) {
+      console.error("Database error:", err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+    res.json({ success: true, message: "Film enlever du watchlist" });
+  });
+});
+
+//////////////////////////////////////////////////////////////////////////////////////
 
 //Pour afficher les admins dans le tableau d'admins
 //constantes
