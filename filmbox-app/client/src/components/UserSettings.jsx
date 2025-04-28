@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import BlackImage from '../assets/BlackImage.png'
-
+import Header from '../components/Header'; 
+import { useNavigate } from 'react-router-dom';
 
 /*
     https://www.youtube.com/watch?v=oYGhoHW7zqI
@@ -13,6 +14,8 @@ function UserSettings() {
   const [user, setUser] = useState({});
   const [message, setMessage] = useState('');
   const [newPassword, setNewPassword] = useState('');
+  const [tempoUser, setTempoUser] = useState({});
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -21,6 +24,10 @@ function UserSettings() {
         const data = await response.json();
         if (data.loggedIn) {
           setUser(data.user);
+          if (data.loggedIn) {
+            setUser(data.user);
+            setTempoUser(data.user); 
+          }
         } else {
           setMessage("SESSION INTROUVABLE");
         }
@@ -32,6 +39,8 @@ function UserSettings() {
 
     fetchUserData();
   }, []);
+  
+  const initials = ((user.prenom || '?')[0] + (user.nom || '?')[0]).toUpperCase();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -58,16 +67,60 @@ function UserSettings() {
         body: JSON.stringify({ userId: user.id }),
       });
       const data = await response.json();
-      setMessage(data.success ? "User deleted" : "Error, couldn't delete account");
+
+      if (data.success)
+      {
+        await fetch('http://localhost:4000/end-session', { method: 'POST' });
+        navigate('/');
+      } else {
+        setMessage("Error, couldn't delete account");
+      }
+
     } catch (error) {
       console.error('Error deleting account:', error);
       setMessage("An error occurred while deleting account");
     }
   };
 
+  const handleSubmitSave = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch('http://localhost:4000/saveUserAccountChanges', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: tempoUser.id,              
+          prenom: tempoUser.prenom,
+          nom: tempoUser.nom,
+          courriel: tempoUser.courriel,
+          telephone: tempoUser.telephone,
+        }),
+      });
+      const data = await response.json();
+      if (data.success)
+      {
+        console.log("RESPONSE DATA:", data);
+        setUser(tempoUser);
+        setMessage("USER INFORMATIONS UDPATED!!");
+      } else {  
+        setMessage(data.message || "Erreur lors de la mise à jour.");
+      }
+    } catch (error) {
+      console.error('Error updating user info:', error);
+      setMessage("Error while while updating user info ");
+    }
+  };
+
+  const handleSubmitCancel = (e) => {
+    e.preventDefault();
+    setTempoUser(user);
+    setMessage("Changes cancelled.");
+  };
+  
+
   return (
 
-    
+    <>
     <div style={{
       fontFamily: 'Fredoka, sans-serif',
       fontWeight: 300,
@@ -84,65 +137,8 @@ function UserSettings() {
       minHeight: '100vh',
       color: '#fff'
     }}>
-      {/* Header */}
 
-      <header
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '10px 20px',
-          backgroundColor: 'rgba(116, 101, 247, 0)',
-          color: '#fff'
-        }}
-      >
-      {/* Logo */}
-      <div style={{ fontSize: '24px', fontWeight: 'bold' }}>logo here !!</div>
-
-      {/* Navigation */}
-      <nav style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-        <a
-          href="/"
-          style={{ textDecoration: 'none', color: '#fff', fontSize: '18px' }}
-        >
-          HOME
-        </a>
-        <a
-          href="/movies"
-          style={{ textDecoration: 'none', color: '#fff', fontSize: '18px' }}
-        >
-          MY MOVIES
-        </a>
-        <span style={{ fontSize: '18px' }}>|</span>
-
-        {/* Profile Section */}
-        <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
-          {/* Profile Avatar Placeholder */}
-          <div
-            style={{
-              width: '32px',
-              height: '32px',
-              borderRadius: '50%',
-              backgroundColor: '#fff',
-              marginRight: '8px'
-            }}
-          ></div>
-          <span style={{ fontSize: '18px' }}>Profil</span>
-          <span style={{ fontSize: '18px', marginLeft: '5px' }}>
-            &#x25BC;
-          </span>
-        </div>
-      </nav>
-
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
-        <link 
-          href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" 
-          rel="stylesheet" 
-        />
-
-        
-      </header>
+      
       
       {/* User Inputs */}
       <div style={{
@@ -173,62 +169,86 @@ function UserSettings() {
         </button>
       </div>
 
+      {/* TOP PART SECTION WITH USER'S NAME AND ALL*/}{/* TOP PART SECTION WITH USER'S NAME AND ALL*/}
       <div class="mb-5" style={{ textAlign: 'start' }}>
         <h2 style={{ fontSize: '40px', fontFamily: "fredoka", fontWeight: 'bolder' }}>User Settings</h2>
+        
+
+        {/* Icone profile avec les initiale */}
+        {initials && (
+          <div
+            style={{
+            width: '45px',
+            height: '45px',
+            borderRadius: '50%',
+            backgroundColor: '#fff',
+            color: 'black',
+            fontSize: '18px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginRight: '8px'
+          }}
+          >
+            {initials}
+          </div>
+        )}
       </div>
 
-      
-       {/* First Name Input */}
-       <div className="mb-3">
-            <p style={{ fontSize: '22px', marginBottom: '0.2rem', fontWeight: 400 }}>First Name</p>
-            <input
-              className="w-100 pe-5 ps-3 text-white border-1 rounded-1"
-              type="text"
-              placeholder={user.prenom || "First Name"}
-              required
-              value={user.firstName || ""}
-              onChange={(e) => setUser({ ...user, firstName: e.target.value })}
-              style={{
-                padding: '0.70rem',
-                border: 'solid #FFFFFF',
-                backgroundColor: 'rgba(116, 101, 247, 0)',
-                outline: 'none',
-                backgroundPosition: 'right 10px center',
-                backgroundRepeat: 'no-repeat',
-                backgroundSize: '20px'
-              }}
-            />
-          </div>
+          <div class="row">
+            {/* First Name Input */}
+            <div className="mb-3 col-6">
+              <p style={{ fontSize: '22px', marginBottom: '0.2rem'}}>First Name</p>
+              <input
+                className="w-100 pe-5 ps-3 text-white border-1 rounded-1"
+                type="text"
+                placeholder={user.prenom || "John"}
+                required
+                value={tempoUser.prenom || ""}
+                onChange={(e) => setTempoUser({ ...tempoUser, prenom: e.target.value })}
+                style={{
+                  padding: '0.50rem',
+                  border: 'solid #FFFFFF',
+                  backgroundColor: 'rgba(116, 101, 247, 0)',
+                  outline: 'none',
+                  backgroundPosition: 'right 10px center',
+                  backgroundRepeat: 'no-repeat',
+                  backgroundSize: '20px'
+                }}
+              />
+            </div>
 
-          {/* Last Name Input */}
-          <div className="mb-3">
-            <p style={{ fontSize: '22px', marginBottom: '0.2rem' }}>Last Name</p>
-            <input
-              className="w-100 p-2 pe-5 ps-3 text-white border-1 rounded-2"
-              type="text"
-              placeholder={user.nom || "Last Name"}
-              value={user.nom || ""}
-              onChange={(e) => setUser({ ...user, nom: e.target.value })}
-              style={{
-                border: 'solid #FFFFFF',
-                backgroundColor: 'rgba(116, 101, 247, 0)',
-                outline: 'none',
-                backgroundPosition: 'right 10px center',
-                backgroundRepeat: 'no-repeat',
-                backgroundSize: '20px'
-              }}
-            />
+            {/* Last Name Input */}
+            <div className="mb-3 col-6">
+              <p style={{ fontSize: '22px', marginBottom: '0.2rem' }}>Last Name</p>
+              <input
+                className="w-100 p-2 pe-5 ps-3 text-white border-1 rounded-1"
+                type="text"
+                placeholder={user.nom || "Doe"}
+                value={tempoUser.nom || ""}
+                onChange={(e) => setTempoUser({ ...tempoUser, nom: e.target.value })}
+                style={{
+                  padding: '0.50rem',
+                  border: 'solid #FFFFFF',
+                  backgroundColor: 'rgba(116, 101, 247, 0)',
+                  outline: 'none',
+                  backgroundPosition: 'right 10px center',
+                  backgroundRepeat: 'no-repeat',
+                  backgroundSize: '20px'
+                }}
+              />
+            </div>
           </div>
-
-          {/* Email Input */}
-          <div className="mb-3">
+          
+           {/* Email Input */}
+           <div className="mb-3">
             <p style={{ fontSize: '22px', marginBottom: '0.2rem' }}>Email</p>
             <input
               className="w-100 p-2 pe-5 ps-3 text-white border-1 rounded-2"
               type="email"
-              placeholder={user.courriel || "Email"}
-              value={user.courriel || ""}
-              onChange={(e) => setUser({ ...user, courriel: e.target.value })}
+              placeholder={user.courriel || "johndoe@gmail.com"}
+              value={tempoUser.courriel || ""}
+              onChange={(e) => setTempoUser({ ...tempoUser, courriel: e.target.value })}
               style={{
                 border: 'solid #FFFFFF',
                 backgroundColor: 'rgba(116, 101, 247, 0)',
@@ -246,9 +266,9 @@ function UserSettings() {
             <input
               className="w-100 p-2 pe-5 ps-3 text-white border-1 rounded-2"
               type="text"
-              placeholder={user.telephone || "Phone Number"}
-              value={user.telephone || ""}
-              onChange={(e) => setUser({ ...user, telephone: e.target.value })}
+              placeholder={user.telephone || "514-321-1234"}
+              value={tempoUser.telephone || ""}
+              onChange={(e) => setTempoUser({ ...tempoUser, telephone: e.target.value })}
               style={{
                 border: 'solid #FFFFFF',
                 backgroundColor: 'rgba(116, 101, 247, 0)',
@@ -313,6 +333,31 @@ function UserSettings() {
             Update Password
           </button>
         </form>*/}
+<div className="row justify-content-center">
+  <div className="col-auto">
+    <form onSubmit={handleSubmitCancel}>
+      <button type="submit" className="btn me-2" style={{ color: "white" }}>
+        Cancel
+      </button>
+    </form>
+  </div>
+
+  <div className="col-auto">
+    <form onSubmit={handleSubmitSave}>
+      <button
+        type="submit"
+        className="btn w-100"
+        style={{
+          backgroundColor: "rgba(111, 79, 255, 0.3)",
+          color: "white",
+        }}
+      >
+        Save
+      </button>
+    </form>
+  </div>
+</div>
+
 
         {/* Delete Account Form */}
         <form onSubmit={handleSubmitDelete}>
@@ -320,19 +365,11 @@ function UserSettings() {
             Delete Account
           </button>
         </form>
-
+        
         <p style={{ fontSize: '10px'}}>Ce site est protégé par reCAPTCHA et la politique de confidentialité et les conditions d'utilisation de FilmBox s'appliquent.</p>
       </div>
-
-      {/* Footer */}
-      <footer style={{
-        background: '#123456',
-        padding: '20px',
-        textAlign: 'center'
-      }}>
-        <p>footer not done yettt !!</p>
-      </footer>
     </div>
+    </>
   );
 }
 

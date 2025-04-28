@@ -10,15 +10,18 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "bootstrap": "^5.3.3",
+    "bootstrap": "^5.3.5",
     "bootstrap-icons": "^1.11.3",
     "build": "^0.1.4",
     "dotenv": "^16.4.7",
     "esbuild": "^0.25.1",
     "mongodb": "^6.15.0",
+    "node-fetch": "^3.3.2",
     "react": "^19.0.0",
     "react-bootstrap": "^2.10.9",
     "react-dom": "^19.0.0",
+    "react-paginate": "^8.3.0",
+    "react-pagination": "^1.0.0",
     "react-router-dom": "^7.2.0",
     "run": "^1.5.0"
   },

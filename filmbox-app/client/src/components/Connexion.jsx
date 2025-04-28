@@ -34,6 +34,7 @@ function Connexion(){
           console.log("data:" + data);
           if (response.ok)
           {
+            localStorage.setItem("userId", data.userId);
             console.log("Going to film page");
             navigate('/listeFilms');
           } else {

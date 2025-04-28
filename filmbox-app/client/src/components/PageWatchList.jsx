@@ -10,7 +10,7 @@ function PageWatchList() {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  const userId = 1; // TODO: replace with real logic
+  const userId = localStorage.getItem("userId"); 
 
   useEffect(() => {
     const fetchWatchlist = async () => {

@@ -14,8 +14,7 @@ const FilmInfo = () => {
   const [isInWatchlist, setIsInWatchlist] = useState(false);
   const navigate = useNavigate();
 
-  // Get user ID - you'll need to replace this with your actual auth system
-  const userId = 1; // Temporary - replace with your user ID retrieval logic
+  const userId = localStorage.getItem("userId"); //local storage idea given by chatgpt
 
   useEffect(() => {
     if (!filmId || isNaN(Number(filmId))) {
@@ -62,6 +61,7 @@ const FilmInfo = () => {
       });
 
   }, [filmId, userId]);
+
 
   const handleWatchlist = async () => {
     try {
