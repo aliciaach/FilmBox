@@ -21,23 +21,23 @@ const FilmInfo = () => {
       setErreur("ID de film invalide.");
       return;
     }
-
+  
     fetch(`http://localhost:4000/api/movies/${numericFilmId}`)
       .then((res) => res.json())
       .then(setFilm)
       .catch((err) => setErreur(err.message));
-
+  
     fetch(`http://localhost:4000/api/movies/${numericFilmId}/images`)
       .then((res) => res.json())
       .then((data) => setMovieLogo(data.logos?.[0]))
       .catch((err) => setErreur(err.message));
-
+  
     fetch(`http://localhost:4000/api/watchlist/${userId}`)
       .then((res) => res.json())
       .then((watchlist) => {
         setIsInWatchlist(watchlist.some((movie) => movie.id === numericFilmId));
       });
-
+  
     fetch(`http://localhost:4000/api/watched/${userId}`)
       .then(res => res.json())
       .then(data => {
@@ -47,7 +47,7 @@ const FilmInfo = () => {
           setRating(watched.rating);
         }
       });
-  }, [filmId]);
+  });
 
   const handleWatchlist = async () => {
     try {

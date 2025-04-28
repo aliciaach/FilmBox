@@ -29,7 +29,7 @@ const con = mysql.createConnection({
   host: "localhost",
   user: "scott",
   password: "oracle",
-  database: "prototype",
+  database: "filmbox",
 });
 
 con.connect(function (err) {
@@ -217,13 +217,12 @@ app.delete("/deleteAccount", (req, res) => {
   });
 });*/
 /*
-    API - Obtenir tous les utilisateurs
-*/
+    API - Obtenir tous les utilisateurs             -------------------------------------------------------------------------------------------------------------------
 
 app.get("/");
 
 /*
-    API - Obtenir tous les films
+    API - Obtenir tous les films                    -------------------------------------------------------------------------------------------------------------------
 */
 import fetch from "node-fetch";
 
