@@ -11,8 +11,8 @@ import dateFormat from "dateformat";
 import { MongoClient } from "mongodb";
 import { config } from "dotenv";
 import bcrypt from "bcrypt";
-
 import cors from "cors";
+import fetch from 'node-fetch';
 
 config();
 
@@ -274,7 +274,6 @@ app.get("/getUsers", async (req, res) => { //Cette ligne permet au serveur d'éc
 /*
     API - Obtenir tous les films                    -------------------------------------------------------------------------------------------------------------------
 */
-import fetch from "node-fetch";
 
 ///////////////////////////MOVIES RESQUEST ///////////////////////////////////////
 
@@ -448,6 +447,48 @@ app.get("/api/getMoviesResults/:searchQuery", async (req, res) => {
   }
 });
 
+// ================== GET MOVIES WITH FILTERS - DICOVERY PAGE ==================
+const router = express.Router();
+
+router.get('/discoverMoviesFiltered', async (req, res) => {
+  const { genre, language, decade } = req.query;
+
+  const originalUrl = 'https://api.themoviedb.org/3/discover/movie';
+  const params = new URLSearchParams();
+
+  if (genre) 
+    {
+      params.append('with_genres', genre);
+    }
+
+  if (language){
+    params.append('with_original_language', language);    
+  } 
+  if (decade) {
+    params.append('primary_release_date.gte', `${decade}-01-01`);
+    params.append('primary_release_date.lte', `${parseInt(decade)+9}-12-31`);
+  }
+
+  try {
+    const response = await fetch(`${originalUrl}?${params.toString()}`, {
+      headers: {
+        accept: "application/json",
+        'Content-Type': 'application/json',
+        Authorization: "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Error ! Couldnt get movies from TMDB API !!!');
+    }
+
+    const data = await response.json();
+    res.json(data); 
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to fetch movies' });
+  }
+});
 
 /*app.get("/api/getMoviesResults/:searchQuery", async (req, res) => {
   const userInput = req.params.searchQuery;
