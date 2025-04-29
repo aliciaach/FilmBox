@@ -12,7 +12,8 @@ function BrowseMovies() {
     const [pageCount, setPageCount] = useState(0);
     const [filters, setFilters] = useState({
         genre: '',
-        language: ''
+        language: '',
+        decade: ''
     });
     const [filteredMovies, setFilteredMovies] = useState([]);
     const [error, setError] = useState();
@@ -28,15 +29,18 @@ function BrowseMovies() {
     useEffect(() => {
         const fetchMovies = async () => {
             let buildUrl = '';
-
+            //Help of chatgpt just to figure ou the way to do the url, so what do put for decade to access the decade for example
             if (filters.genre) {
                 buildUrl += `genre=${filters.genre}&`;
             }
             if (filters.language) {
                 buildUrl += `language=${filters.language}&`;
             }
+            if (filters.decade) {
+                buildUrl += `decade=${filters.decade}&`;
+            }
 
-            const fullBuildUrlApi = `http://localhost:4000/discoverMoviesFiltered?${buildUrl}`;
+            const fullBuildUrlApi = `http://localhost:4000/discoverMoviesFiltered?${buildUrl}`; 
 
             try {
                 const response = await fetch(fullBuildUrlApi);
@@ -88,6 +92,17 @@ function BrowseMovies() {
                         <option value="es">Spanish</option>
                         <option value="ja">Japanese</option>
                     </select>
+
+                    <label style={{ marginLeft: '20px' }}>Decenies:</label>
+                    <select name="decade" value={filters.decade} onChange={handleFilterChange}>
+                        <option value="">All Time</option>
+                        <option value="2020">2020s</option>
+                        <option value="2010">2010s</option>
+                        <option value="2000">2000s</option>
+                        <option value="1990">1990s</option>
+                        <option value="1980">1980s</option>
+                    </select>
+                    
                 </div>
 
                 {/* code to show the movies, based on the filters */}

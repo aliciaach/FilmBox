@@ -456,11 +456,12 @@ app.get("/api/getMoviesResults/:searchQuery", async (req, res) => {
 
 app.get('/discoverMoviesFiltered', async (req, res) => {
   console.log("WE ARE GETTTING HEREEEEEEEEEEEEE");
-  const { genre, language } = req.query;
+  const { genre, language, decade } = req.query;
 
   const originalUrl = 'https://api.themoviedb.org/3/discover/movie';
   const params = new URLSearchParams();
 
+  //Help of chatgpt just to figure ou the way to do the url, so what do put for the genre, so like with_genres, or with_original_languages
   if (genre) 
     {
       params.append('with_genres', genre);
@@ -469,7 +470,14 @@ app.get('/discoverMoviesFiltered', async (req, res) => {
   if (language){
     params.append('with_original_language', language);    
   } 
-  
+
+  if (decade){
+    const startYear = decade;
+    const endYear = Number(decade) + 9
+    const endYearString = String(endYear); 
+    params.append('primary_release_date.gte', `${startYear}-01-01`);
+    params.append('primary_release_date.lte', `${endYearString}-12-31`);
+}  
 
   try {
   console.log("WE ARE GETTTING HEREEEEEEEEEEEEE");
