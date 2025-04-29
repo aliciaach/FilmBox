@@ -244,9 +244,7 @@ const ListeFilms = () => {
             Your browser does not support the video tag.
           </video>
           
-          <div style={{ position: 'relative', zIndex: 2 }}>
             <Header />
-          </div>
           
           <div className="movie-info" 
             style={{ 

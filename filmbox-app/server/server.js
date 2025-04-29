@@ -19,7 +19,6 @@ config();
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
 app.use(express.json()); //convert json data to javascript
 
 /*
@@ -454,10 +453,10 @@ app.get("/api/getMoviesResults/:searchQuery", async (req, res) => {
 });
 
 // ================== GET MOVIES WITH FILTERS - DICOVERY PAGE ==================
-const router = express.Router();
 
-router.get('/discoverMoviesFiltered', async (req, res) => {
-  const { genre, language, decade } = req.query;
+app.get('/discoverMoviesFiltered', async (req, res) => {
+  console.log("WE ARE GETTTING HEREEEEEEEEEEEEE");
+  const { genre, language } = req.query;
 
   const originalUrl = 'https://api.themoviedb.org/3/discover/movie';
   const params = new URLSearchParams();
@@ -470,12 +469,11 @@ router.get('/discoverMoviesFiltered', async (req, res) => {
   if (language){
     params.append('with_original_language', language);    
   } 
-  if (decade) {
-    params.append('primary_release_date.gte', `${decade}-01-01`);
-    params.append('primary_release_date.lte', `${parseInt(decade)+9}-12-31`);
-  }
+  
 
   try {
+  console.log("WE ARE GETTTING HEREEEEEEEEEEEEE");
+
     const response = await fetch(`${originalUrl}?${params.toString()}`, {
       headers: {
         accept: "application/json",
@@ -483,6 +481,7 @@ router.get('/discoverMoviesFiltered', async (req, res) => {
         Authorization: "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
       }
     });
+
 
     if (!response.ok) {
       throw new Error('Error ! Couldnt get movies from TMDB API !!!');
@@ -952,6 +951,7 @@ app.get("/adminsTab", async (req, res) => {
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../client/dist", "index.html"));
 });
+
 
 /*
     Connect to server

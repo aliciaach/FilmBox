@@ -36,10 +36,10 @@ function BrowseMovies() {
                 buildUrl += `language=${filters.language}&`;
             }
         
-            const fullBuildUrlApi = `http://localhost:4000/api/discoverMoviesFiltered?${buildUrl}`;
+            const fullBuildUrlApi = `http://localhost:4000/discoverMoviesFiltered?${buildUrl}`;
 
             try {
-                const response = await fetch(buildUrl);
+                const response = await fetch(fullBuildUrlApi);
 
                 if (!response.ok) {
                     throw new Error("Error while loading movies");
