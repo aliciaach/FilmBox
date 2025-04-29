@@ -35,7 +35,7 @@ function BrowseMovies() {
             if (filters.language) {
                 buildUrl += `language=${filters.language}&`;
             }
-        
+
             const fullBuildUrlApi = `http://localhost:4000/discoverMoviesFiltered?${buildUrl}`;
 
             try {
@@ -55,6 +55,7 @@ function BrowseMovies() {
         fetchMovies();
     }, [filters]);
 
+
     return (
         <>
             <div style={{
@@ -65,7 +66,7 @@ function BrowseMovies() {
             }}>
                 <Header />
 
-                <h1>Page for the movie categories and all"</h1>
+                <h1>Page for the movie categories and all</h1>
 
                 {/* --- Filter section --- */}
                 <div style={{ marginBottom: '20px' }}>
@@ -87,33 +88,61 @@ function BrowseMovies() {
                         <option value="es">Spanish</option>
                         <option value="ja">Japanese</option>
                     </select>
-
-                    
                 </div>
-                {/* UI FROM CHATGPT, JUST WANT TO TEST IF IT WORKS OR NOT */}
-                <div>
-                    {error && <p style={{ color: 'red' }}>{error}</p>}
 
-                    {filteredMovies.length > 0 ? (
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-                            {filteredMovies.map(movie => (
-                                <div key={movie.id} style={{ width: '150px' }}>
-                                    <img
-                                        src={movie.poster_path
-                                            ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
-                                            : "https://via.placeholder.com/150x225?text=No+Image"}
-                                        alt={movie.title}
-                                        style={{ width: '100%', height: 'auto' }}
-                                    />
-                                    <p style={{ fontSize: '14px', marginTop: '5px' }}>{movie.title}</p>
-                                </div>
-                            ))}
+                {/* code to show the movies, based on the filters */}
+                <div>
+                    {filteredMovies.length > 0 ? ( //If there are any filtered movies, we execute the following code and show the poster
+                        <div className="row">
+                            {filteredMovies.map((film, index) => {
+                                const cheminImage = film.poster_path
+                                    ? `https://image.tmdb.org/t/p/w500${film.poster_path}`
+                                    : BlackImage;
+
+                                return (
+                                    <div key={film.id || index} className="col-lg-2"
+                                        style={{ paddingBottom: '25px' }}>
+                                        <div className="card border-0 shadow movie-card"
+                                            style={{
+                                                borderRadius: '0px',
+                                                transition: 'all 0.3s ease',
+                                                transform: 'translateY(0)',
+                                                backgroundColor: 'transparent'
+                                            }}>
+                                            <Link to={`/movies/${film.id}`} className="text-decoration-none">
+                                                <img
+                                                    src={cheminImage}
+                                                    alt={film.title}
+                                                    className="card-img-top"
+                                                    style={{
+                                                        height: '300px',
+                                                        objectFit: 'cover',
+                                                        transition: 'all 0.3s ease',
+                                                        borderRadius: '0px'
+                                                    }}
+                                                />
+                                            </Link>
+                                        </div>
+                                    </div>
+                                );
+                            })}
                         </div>
                     ) : (
-                        <p>No movies found. Try changing filters!</p>
+                        <p>No movies found. Try changing filters !</p> //If we dont have any results, we dont show anything
                     )}
-                </div>
 
+                    {/* Hover Styles */}
+                    <style>{`
+                    .movie-card:hover {
+                        border: 2px solid #4a6bff !important;
+                        transform: translateY(-5px) !important;
+                        box-shadow: 0 10px 20px rgba(74, 107, 255, 0.3) !important;
+                    }
+                    .movie-card:hover img {
+                        opacity: 0.9;
+                    }
+                `}</style>
+                </div>
             </div>
         </>
     );
