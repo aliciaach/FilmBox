@@ -13,7 +13,9 @@ function BrowseMovies() {
     const [filters, setFilters] = useState({
         genre: '',
         language: '',
-        decade: ''
+        decade: '',
+        movieDuration: '',
+        country: '',
     });
     const [filteredMovies, setFilteredMovies] = useState([]);
     const [error, setError] = useState();
@@ -29,7 +31,6 @@ function BrowseMovies() {
     useEffect(() => {
         const fetchMovies = async () => {
             let buildUrl = '';
-            //Help of chatgpt just to figure ou the way to do the url, so what do put for decade to access the decade for example
             if (filters.genre) {
                 buildUrl += `genre=${filters.genre}&`;
             }
@@ -39,8 +40,14 @@ function BrowseMovies() {
             if (filters.decade) {
                 buildUrl += `decade=${filters.decade}&`;
             }
+            if (filters.movieDuration) {
+                buildUrl += `movieDuration=${filters.movieDuration}&`;
+            }
+            if (filters.country) {
+                buildUrl += `originCountry=${filters.country}&`;
+            }
 
-            const fullBuildUrlApi = `http://localhost:4000/discoverMoviesFiltered?${buildUrl}`; 
+            const fullBuildUrlApi = `http://localhost:4000/discoverMoviesFiltered?${buildUrl}`;
 
             try {
                 const response = await fetch(fullBuildUrlApi);
@@ -50,7 +57,7 @@ function BrowseMovies() {
                 }
 
                 const data = await response.json();
-                setFilteredMovies(data.results);
+                setFilteredMovies(data);
             } catch (err) {
                 setError(err.message);
             }
@@ -102,7 +109,38 @@ function BrowseMovies() {
                         <option value="1990">1990s</option>
                         <option value="1980">1980s</option>
                     </select>
-                    
+
+                    <label style={{ marginLeft: '20px' }}>Original Coutry:</label>
+                    <select name="country" value={filters.country} onChange={handleFilterChange}>
+                        <option value="">All Countries</option>
+                        <option value="AU">Australia</option>
+                        <option value="CA">Canada</option>
+                        <option value="CN">China</option>
+                        <option value="FR">France</option>
+                        <option value="DE">Germany</option>
+                        <option value="HK">Hong Kong</option>
+                        <option value="IN">India</option>
+                        <option value="IT">Italy</option>
+                        <option value="JP">Japan</option>
+                        <option value="KP">North Korea</option>
+                        <option value="KR">South Korea</option>
+                        <option value="RU">Russia</option>
+                        <option value="TR">Turkey</option>
+                        <option value="GB">United Kingdom</option>
+                        <option value="US">United States</option>
+                    </select>
+
+                    <label style={{ marginLeft: '20px' }}>Movie Duration:</label>
+                    <select name="movieDuration" value={filters.movieDuration} onChange={handleFilterChange}>
+                        <option value="">All Time</option>
+                        <option value="0">Less then an hour</option>
+                        <option value="1">One hour</option>
+                        <option value="2">Two hours</option>
+                        <option value="3">Four hours</option>
+                        <option value="4">Over 4 hours</option>
+                    </select>
+
+
                 </div>
 
                 {/* code to show the movies, based on the filters */}
