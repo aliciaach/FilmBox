@@ -28,6 +28,12 @@ function ManageUsers(){
       })
       .catch((erreur) => setError(erreur.message));  // Gérer les erreurs
   }, []);
+
+  const clickObtenirInformationsUser = (userId) => {
+    const user = users.find(u => u.utilisateur_id === userId);
+    setUserSelectionne(user);
+
+};    
 /*
     // Récupérer l'admin connecté
     fetch("http://localhost:4000/get-session", { credentials: 'include' }) //pour envoyer les cookies avec la requête
@@ -43,9 +49,7 @@ function ManageUsers(){
       })
       .catch((erreur) => setError(erreur.message));  // Gérer les erreurs
 
-    const clickObtenirInformationsUser = (userId) => {
-    const user = users.find(u => u.utilisateur_id === userId);
-    setUserSelectionne(user);
+
 
     //Changer compte à suspended //COMME CHANGE PASSWORD dans UserSettings
     const suspendAccount = async (e) => {
@@ -63,7 +67,7 @@ function ManageUsers(){
       setMessage("An error occurred while  suspending the user.");
     }
   };
-}; */
+ */
   
 
 return (
@@ -191,7 +195,7 @@ return (
                       {user.nom} {user.prenom}
                     </button> ))
                 }
-              {/*
+              <div></div>{/*
               <button className="list-group-item bg-transparent text-white btnUser">
                 FirstName LastName
               </button>

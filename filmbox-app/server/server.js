@@ -224,7 +224,7 @@ app.delete("/deleteAccount", (req, res) => {
   
  app.get("/getUsers", async (req, res) => { //Cette ligne permet au serveur d'écouter les requêtes GET envoyées à l'URL /getUsers et d'exécuter une fonction lorsque cette requête est reçue.
   const sql = "SELECT * FROM utilisateur";  // Requête SQL pour récupérer tous les utilisateurs
-  con.query(sql, params, (erreur, resultats) => {
+  con.query(sql, (erreur, resultats) => {
     if (erreur) {
       console.error("Erreur de la BDD : ", erreur);
       return res.status(500).json({ message: "Erreur du serveur" });
@@ -236,7 +236,7 @@ app.delete("/deleteAccount", (req, res) => {
     }
 
     // Si tout se passe bien, on renvoie les résultats (les informations de l'utilisateur)
-    res.json(resultats[0]);
+    res.json(resultats);
   });
 });
 
