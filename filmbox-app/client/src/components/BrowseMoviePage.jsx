@@ -140,9 +140,9 @@ function BrowseMovies() {
                 </div>
 
                 {/* code to show the movies, based on the filters */}
-                <div>
+                <div className="container mt-4">
                     {filteredMovies.length > 0 ? ( //If there are any filtered movies, we execute the following code and show the poster
-                        <div className="row">
+                        <div className="row mt-3">
                             {filteredMovies.map((film, index) => {
                                 const cheminImage = film.poster_path
                                     ? `https://image.tmdb.org/t/p/w500${film.poster_path}`
