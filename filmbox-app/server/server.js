@@ -11,15 +11,14 @@ import dateFormat from "dateformat";
 import { MongoClient } from "mongodb";
 import { config } from "dotenv";
 import bcrypt from "bcrypt";
-
 import cors from "cors";
+import fetch from 'node-fetch';
 
 config();
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
 app.use(express.json()); //convert json data to javascript
 
 /*
@@ -109,7 +108,11 @@ app.post("/login", (req, res) => {
       console.log("USER FOUNDDDDDD" + results[0].courriel);
       return res
         .status(200)
-        .json({ succes: true, message: "Login Succesful !" });
+        .json({
+          success: true,
+          message: "Login Successful!",
+          userId: results[0].utilisateur_id
+        });
     } else {
       console.log("USER NOTTT FOUNDDD");
       return res.status(401).json({
@@ -152,6 +155,33 @@ app.post("/LoginRegister", (req, res) => {
   );
 });
 
+app.post("/saveUserAccountChanges", (req, res) => {
+  console.log("Trying to update user information");
+  const { id, prenom, nom, courriel, telephone } = req.body;
+
+  const sql = `UPDATE utilisateur SET prenom = ?, nom = ?, courriel = ?, telephone = ? WHERE utilisateur_id = ?`;
+
+  con.query(sql, [prenom, nom, courriel, telephone, id], (err, results) => {
+    if (err) {
+      console.error("Database error: ", err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+
+    if (results.affectedRows > 0) {
+      console.log("USER INFO UPDATED!");
+      return res
+        .status(200)
+        .json({ success: true, message: "User information updated." });
+    } else {
+      console.log("Error, couldn't update user information");
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found or no changes made." });
+    }
+  });
+});
+
+
 app.post("/ChangePassword", (req, res) => {
   console.log("Trying to update password");
   const { email, newPassword } = req.body;
@@ -176,6 +206,7 @@ app.post("/ChangePassword", (req, res) => {
   });
 });
 
+
 app.delete("/deleteAccount", (req, res) => {
   console.log("trying to delete account");
   const { userId } = req.body;
@@ -192,7 +223,7 @@ app.delete("/deleteAccount", (req, res) => {
         .status(200)
         .json({ success: true, message: "Your account was deleted !" });
     } else {
-      console.log("Error, couldnt update password");
+      console.log("Error, couldnt delete password");
       return res
         .status(404)
         .json({ succes: false, message: "Error, couldnt delete user..." });
@@ -270,7 +301,8 @@ app.post("/suspendAccount", (req, res) => {
 /*
     API - Obtenir tous les films -------------------------------------------------------------------------------------------------------------------
 */
-import fetch from "node-fetch";
+
+///////////////////////////MOVIES RESQUEST ///////////////////////////////////////
 
 app.get("/api/movies", async (req, res) => {
   //Methode given by the TMBD API, its to authenticate yourself to get access to the API
@@ -301,6 +333,284 @@ app.get("/api/movies", async (req, res) => {
     res.status(500).json({ message: "Failed to fetch movies" });
   }
 });
+
+//Popular movies 
+app.get("/api/popularMovies", async (req, res) => {
+  const response = await fetch("https://api.themoviedb.org/3/movie/popular?...", options);
+  const data = await response.json();
+  res.json(data.results);
+});
+
+//Top rated movies 
+app.get("/api/topRatedMovies", async (req, res) => {
+  try {
+    const response = await fetch(
+      "https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1",
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+
+        }
+      }
+    );
+
+    const data = await response.json();
+    res.json(data.results);
+  } catch (error) {
+    console.error("Error fetching top rated movies:", error);
+    res.status(500).json({ error: "Failed to fetch top rated movies" });
+  }
+});
+
+//Upcoming movies 
+app.get("/api/upcomingMovies", async (req, res) => {
+  try {
+    const response = await fetch(
+      "https://api.themoviedb.org/3/movie/upcoming?language=en-US&page=1",
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+        }
+      }
+    );
+
+    const data = await response.json();
+    res.json(data.results);
+  } catch (error) {
+    console.error("Error fetching upcoming movies:", error);
+    res.status(500).json({ error: "Failed to fetch upcoming movies" });
+  }
+});
+
+
+//Pour appeler cet api, ajouter le genre après en utilisant ?genre=ID. Ex.: http://localhost:4000/api/moviesByGenres?genre=28
+app.get("/api/moviesByGenres", async (req, res) => {
+  const genreId = req.query.genre;
+
+  if (!genreId) {
+    return res.status(400).json({ error: "Missing Genre ID !!" });
+  }
+
+  try {
+    const response = await fetch(
+      `https://api.themoviedb.org/3/discover/movie?with_genres=${genreId}&language=en-US&page=1`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+        }
+      }
+    );
+
+    const data = await response.json();
+    res.json(data.results);
+  } catch (error) {
+    console.error("Error fetching movies by genre:", error);
+    res.status(500).json({ error: "Failed to fetch movies by genre" });
+  }
+});
+
+app.get("/api/genres", async (req, res) => {
+  try {
+    const response = await fetch("https://api.themoviedb.org/3/genre/movie/list?language=en-US", {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${process.env.TMDB_TOKEN}`
+      }
+    });
+
+    const data = await response.json();
+    res.json(data.genres);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch genre list" });
+  }
+});
+
+//=================== RECHERCHER UN FILM ==========================
+app.get("/api/searchMovie", async (req, res) => {
+  const userInput = req.query.query;
+
+  try {
+    const response = await fetch(`https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(userInput)}`, {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization: "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+      }
+    });
+
+    const data = await response.json();
+    res.json(data.results);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed while searching movies" });
+  }
+})
+// ================== GET MOVIES WITH PAGINATION ==================
+app.get("/api/getMoviesResults/:searchQuery", async (req, res) => {
+  const userInput = req.params.searchQuery;
+  const page = req.query.page || 1; // Read the page query param (default 1)
+
+  try {
+    const response = await fetch(`https://api.themoviedb.org/3/search/movie?include_adult=false&query=${encodeURIComponent(userInput)}&page=${page}`, {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization: "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+      }
+    });
+
+    const data = await response.json();
+    res.json(data); // Send full TMDB object, not only .results
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed while searching movies" });
+  }
+});
+
+// ================== GET MOVIES WITH FILTERS - DICOVERY PAGE ==================
+// Need to fix this part, the issue with charging all the pages
+app.get('/discoverMoviesFiltered', async (req, res) => {
+  console.log("WE ARE GETTTING HEREEEEEEEEEEEEE");
+  const { genre, language, decade, movieDuration, originCountry } = req.query;
+
+  const originalUrl = 'https://api.themoviedb.org/3/discover/movie';
+  const params = new URLSearchParams();
+
+  //Help of chatgpt just to figure ou the way to do the url, so what do put for the genre, so like with_genres, or with_original_languages
+  if (genre) {
+    params.append('with_genres', genre);
+  }
+
+  if (language) {
+    params.append('with_original_language', language);
+  }
+
+  if (decade) {
+    const startYear = decade;
+    const endYear = Number(decade) + 9;
+    const endYearString = String(endYear);
+    params.append('primary_release_date.gte', `${startYear}-01-01`);
+    params.append('primary_release_date.lte', `${endYearString}-12-31`);
+  }
+
+  /*if (movieDuration) {
+    params.append('')
+  }*/
+
+  try {
+    console.log("WE ARE GETTTING HEREEEEEEEEEEEEE");
+
+    const response = await fetch(`${originalUrl}?${params.toString()}`, {
+      headers: {
+        accept: "application/json",
+        'Content-Type': 'application/json',
+        Authorization: "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Error ! Couldnt get movies from TMDB API !!!');
+    }
+
+    const data = await response.json(); //full response from tmbd api
+    const fetchedMovieList = data.results; //Just the movie list fetched from the api, nothing more (so we get the specific results from data)
+
+    const filteredMovies = []; // This will be the list contening the movies respecting all the filters
+
+    for (const movie of fetchedMovieList) {
+      const currentMovieInformation = await fetch(`https://api.themoviedb.org/3/movie/${movie.id}`, {
+        headers: {
+          accept: "application/json",
+          Authorization: "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+        }
+      });
+      console.log("CHECKKKKKKKKPOINT 1");
+
+      const fullMovieData = await currentMovieInformation.json(); //All the information about the movie in details
+      
+      // If the user selected 
+      if (movieDuration) {
+      console.log("CHECKKKKKKKKPOINT 2");
+
+        const userPreferencesDuration = parseInt(movieDuration);
+        const runtime = fullMovieData.runtime;
+
+        if (!runtime) continue; // skip if no runtime
+
+        let durationIsOK = false;
+
+        if (userPreferencesDuration === 0 && runtime < 60) durationIsOK = true;
+        else if (userPreferencesDuration === 1 && runtime >= 60 && runtime < 90) durationIsOK = true;
+        else if (userPreferencesDuration === 2 && runtime >= 90 && runtime < 150) durationIsOK = true;
+        else if (userPreferencesDuration === 3 && runtime >= 150 && runtime <= 240) durationIsOK = true;
+        else if (userPreferencesDuration === 4 && runtime > 240) durationIsOK = true;
+
+        if (!durationIsOK) continue;
+      }
+      console.log("CHECKKKKKKKKPOINT 3");
+
+      if (originCountry) {
+        let correspondingCountryFound = false;
+
+        //check if production_companies exists
+        if (fullMovieData.production_companies && fullMovieData.production_companies.length > 0) {
+          for (let i = 0; i < fullMovieData.production_companies.length; i++) {
+            const company = fullMovieData.production_companies[i];
+
+            if (company.origin_country === originCountry) {
+              correspondingCountryFound = true;
+              break; //if we found a match, the movie is good
+            }
+          }
+        }
+        console.log("CHECKKKKKKKKPOINT 4");
+
+        // If we didn’t, dont save the movie for the list
+        if (!correspondingCountryFound) {
+          continue;
+        }
+      }
+
+      filteredMovies.push(fullMovieData);
+    }
+
+    res.json(filteredMovies);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to fetch movies' });
+  }
+});
+
+
+/*app.get("/api/getMoviesResults/:searchQuery", async (req, res) => {
+  const userInput = req.params.searchQuery;
+  const page = req.query.page || 1; 
+
+  try {
+    const response = await fetch(`https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(userInput)}&page=${page}`, {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization: "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+      }
+    });
+
+    const data = await response.json();
+    res.json(data.results); 
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed while searching movies" });
+  }
+});*/
+
 
 /*
     API - Obtenir un film par ID
@@ -437,19 +747,101 @@ app.post("/api/watchlist", (req, res) => {
       .status(400)
       .json({ message: "User ID et Movie ID sont requisent" });
   }
-
-  const sql =
-    "INSERT INTO film_watchlist (film_id, utilisateur_utilisateur_id) VALUES (?, ?)";
-  con.query(sql, [movieId, userId], (err, results) => {
+  //Check if the movie exist in our database first
+  const verificationSQL = "SELECT * FROM films WHERE film_id = ?";
+  con.query(verificationSQL, [movieId], async (err, results) => {
     if (err) {
-      console.error("Database error:", err);
-      return res.status(500).json({ message: "Internal server error" });
+      console.error("Database problem:", err);
+      return res.status(500).json({ message: "Internal server problem" });
     }
-    res
-      .status(201)
-      .json({ success: true, message: "Film ajoute dans watchlist" });
+
+    //If the movies doesnt exist yet, we create it 
+    if (results.length === 0) {
+      const options = {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization:
+            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+        },
+      };
+
+      const tmdbResponse = await fetch(
+        `https://api.themoviedb.org/3/movie/${movieId}`,
+        options
+      );
+
+      if (!tmdbResponse.ok) {
+        console.error("Failed to fetch movie from TMDB");
+        return res.status(404).json({ message: "Movie not found in TMDB" });
+      }
+
+      const movieData = await tmdbResponse.json();
+
+      //This is the data that will be saved on our local database
+      const newFilmSQL = `INSERT INTO films (film_id, titre, film_duree, date_sortie, pays_origin_film, langue_original, status, directeur_directeur_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+
+      const filmValues = [movieData.id, movieData.title, movieData.runtime || 0, movieData.release_date || null, movieData.production_countries?.[0]?.name || 'Unknown', movieData.original_language || 'Unknown', movieData.status || 'Unknown', null]; //director is null for now, have to fix a bug first
+
+
+      con.query(newFilmSQL, filmValues, (insertErr) => {
+        if (insertErr) {
+          console.error("Database error inserting film:", insertErr);
+          return res.status(500).json({ message: "Internal server error inserting film" });
+        }
+
+        insertIntoWatchlist();
+      });
+    } else {
+      insertIntoWatchlist();
+    }
+
+
+    function insertIntoWatchlist() {
+
+      //Check if the movie isnt already in the user's watchlist
+      const findMovieSql = `SELECT * FROM film_watchlist WHERE film_id = ? AND utilisateur_utilisateur_id = ?`;
+
+      con.query(findMovieSql, [movieId, userId], (checkErr, checkResults) => {
+        if (checkErr) {
+          console.error("Database error checking watchlist:", checkErr);
+          return res.status(500).json({ message: "Internal server error checking watchlist" });
+        }
+
+        if (checkResults.length > 0) {
+          console.log(`Movie ID ${movieId} already in watchlist for user ${userId}`);
+          return res.status(409).json({ success: false, message: "Movie already in watchlist" });
+        }
+
+        const insertWatchlistSql = `INSERT INTO film_watchlist (film_id, utilisateur_utilisateur_id) VALUES (?, ?)`;
+
+        con.query(insertWatchlistSql, [movieId, userId], (watchlistErr) => {
+          if (watchlistErr) {
+            console.error("Database error inserting into watchlist:", watchlistErr);
+            return res.status(500).json({ message: "Internal server error adding to watchlist" });
+          }
+
+          console.log(`SUCCES!!!!!!!!!! : Movie with ID ${movieId} added to watchlist for user ${userId}`);
+          res.status(201).json({ success: true, message: "Film added to watchlist", });
+        });
+      });
+    }
   });
 });
+
+
+/*const sql =
+  "INSERT INTO film_watchlist (film_id, utilisateur_utilisateur_id) VALUES (?, ?)";
+con.query(sql, [movieId, userId], (err, results) => {
+  if (err) {
+    console.error("Database error:", err);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+  res
+    .status(201)
+    .json({ success: true, message: "Film ajoute dans watchlist" });
+});
+});*/
 
 // Get Watchlist
 // Get Watchlist - Updated to use TMDB API
@@ -654,6 +1046,7 @@ app.get("/adminsTab", async (req, res) => {
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../client/dist", "index.html"));
 });
+
 
 /*
     Connect to server

@@ -12,7 +12,9 @@ function PageWatchList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const userId = 1;
+
+  const userId = localStorage.getItem("userId"); 
+
 
   useEffect(() => {
     const fetchData = async () => {

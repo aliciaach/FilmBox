@@ -14,7 +14,8 @@ const FilmInfo = () => {
   const [markedWatched, setMarkedWatched] = useState(false);
   const [rating, setRating] = useState(5);
   const navigate = useNavigate();
-  const userId = 1; // TEMPORARY USER ID
+
+  const userId = localStorage.getItem("userId"); //local storage idea given by chatgpt
 
   useEffect(() => {
     if (!filmId || isNaN(numericFilmId)) {
@@ -48,6 +49,7 @@ const FilmInfo = () => {
         }
       });
   });
+
 
   const handleWatchlist = async () => {
     try {
