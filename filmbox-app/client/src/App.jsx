@@ -13,11 +13,12 @@ import AdminManagementPage from "./components/AdminManagementPage";
 import UserManagement from "./components/UserManagement";
 import PageWatchList from "./components/PageWatchList";
 import Footer from './components/Footer';
-import SearchResults from './components/SearchResults';
-import BrowseMovies from './components/BrowseMoviePage';
-
+//import SearchResults from './components/SearchResults';
+//import BrowseMovies from './components/BrowseMoviePage';
+// import UserManagement from "./components/UserManagement";
+ 
 function App() {
-  return (
+  return (/*
     <BrowserRouter>
     <div>
       <Routes>
@@ -37,11 +38,11 @@ function App() {
       </Routes>
       <Footer/>
     </div>
-    </BrowserRouter>
+    </BrowserRouter>*/
 
     //<UserSettings />
     //<AdminLogin />
-    //<UserManagement />
+    <UserManagement />
     //<Connexion/>
   );
 }

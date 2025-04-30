@@ -29,13 +29,29 @@ function ManageUsers(){
       .catch((erreur) => setError(erreur.message));  // Gérer les erreurs
   }, []);
  
-  const clickObtenirInformationsUser = (userId) => {
+    const clickObtenirInformationsUser = (userId) => {
     const user = users.find(u => u.utilisateur_id === userId);
     setUserSelectionne(user);
  
-};    
-/*
-    // Récupérer l'admin connecté
+     
+    //Changer compte à suspended //COMME CHANGE PASSWORD dans UserSettings
+    const suspendAccount = async (e) => {
+      e.preventDefault();
+      try {
+        const response = await fetch('http://localhost:4000/suspendAccount', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: userSelectionne.utilisateur_id }),
+        });
+        const data = await response.json();
+        setMessage(data.success ? "User suspended" : "Error, couldn't suspend user");
+      } catch (error) {
+        console.error('Error suspending user:', error);
+        setMessage("An error occurred while  suspending the user.");
+      }
+    };
+
+        // Récupérer l'admin connecté
     fetch("http://localhost:4000/get-session", { credentials: 'include' }) //pour envoyer les cookies avec la requête
       .then((response) => {
         if (!response.ok) throw new Error("Erreur dans la récupération de la session");
@@ -48,25 +64,13 @@ function ManageUsers(){
  
       })
       .catch((erreur) => setError(erreur.message));  // Gérer les erreurs
+};    
+/*
+
  
  
- 
-    //Changer compte à suspended //COMME CHANGE PASSWORD dans UserSettings
-    const suspendAccount = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch('http://localhost:4000/suspendAccount', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: userSelectionne.utilisateur_id }),
-      });
-      const data = await response.json();
-      setMessage(data.success ? "User suspended" : "Error, couldn't suspend user");
-    } catch (error) {
-      console.error('Error suspending user:', error);
-      setMessage("An error occurred while  suspending the user.");
-    }
-  };
+
+
  */
  
  
@@ -176,9 +180,9 @@ return (
      
       {/* Header */}
       <div className="d-flex justify-content-between align-items-center p-4 mt-4">
-       {/* <h1> {admin ? `${admin.prenom} ${admin.nom} - Admin` : "Admin Name - Role Level"} </h1> {/* Je mets par défaut que le role c'est "admin" mais je vois pas d'Autre
+       <h1> {admin ? `${admin.prenom} ${admin.nom} - Admin` : "Admin Name - Role Level"} </h1> {/* Je mets par défaut que le role c'est "admin" mais je vois pas d'Autre
                                                                                                   choix dans la BDD que Admin, je fais quoiiii  AAAAAA */}
-        <h1> Admin Name - Role Level</h1>
+         {/*<h1> Admin Name - Role Level</h1>*/}
         <button className="btn btn-outline-light">Logout</button>
       </div>
  
