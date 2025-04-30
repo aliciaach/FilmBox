@@ -283,7 +283,7 @@ const ListeFilms = () => {
       </div>
 
       {/* Movie List Section */}
-      <div className="container text-center mt-0" style={{paddingTop: '50px'}}>
+      <div className="container-fluid text-center mt-0" style={{paddingTop: '50px'}}>
         {/* Filtres déroulants */}
         <div className="mb-4 text-start">
           <button 

@@ -140,7 +140,7 @@ function BrowseMovies() {
                 </div>
 
                 {/* code to show the movies, based on the filters */}
-                <div className="container mt-4">
+                <div className="container-fluid mt-4">
                     {filteredMovies.length > 0 ? ( //If there are any filtered movies, we execute the following code and show the poster
                         <div className="row mt-3">
                             {filteredMovies.map((film, index) => {
@@ -149,7 +149,7 @@ function BrowseMovies() {
                                     : BlackImage;
 
                                 return (
-                                    <div key={film.id || index} className="col-lg-2"
+                                    <div key={film.id || index} className="col-lg-2 col-md-3 col-sm-6 mb-4"
                                         style={{ paddingBottom: '25px' }}>
                                         <div className="card border-0 shadow movie-card"
                                             style={{
@@ -164,7 +164,7 @@ function BrowseMovies() {
                                                     alt={film.title}
                                                     className="card-img-top"
                                                     style={{
-                                                        height: '300px',
+                                                        height: '400px',
                                                         objectFit: 'cover',
                                                         transition: 'all 0.3s ease',
                                                         borderRadius: '0px'
