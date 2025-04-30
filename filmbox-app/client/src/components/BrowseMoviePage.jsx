@@ -20,14 +20,6 @@ function BrowseMovies() {
     const [filteredMovies, setFilteredMovies] = useState([]);
     const [error, setError] = useState();
 
-    const handleFilterChange = (e) => {
-        const { name, value } = e.target;
-        setFilters(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
-
     useEffect(() => {
         const fetchMovies = async () => {
             let buildUrl = '';
@@ -82,7 +74,7 @@ function BrowseMovies() {
                 {/* --- Filter section --- */}
                 <div style={{ marginBottom: '20px' }}>
                     <label>Genre:</label>
-                    <select name="genre" value={filters.genre} onChange={handleFilterChange}>
+                    <select value={filters.genre} onChange={(e) => setFilters({ ...filters, genre: e.target.value })}>
                         <option value="">All Genres</option>
                         <option value="28">Action</option>
                         <option value="35">Comedy</option>
@@ -92,7 +84,7 @@ function BrowseMovies() {
                     </select>
 
                     <label style={{ marginLeft: '20px' }}>Language:</label>
-                    <select name="language" value={filters.language} onChange={handleFilterChange}>
+                    <select value={filters.language} onChange={(e) => setFilters({ ...filters, language: e.target.value })}>
                         <option value="">All Languages</option>
                         <option value="en">English</option>
                         <option value="fr">French</option>
@@ -100,8 +92,8 @@ function BrowseMovies() {
                         <option value="ja">Japanese</option>
                     </select>
 
-                    <label style={{ marginLeft: '20px' }}>Decenies:</label>
-                    <select name="decade" value={filters.decade} onChange={handleFilterChange}>
+                    <label style={{ marginLeft: '20px' }}>Decades:</label>
+                    <select value={filters.decade} onChange={(e) => setFilters({ ...filters, decade: e.target.value })}>
                         <option value="">All Time</option>
                         <option value="2020">2020s</option>
                         <option value="2010">2010s</option>
@@ -110,8 +102,11 @@ function BrowseMovies() {
                         <option value="1980">1980s</option>
                     </select>
 
-                    <label style={{ marginLeft: '20px' }}>Original Coutry:</label>
-                    <select name="country" value={filters.country} onChange={handleFilterChange}>
+                    <label style={{ marginLeft: '20px' }}>Original Country:</label>
+                    <select
+                        value={filters.country}
+                        onChange={(e) => setFilters({ ...filters, country: e.target.value })}
+                    >
                         <option value="">All Countries</option>
                         <option value="AU">Australia</option>
                         <option value="CA">Canada</option>
@@ -131,16 +126,17 @@ function BrowseMovies() {
                     </select>
 
                     <label style={{ marginLeft: '20px' }}>Movie Duration:</label>
-                    <select name="movieDuration" value={filters.movieDuration} onChange={handleFilterChange}>
+                    <select
+                        value={filters.movieDuration}
+                        onChange={(e) => setFilters({ ...filters, movieDuration: e.target.value })}
+                    >
                         <option value="">All Time</option>
-                        <option value="0">Less then an hour</option>
+                        <option value="0">Less than an hour</option>
                         <option value="1">One hour</option>
                         <option value="2">Two hours</option>
                         <option value="3">Four hours</option>
                         <option value="4">Over 4 hours</option>
                     </select>
-
-
                 </div>
 
                 {/* code to show the movies, based on the filters */}
