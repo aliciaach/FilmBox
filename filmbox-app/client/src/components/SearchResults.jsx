@@ -52,40 +52,44 @@ function SearchResults() {
                 <Header />
 
                 <h1>Search Results for "{searchQuery}"</h1>
+                <div className="container-fluid mt-4">
+                    <div className="row mt-3">
+                        {results.map((film, index) => {
+                            let cheminImage = film.poster_path
+                                ? `https://image.tmdb.org/t/p/w500/${film.poster_path}`
+                                : BlackImage;
 
-                <div className="row mt-3">
-                    {results.map((film, index) => {
-                        let cheminImage = film.poster_path
-                            ? `https://image.tmdb.org/t/p/w500/${film.poster_path}`
-                            : BlackImage;
-
-                        return (
-                            <div key={film.id || index} className="col-lg-2 col-md-3 col-sm-6 mb-4">
-                                <div className="card border-0 shadow movie-card"
-                                    style={{
-                                        borderRadius: "0px",
-                                        transition: 'all 0.3s ease',
-                                        transform: 'translateY(0)',
-                                        backgroundColor: "transparent"
-                                    }}>
-                                    <Link to={`/movies/${film.id}`} className="text-decoration-none">
-                                        <img
-                                            src={cheminImage}
-                                            alt={film.title}
-                                            className="card-img-top"
-                                            style={{
-                                                objectFit: "cover",
-                                                transition: 'all 0.3s ease',
-                                                borderRadius: "0px"
-                                            }}
-                                            onError={(e) => { e.target.src = BlackImage; }}
-                                        />
-                                    </Link>
+                            return (
+                                <div key={film.id || index} className="col-lg-2 col-md-3 col-sm-6 mb-4">
+                                    <div className="card border-0 shadow movie-card"
+                                        style={{
+                                            borderRadius: "0px",
+                                            transition: 'all 0.3s ease',
+                                            transform: 'translateY(0)',
+                                            backgroundColor: "transparent"
+                                        }}>
+                                        <Link to={`/movies/${film.id}`} className="text-decoration-none">
+                                            <img
+                                                src={cheminImage}
+                                                alt={film.title}
+                                                className="card-img-top"
+                                                style={{
+                                                    height: "450px",
+                                                    width: "100%",
+                                                    objectFit: "cover",
+                                                    transition: 'all 0.3s ease',
+                                                    borderRadius: "0px"
+                                                }}
+                                                onError={(e) => { e.target.src = BlackImage; }}
+                                            />
+                                        </Link>
+                                    </div>
                                 </div>
-                            </div>
-                        );
-                    })}
+                            );
+                        })}
+                    </div>
                 </div>
+
 
                 {/* Pagination */}
                 <ReactPaginate
