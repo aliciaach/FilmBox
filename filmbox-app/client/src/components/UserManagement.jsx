@@ -42,7 +42,7 @@ function ManageUsers(){
 
       })
       .catch((erreur) => setError(erreur.message));  // Gérer les erreurs
-*/
+
     const clickObtenirInformationsUser = (userId) => {
     const user = users.find(u => u.utilisateur_id === userId);
     setUserSelectionne(user);
@@ -63,7 +63,7 @@ function ManageUsers(){
       setMessage("An error occurred while  suspending the user.");
     }
   };
-}; 
+}; */
   
 
 return (
@@ -377,9 +377,10 @@ return (
             {/* Ligne bas : séparation et bouton */}
             <div className='section-grow d-flex justify-content-center align-items-center'>
 
-              {/* Bouton Suspend Account */}
-              <form onSubmit={suspendAccount} className="text-center">
-                <button className=" btnCustom " style={{ fontSize: '30px' }}> {/*btn btn-outline-light*/}
+              {/* Bouton Suspend Account 
+              <form onSubmit={suspendAccount} className="text-center">*/}
+              <form  className="text-center">              
+                <button className=" btnCustomRouge " style={{ fontSize: '30px' }}> {/*btn btn-outline-light*/} {/*btnCustom*/}
                   Suspend Account
                 </button>
               </form>

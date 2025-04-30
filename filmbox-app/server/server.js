@@ -218,10 +218,32 @@ app.delete("/deleteAccount", (req, res) => {
 });*/
 /*
     API - Obtenir tous les utilisateurs             -------------------------------------------------------------------------------------------------------------------
+*/
+  //con query : méthode de connexion à la BDD MySQL dans Node.js. Elle est utilisée pour envoyer une requête SQL à la base de données 
+  // et récupérer des données ou effectuer des actions (comme INSERT, UPDATE, DELETE, ou SELECT).
+  
+ app.get("/getUsers", async (req, res) => { //Cette ligne permet au serveur d'écouter les requêtes GET envoyées à l'URL /getUsers et d'exécuter une fonction lorsque cette requête est reçue.
+  const sql = "SELECT * FROM utilisateur";  // Requête SQL pour récupérer tous les utilisateurs
+  con.query(sql, params, (erreur, resultats) => {
+    if (erreur) {
+      console.error("Erreur de la BDD : ", erreur);
+      return res.status(500).json({ message: "Erreur du serveur" });
+    }
 
-app.get("/");
+    if (resultats.length === 0) {
+      // Si aucun utilisateur n'a été trouvé avec cet ID, on renvoie une erreur 404
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+    }
 
+    // Si tout se passe bien, on renvoie les résultats (les informations de l'utilisateur)
+    res.json(resultats[0]);
+  });
+});
 
+/*
+    Inspiré de changePassword- Modifier état compte à suspended             -------------------------------------------------------------------------------------------------------------------
+
+*/
 app.post("/suspendAccount", (req, res) => {
   console.log("Trying to suspend account");
   const { userId } = req.body;
