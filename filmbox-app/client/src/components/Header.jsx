@@ -29,8 +29,14 @@ function Header() {
   return (
     <>
       <header
-        className="pb-5"
         style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100%",
+          zIndex: 10,
+          backdropFilter: "blur(5px)",
+          backgroundColor: "rgba(255, 255, 255, 0.2)",
           background: "linear-gradient(180deg, rgba(0, 0, 0, 0))",
         }}
       >
@@ -88,7 +94,7 @@ function Header() {
                     marginTop: "37px",
                     marginLeft: "-5px",
                   }}
-                    className="search-results bg-blue-900"> 
+                    className="search-results bg-blue-900">
                     {results.slice(0, 5).map((movie) => (
                       <li key={movie.id}>
                         <Link to={`/movies/${movie.id}`} style={{ textDecoration: "none" }}>
@@ -112,11 +118,11 @@ function Header() {
                                   src={`https://image.tmdb.org/t/p/w92${movie.poster_path}`}
                                   alt={movie.title}
                                   style={{
-                                    width: "100%",          
-                                    height: "100%",            
-                                    objectFit: "contain",      
-                                    objectPosition: "left",   
-                                    display: "block",        
+                                    width: "100%",
+                                    height: "100%",
+                                    objectFit: "contain",
+                                    objectPosition: "left",
+                                    display: "block",
                                     transition: "transform 0.3s ease",
                                   }}
                                   onError={(e) => { e.target.src = BlackImage; }}
@@ -135,7 +141,7 @@ function Header() {
                     {results.length > 3 && (
                       <li>
                         <button
-                          onClick={() =>navigate(`/searchResults/${searchInput}`)}
+                          onClick={() => navigate(`/searchResults/${searchInput}`)}
                           className="w-full text-left hover:bg-gray-700 text-blue-400"
                           style={{
                             width: "100%",

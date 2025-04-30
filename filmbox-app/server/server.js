@@ -19,7 +19,6 @@ config();
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
 app.use(express.json()); //convert json data to javascript
 
 /*
@@ -109,10 +108,10 @@ app.post("/login", (req, res) => {
       console.log("USER FOUNDDDDDD" + results[0].courriel);
       return res
         .status(200)
-        .json({ 
-          success: true, 
-          message: "Login Successful!", 
-          userId: results[0].utilisateur_id 
+        .json({
+          success: true,
+          message: "Login Successful!",
+          userId: results[0].utilisateur_id
         });
     } else {
       console.log("USER NOTTT FOUNDDD");
@@ -437,7 +436,7 @@ app.get("/api/getMoviesResults/:searchQuery", async (req, res) => {
   const page = req.query.page || 1; // Read the page query param (default 1)
 
   try {
-    const response = await fetch(`https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(userInput)}&page=${page}`, {
+    const response = await fetch(`https://api.themoviedb.org/3/search/movie?include_adult=false&query=${encodeURIComponent(userInput)}&page=${page}`, {
       method: "GET",
       headers: {
         accept: "application/json",
@@ -454,28 +453,38 @@ app.get("/api/getMoviesResults/:searchQuery", async (req, res) => {
 });
 
 // ================== GET MOVIES WITH FILTERS - DICOVERY PAGE ==================
-const router = express.Router();
-
-router.get('/discoverMoviesFiltered', async (req, res) => {
-  const { genre, language, decade } = req.query;
+// Need to fix this part, the issue with charging all the pages
+app.get('/discoverMoviesFiltered', async (req, res) => {
+  console.log("WE ARE GETTTING HEREEEEEEEEEEEEE");
+  const { genre, language, decade, movieDuration, originCountry } = req.query;
 
   const originalUrl = 'https://api.themoviedb.org/3/discover/movie';
   const params = new URLSearchParams();
 
-  if (genre) 
-    {
-      params.append('with_genres', genre);
-    }
-
-  if (language){
-    params.append('with_original_language', language);    
-  } 
-  if (decade) {
-    params.append('primary_release_date.gte', `${decade}-01-01`);
-    params.append('primary_release_date.lte', `${parseInt(decade)+9}-12-31`);
+  //Help of chatgpt just to figure ou the way to do the url, so what do put for the genre, so like with_genres, or with_original_languages
+  if (genre) {
+    params.append('with_genres', genre);
   }
 
+  if (language) {
+    params.append('with_original_language', language);
+  }
+
+  if (decade) {
+    const startYear = decade;
+    const endYear = Number(decade) + 9;
+    const endYearString = String(endYear);
+    params.append('primary_release_date.gte', `${startYear}-01-01`);
+    params.append('primary_release_date.lte', `${endYearString}-12-31`);
+  }
+
+  /*if (movieDuration) {
+    params.append('')
+  }*/
+
   try {
+    console.log("WE ARE GETTTING HEREEEEEEEEEEEEE");
+
     const response = await fetch(`${originalUrl}?${params.toString()}`, {
       headers: {
         accept: "application/json",
@@ -488,13 +497,76 @@ router.get('/discoverMoviesFiltered', async (req, res) => {
       throw new Error('Error ! Couldnt get movies from TMDB API !!!');
     }
 
-    const data = await response.json();
-    res.json(data); 
+    const data = await response.json(); //full response from tmbd api
+    const fetchedMovieList = data.results; //Just the movie list fetched from the api, nothing more (so we get the specific results from data)
+
+    const filteredMovies = []; // This will be the list contening the movies respecting all the filters
+
+    for (const movie of fetchedMovieList) {
+      const currentMovieInformation = await fetch(`https://api.themoviedb.org/3/movie/${movie.id}`, {
+        headers: {
+          accept: "application/json",
+          Authorization: "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+        }
+      });
+      console.log("CHECKKKKKKKKPOINT 1");
+
+      const fullMovieData = await currentMovieInformation.json(); //All the information about the movie in details
+      
+      // If the user selected 
+      if (movieDuration) {
+      console.log("CHECKKKKKKKKPOINT 2");
+
+        const userPreferencesDuration = parseInt(movieDuration);
+        const runtime = fullMovieData.runtime;
+
+        if (!runtime) continue; // skip if no runtime
+
+        let durationIsOK = false;
+
+        if (userPreferencesDuration === 0 && runtime < 60) durationIsOK = true;
+        else if (userPreferencesDuration === 1 && runtime >= 60 && runtime < 90) durationIsOK = true;
+        else if (userPreferencesDuration === 2 && runtime >= 90 && runtime < 150) durationIsOK = true;
+        else if (userPreferencesDuration === 3 && runtime >= 150 && runtime <= 240) durationIsOK = true;
+        else if (userPreferencesDuration === 4 && runtime > 240) durationIsOK = true;
+
+        if (!durationIsOK) continue;
+      }
+      console.log("CHECKKKKKKKKPOINT 3");
+
+      if (originCountry) {
+        let correspondingCountryFound = false;
+
+        //check if production_companies exists
+        if (fullMovieData.production_companies && fullMovieData.production_companies.length > 0) {
+          for (let i = 0; i < fullMovieData.production_companies.length; i++) {
+            const company = fullMovieData.production_companies[i];
+
+            if (company.origin_country === originCountry) {
+              correspondingCountryFound = true;
+              break; //if we found a match, the movie is good
+            }
+          }
+        }
+        console.log("CHECKKKKKKKKPOINT 4");
+
+        // If we didn’t, dont save the movie for the list
+        if (!correspondingCountryFound) {
+          continue;
+        }
+      }
+
+      filteredMovies.push(fullMovieData);
+    }
+
+    res.json(filteredMovies);
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Failed to fetch movies' });
   }
 });
+
 
 /*app.get("/api/getMoviesResults/:searchQuery", async (req, res) => {
   const userInput = req.params.searchQuery;
@@ -653,74 +725,74 @@ app.post("/api/watchlist", (req, res) => {
       .status(400)
       .json({ message: "User ID et Movie ID sont requisent" });
   }
-    //Check if the movie exist in our database first
-    const verificationSQL = "SELECT * FROM films WHERE film_id = ?";
-    con.query(verificationSQL, [movieId], async (err, results) => {
-      if (err) {
-        console.error("Database problem:", err);
-        return res.status(500).json({ message: "Internal server problem"});
+  //Check if the movie exist in our database first
+  const verificationSQL = "SELECT * FROM films WHERE film_id = ?";
+  con.query(verificationSQL, [movieId], async (err, results) => {
+    if (err) {
+      console.error("Database problem:", err);
+      return res.status(500).json({ message: "Internal server problem" });
+    }
+
+    //If the movies doesnt exist yet, we create it 
+    if (results.length === 0) {
+      const options = {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization:
+            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+        },
+      };
+
+      const tmdbResponse = await fetch(
+        `https://api.themoviedb.org/3/movie/${movieId}`,
+        options
+      );
+
+      if (!tmdbResponse.ok) {
+        console.error("Failed to fetch movie from TMDB");
+        return res.status(404).json({ message: "Movie not found in TMDB" });
       }
 
-      //If the movies doesnt exist yet, we create it 
-      if (results.length === 0){
-        const options = {
-          method: "GET",
-          headers: {
-            accept: "application/json",
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
-          },
-        };
+      const movieData = await tmdbResponse.json();
 
-        const tmdbResponse = await fetch(
-          `https://api.themoviedb.org/3/movie/${movieId}`,
-          options
-        );
+      //This is the data that will be saved on our local database
+      const newFilmSQL = `INSERT INTO films (film_id, titre, film_duree, date_sortie, pays_origin_film, langue_original, status, directeur_directeur_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
 
-        if (!tmdbResponse.ok) {
-          console.error("Failed to fetch movie from TMDB");
-          return res.status(404).json({ message: "Movie not found in TMDB" });
+      const filmValues = [movieData.id, movieData.title, movieData.runtime || 0, movieData.release_date || null, movieData.production_countries?.[0]?.name || 'Unknown', movieData.original_language || 'Unknown', movieData.status || 'Unknown', null]; //director is null for now, have to fix a bug first
+
+
+      con.query(newFilmSQL, filmValues, (insertErr) => {
+        if (insertErr) {
+          console.error("Database error inserting film:", insertErr);
+          return res.status(500).json({ message: "Internal server error inserting film" });
         }
 
-        const movieData = await tmdbResponse.json();
-
-        //This is the data that will be saved on our local database
-        const newFilmSQL = `INSERT INTO films (film_id, titre, film_duree, date_sortie, pays_origin_film, langue_original, status, directeur_directeur_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
-
-        const filmValues = [movieData.id, movieData.title, movieData.runtime || 0, movieData.release_date || null, movieData.production_countries?.[0]?.name || 'Unknown', movieData.original_language || 'Unknown', movieData.status || 'Unknown', null]; //director is null for now, have to fix a bug first
-        
-        
-        con.query(newFilmSQL, filmValues, (insertErr) => {
-          if (insertErr) {
-            console.error("Database error inserting film:", insertErr);
-            return res.status(500).json({ message: "Internal server error inserting film" });
-          }
-
-          insertIntoWatchlist();
-        });
-      } else {
         insertIntoWatchlist();
-      }  
+      });
+    } else {
+      insertIntoWatchlist();
+    }
 
 
-      function insertIntoWatchlist() {
+    function insertIntoWatchlist() {
 
-        //Check if the movie isnt already in the user's watchlist
-        const findMovieSql = `SELECT * FROM film_watchlist WHERE film_id = ? AND utilisateur_utilisateur_id = ?`;
+      //Check if the movie isnt already in the user's watchlist
+      const findMovieSql = `SELECT * FROM film_watchlist WHERE film_id = ? AND utilisateur_utilisateur_id = ?`;
 
-        con.query(findMovieSql, [movieId, userId], (checkErr, checkResults) => {
-          if (checkErr) {
-            console.error("Database error checking watchlist:", checkErr);
-            return res.status(500).json({ message: "Internal server error checking watchlist" });
-          }
-          
-          if (checkResults.length > 0) {
-            console.log(`Movie ID ${movieId} already in watchlist for user ${userId}`);
-            return res.status(409).json({ success: false, message: "Movie already in watchlist" });
-          }
+      con.query(findMovieSql, [movieId, userId], (checkErr, checkResults) => {
+        if (checkErr) {
+          console.error("Database error checking watchlist:", checkErr);
+          return res.status(500).json({ message: "Internal server error checking watchlist" });
+        }
+
+        if (checkResults.length > 0) {
+          console.log(`Movie ID ${movieId} already in watchlist for user ${userId}`);
+          return res.status(409).json({ success: false, message: "Movie already in watchlist" });
+        }
 
         const insertWatchlistSql = `INSERT INTO film_watchlist (film_id, utilisateur_utilisateur_id) VALUES (?, ?)`;
-        
+
         con.query(insertWatchlistSql, [movieId, userId], (watchlistErr) => {
           if (watchlistErr) {
             console.error("Database error inserting into watchlist:", watchlistErr);
@@ -736,17 +808,17 @@ app.post("/api/watchlist", (req, res) => {
 });
 
 
-  /*const sql =
-    "INSERT INTO film_watchlist (film_id, utilisateur_utilisateur_id) VALUES (?, ?)";
-  con.query(sql, [movieId, userId], (err, results) => {
-    if (err) {
-      console.error("Database error:", err);
-      return res.status(500).json({ message: "Internal server error" });
-    }
-    res
-      .status(201)
-      .json({ success: true, message: "Film ajoute dans watchlist" });
-  });
+/*const sql =
+  "INSERT INTO film_watchlist (film_id, utilisateur_utilisateur_id) VALUES (?, ?)";
+con.query(sql, [movieId, userId], (err, results) => {
+  if (err) {
+    console.error("Database error:", err);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+  res
+    .status(201)
+    .json({ success: true, message: "Film ajoute dans watchlist" });
+});
 });*/
 
 // Get Watchlist
@@ -952,6 +1024,7 @@ app.get("/adminsTab", async (req, res) => {
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../client/dist", "index.html"));
 });
+
 
 /*
     Connect to server

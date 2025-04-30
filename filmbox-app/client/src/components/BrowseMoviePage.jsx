@@ -12,41 +12,44 @@ function BrowseMovies() {
     const [pageCount, setPageCount] = useState(0);
     const [filters, setFilters] = useState({
         genre: '',
-        language: ''
+        language: '',
+        decade: '',
+        movieDuration: '',
+        country: '',
     });
     const [filteredMovies, setFilteredMovies] = useState([]);
     const [error, setError] = useState();
 
-    const handleFilterChange = (e) => {
-        const { name, value } = e.target;
-        setFilters(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
-
     useEffect(() => {
         const fetchMovies = async () => {
             let buildUrl = '';
-
             if (filters.genre) {
                 buildUrl += `genre=${filters.genre}&`;
             }
             if (filters.language) {
                 buildUrl += `language=${filters.language}&`;
             }
-        
-            const fullBuildUrlApi = `http://localhost:4000/api/discoverMoviesFiltered?${buildUrl}`;
+            if (filters.decade) {
+                buildUrl += `decade=${filters.decade}&`;
+            }
+            if (filters.movieDuration) {
+                buildUrl += `movieDuration=${filters.movieDuration}&`;
+            }
+            if (filters.country) {
+                buildUrl += `originCountry=${filters.country}&`;
+            }
+
+            const fullBuildUrlApi = `http://localhost:4000/discoverMoviesFiltered?${buildUrl}`;
 
             try {
-                const response = await fetch(buildUrl);
+                const response = await fetch(fullBuildUrlApi);
 
                 if (!response.ok) {
                     throw new Error("Error while loading movies");
                 }
 
                 const data = await response.json();
-                setFilteredMovies(data.results);
+                setFilteredMovies(data);
             } catch (err) {
                 setError(err.message);
             }
@@ -54,6 +57,7 @@ function BrowseMovies() {
 
         fetchMovies();
     }, [filters]);
+
 
     return (
         <>
@@ -65,12 +69,12 @@ function BrowseMovies() {
             }}>
                 <Header />
 
-                <h1>Page for the movie categories and all"</h1>
+                <h1>Page for the movie categories and all</h1>
 
                 {/* --- Filter section --- */}
                 <div style={{ marginBottom: '20px' }}>
                     <label>Genre:</label>
-                    <select name="genre" value={filters.genre} onChange={handleFilterChange}>
+                    <select value={filters.genre} onChange={(e) => setFilters({ ...filters, genre: e.target.value })}>
                         <option value="">All Genres</option>
                         <option value="28">Action</option>
                         <option value="35">Comedy</option>
@@ -80,7 +84,7 @@ function BrowseMovies() {
                     </select>
 
                     <label style={{ marginLeft: '20px' }}>Language:</label>
-                    <select name="language" value={filters.language} onChange={handleFilterChange}>
+                    <select value={filters.language} onChange={(e) => setFilters({ ...filters, language: e.target.value })}>
                         <option value="">All Languages</option>
                         <option value="en">English</option>
                         <option value="fr">French</option>
@@ -88,32 +92,106 @@ function BrowseMovies() {
                         <option value="ja">Japanese</option>
                     </select>
 
-                    
-                </div>
-                {/* UI FROM CHATGPT, JUST WANT TO TEST IF IT WORKS OR NOT */}
-                <div>
-                    {error && <p style={{ color: 'red' }}>{error}</p>}
+                    <label style={{ marginLeft: '20px' }}>Decades:</label>
+                    <select value={filters.decade} onChange={(e) => setFilters({ ...filters, decade: e.target.value })}>
+                        <option value="">All Time</option>
+                        <option value="2020">2020s</option>
+                        <option value="2010">2010s</option>
+                        <option value="2000">2000s</option>
+                        <option value="1990">1990s</option>
+                        <option value="1980">1980s</option>
+                    </select>
 
-                    {filteredMovies.length > 0 ? (
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-                            {filteredMovies.map(movie => (
-                                <div key={movie.id} style={{ width: '150px' }}>
-                                    <img
-                                        src={movie.poster_path
-                                            ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
-                                            : "https://via.placeholder.com/150x225?text=No+Image"}
-                                        alt={movie.title}
-                                        style={{ width: '100%', height: 'auto' }}
-                                    />
-                                    <p style={{ fontSize: '14px', marginTop: '5px' }}>{movie.title}</p>
-                                </div>
-                            ))}
+                    <label style={{ marginLeft: '20px' }}>Original Country:</label>
+                    <select
+                        value={filters.country}
+                        onChange={(e) => setFilters({ ...filters, country: e.target.value })}
+                    >
+                        <option value="">All Countries</option>
+                        <option value="AU">Australia</option>
+                        <option value="CA">Canada</option>
+                        <option value="CN">China</option>
+                        <option value="FR">France</option>
+                        <option value="DE">Germany</option>
+                        <option value="HK">Hong Kong</option>
+                        <option value="IN">India</option>
+                        <option value="IT">Italy</option>
+                        <option value="JP">Japan</option>
+                        <option value="KP">North Korea</option>
+                        <option value="KR">South Korea</option>
+                        <option value="RU">Russia</option>
+                        <option value="TR">Turkey</option>
+                        <option value="GB">United Kingdom</option>
+                        <option value="US">United States</option>
+                    </select>
+
+                    <label style={{ marginLeft: '20px' }}>Movie Duration:</label>
+                    <select
+                        value={filters.movieDuration}
+                        onChange={(e) => setFilters({ ...filters, movieDuration: e.target.value })}
+                    >
+                        <option value="">All Time</option>
+                        <option value="0">Less than an hour</option>
+                        <option value="1">One hour</option>
+                        <option value="2">Two hours</option>
+                        <option value="3">Four hours</option>
+                        <option value="4">Over 4 hours</option>
+                    </select>
+                </div>
+
+                {/* code to show the movies, based on the filters */}
+                <div>
+                    {filteredMovies.length > 0 ? ( //If there are any filtered movies, we execute the following code and show the poster
+                        <div className="row">
+                            {filteredMovies.map((film, index) => {
+                                const cheminImage = film.poster_path
+                                    ? `https://image.tmdb.org/t/p/w500${film.poster_path}`
+                                    : BlackImage;
+
+                                return (
+                                    <div key={film.id || index} className="col-lg-2"
+                                        style={{ paddingBottom: '25px' }}>
+                                        <div className="card border-0 shadow movie-card"
+                                            style={{
+                                                borderRadius: '0px',
+                                                transition: 'all 0.3s ease',
+                                                transform: 'translateY(0)',
+                                                backgroundColor: 'transparent'
+                                            }}>
+                                            <Link to={`/movies/${film.id}`} className="text-decoration-none">
+                                                <img
+                                                    src={cheminImage}
+                                                    alt={film.title}
+                                                    className="card-img-top"
+                                                    style={{
+                                                        height: '300px',
+                                                        objectFit: 'cover',
+                                                        transition: 'all 0.3s ease',
+                                                        borderRadius: '0px'
+                                                    }}
+                                                />
+                                            </Link>
+                                        </div>
+                                    </div>
+                                );
+                            })}
                         </div>
                     ) : (
-                        <p>No movies found. Try changing filters!</p>
+                        <p>No movies found. Try changing filters !</p> //If we dont have any results, we dont show anything
                     )}
-                </div>
 
+                    {/* Hover Styles */}
+                    <style>{`
+                    .movie-card:hover {
+                        border: 2px solid #4a6bff !important;
+                        transform: translateY(-5px) !important;
+                        box-shadow: 0 10px 20px rgba(74, 107, 255, 0.3) !important;
+                    }
+                    .movie-card:hover img {
+                        opacity: 0.9;
+                    }
+                `}</style>
+                </div>
             </div>
         </>
     );
