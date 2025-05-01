@@ -62,7 +62,7 @@ return(
 
     background: `linear-gradient(to bottom,
         rgba(5, 14, 66, 1),
-        rgba(26, 0, 255, 0.6), 
+        rgba(16, 0, 156, 0.65), 
         rgba(0, 0, 255, 0.5), 
         rgba(5, 0, 50, 1)),
         url(${titanicImage})`,
@@ -71,8 +71,14 @@ return(
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
         color: '#fff'
-  }}
-  > 
+  }} 
+  > {/* background: `linear-gradient(to bottom,
+    rgba(5, 14, 66, 1),
+    rgba(0, 0, 107, 0.65), 
+    rgba(26, 0, 255, 0.6),
+    rgba(5, 0, 50, 1)),
+    url(${titanicImage})`, */}
+     
     <h2 style={{marginTop: '25px', marginBottom: '2rem'}}>Log in</h2>
      
      {/* Container du formulaire */}
@@ -127,7 +133,7 @@ return(
 
         <p className='signup-text'>You don’t have an account? </p>
       
-        <button className="btn btn-outline-primary" >
+        <button className="btnCustom " > {/*btn btn-outline-primary */}
           <Link
             to="/inscription"
             className="nav-link active text-white text-"

@@ -54,10 +54,10 @@ function LoginRegister() {
             gap: '2rem',
        
             background: `linear-gradient(to bottom,
-                rgba(5, 14, 66, 1),
-                rgba(26, 0, 255, 0.6),
-                rgba(0, 0, 255, 0.5),
-                rgba(5, 0, 50, 1)),
+              rgba(5, 14, 66, 1),
+              rgba(16, 0, 156, 0.65), 
+              rgba(0, 0, 255, 0.5), 
+              rgba(5, 0, 50, 1)),
                 url(${SeigneurAnneauxImage})`,
 
             backgroundSize: 'cover', //'auto'
