@@ -145,13 +145,18 @@ return (
             data-bs-toggle="dropdown"
             aria-expanded="false"
           >
-            <img
-              src={photoProfil}
-              alt="icone_profil"
-              width="40px"
-              height="40px"
-              className="me-2 rounded-circle "
-            />
+          {/* Initiales de l'Admin */}
+          <div
+            className="me-2 rounded-circle bg-white text-dark d-flex align-items-center justify-content-center"
+            style={{
+              width: '40px',
+              height: '40px',
+              fontSize: '14px',
+              fontWeight: 'bold'
+            }}
+          >
+            {(admin?.prenom?.[0] || '?') + (admin?.nom?.[0] || '?')}
+          </div>
             <i className="bi bi-person-circle fs-5" />
             <span>Profil</span>
             <i className="bi bi-caret-down-fill small" />
@@ -285,9 +290,12 @@ return (
             <div className="section-grow" style={{ flexGrow: 2 }}>
               <div>
                   <div className="d-flex align-items-center gap-3 ms-2">
-                    <div className="ratio ratio-1x1" style={{ width: '60px' }}>
-                      <img src={photoProfil} className="rounded-circle img-fluid" style={{ objectFit: 'cover' }}/>
-                    </div>
+                  {/* Cercle avec les initiales du user selectionne*/}
+                  <div
+                    className="rounded-circle bg-white d-flex align-items-center justify-content-center text-dark"
+                    style={{ width: '60px', height: '60px', fontSize: '20px', fontWeight: 'bold' }} >
+                    {userSelectionne ? (userSelectionne.prenom?.[0] || '?') + (userSelectionne.nom?.[0] || '?') : 'JD'}
+                  </div>
                       <h2 className="mb-0">{userSelectionne ? `${userSelectionne.prenom} ${userSelectionne.nom}` : "John Doe"}</h2>
                   </div>
              
