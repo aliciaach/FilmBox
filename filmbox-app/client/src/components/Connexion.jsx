@@ -127,7 +127,15 @@ return(
 
         <p className='signup-text'>You don’t have an account? </p>
       
-        <button className="btn btn-outline-primary" >
+        <div className='btnWrapper'>
+          <button className="btnFakeBorder" >
+            <Link to="/inscription" className="nav-link active " >
+              Create Account
+            </Link>
+          </button>
+        </div>
+
+        {/*<button className="btn btn-outline-primary" >
           <Link
             to="/inscription"
             className="nav-link active text-white text-"
@@ -135,7 +143,7 @@ return(
             >
           Create Account
             </Link>
-        </button>
+        </button>*/}        
       </div>
 
     </div>

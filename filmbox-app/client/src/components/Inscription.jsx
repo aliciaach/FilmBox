@@ -139,14 +139,15 @@ function LoginRegister() {
                 </form>
             </div>
             </div>
-            <div className="LoginLink" style={{ textAlign: "center", marginBottom: '15vh'}}>
+            <div className="LoginLink btnWrapper" style={{ textAlign: "center", marginBottom: '15vh'}}>
                 <p>You already have an account ?</p>
                 <Link to="/connexion">
-                <button type="submit" className="btn btn-outline-primary" /*className="nav-link active text-white"*/ >
+                <button type="submit" className="btnFakeBorder" style={{fontSize: '16px'}} /*className="nav-link active text-white"*/ >
                     LOGIN
-                    </button>
+                </button>
                 </Link>
-            </div>
+            </div>                  
+            
         </div>
     );
 }

@@ -103,7 +103,7 @@ body,
 
 
 
-/*https: //css-tricks.com/gradient-borders-in-css/ */
+/*https: //css-tricks.com/gradient-borders-in-css/ */ /*
 .btnCustom {
     border: 1.5px solid;
     border-image-slice: 1;
@@ -121,11 +121,11 @@ body,
     /*
     display: inline-block;
     text-align: center;
-    text-decoration: none;*/
+    text-decoration: none;*/ /*
 }
 
 .btnCustom:hover {
-    border-image-slice: 1; /* PEUT-ETRE ENLEVER */
+    border-image-slice: 1; /* PEUT-ETRE ENLEVER *//*
         border-image-source: linear-gradient(145deg,
                 rgb(255, 44, 247, 0.7),
                 rgb(251, 4, 123, 0.8),
@@ -133,8 +133,8 @@ body,
                 rgb(73, 255, 233, 0.65),
                 rgb(19, 14, 255, 1));
     background-image: linear-gradient(to left,#03001d, #05002f, #070048 ); /* PEUT ETRE ENLEVER*/
-
-    transform: scale(1.03);   /* zoom */
+/*
+    transform: scale(1.03);   /* zoom *//*
 }
 
 
