@@ -3,3 +3,7 @@
 .jomhuria {
   font-family: 'Jomhuria', cursive !important;
 }
+
+.main-content {
+  padding-top: 80px; /* or more depending on your header height */
+}
