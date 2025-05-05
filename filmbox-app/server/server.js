@@ -29,7 +29,7 @@ const con = mysql.createConnection({
   host: "localhost",
   user: "scott",
   password: "oracle",
-  database: "filmbox",
+  database: "prototype",
 });
 
 con.connect(function (err) {
@@ -90,30 +90,45 @@ app.use(
 */
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
-  const sql =
-    "SELECT * FROM utilisateur WHERE courriel = ? AND mot_de_passe = ?";
+  const sql = "SELECT * FROM utilisateur WHERE courriel = ?";
 
-  con.query(sql, [email, password], (err, results) => {
+  con.query(sql, [email], (err, results) => {
     if (err) {
       console.error("Database error: ", err);
       return res.status(500).json({ message: "Internal server error" });
     }
     if (results.length > 0) {
-      req.session.user = {
-        id: results[0].utilisateur_id, // Adjust column name if needed
-        prenom: results[0].prenom,
-        nom: results[0].nom,
-        courriel: results[0].courriel,
-        telephone: results[0].telephone,
-      };
-      console.log("USER FOUNDDDDDD" + results[0].courriel);
-      return res
-        .status(200)
-        .json({ succes: true, message: "Login Succesful !" });
+      const hashedPassword = results[0].mot_de_passe;
+
+      bcrypt.compare(password, hashedPassword, (err, isMatch) => {
+        if (err) {
+          console.error("Error comparing passwords:", err);
+          return res.status(500).json({ message: "Internal server error" });
+        }
+        if (isMatch) {
+          req.session.user = {
+            id: results[0].utilisateur_id,
+            prenom: results[0].prenom,
+            nom: results[0].nom,
+            courriel: results[0].courriel,
+            telephone: results[0].telephone,
+          };
+          console.log("USER FOUND: " + results[0].courriel);
+          return res
+            .status(200)
+            .json({ success: true, message: "Login Successful!" });
+        } else {
+          console.log("PASSWORD WRONG");
+          return res.status(401).json({
+            success: false,
+            message: "Access denied, wrong password or email",
+          });
+        }
+      });
     } else {
-      console.log("USER NOTTT FOUNDDD");
+      console.log("USER NOT FOUND");
       return res.status(401).json({
-        succes: false,
+        success: false,
         message: "Access denied, wrong password or email",
       });
     }
@@ -121,58 +136,72 @@ app.post("/login", (req, res) => {
 });
 
 app.post("/LoginRegister", (req, res) => {
-  console.log("We made it here ");
   const { email, password, firstName, lastName, phoneNumber } = req.body;
-  const sql =
-    "INSERT INTO utilisateur (prenom, nom, courriel, telephone, mot_de_passe) VALUES (?, ?, ?, ?, ?)"; //Place holder (pour eviter sql injections, comme derniere session)
 
-  //CORRIGER LES TYPES D'ERREUR ET METTRE LES BONNES !!!
-  con.query(
-    sql,
-    [firstName, lastName, email, phoneNumber, password],
-    (err, results) => {
-      if (err) {
-        console.error("Database error: ", err);
-        return res.status(500).json({ message: "Internal server error" });
-      }
-      if (results.affectedRows && results.affectedRows > 0) {
-        console.log("New User created ");
-        return res.status(200).json({
-          success: true,
-          message: "New user created!",
-          redirectUrl: "/PageFilm",
-        });
-      } else {
-        console.log("Error, couldnt create new user");
-        return res
-          .status(401)
-          .json({ succes: false, message: "Error, couldnt create user..." });
-      }
+  bcrypt.hash(password, 10, (err, hashedPassword) => {
+    if (err) {
+      console.error("Error hashing password:", err);
+      return res.status(500).json({ message: "Internal server error" });
     }
-  );
+
+    const sql =
+      "INSERT INTO utilisateur (prenom, nom, courriel, telephone, mot_de_passe) VALUES (?, ?, ?, ?, ?)";
+
+    con.query(
+      sql,
+      [firstName, lastName, email, phoneNumber, hashedPassword],
+      (err, results) => {
+        if (err) {
+          console.error("Database error: ", err);
+          return res.status(500).json({ message: "Internal server error" });
+        }
+        if (results.affectedRows && results.affectedRows > 0) {
+          console.log("New User created ");
+          return res.status(200).json({
+            success: true,
+            message: "New user created!",
+            redirectUrl: "/PageFilm",
+          });
+        } else {
+          console.log("Error, couldn't create new user");
+          return res.status(401).json({
+            success: false,
+            message: "Error, couldn't create user...",
+          });
+        }
+      }
+    );
+  });
 });
 
 app.post("/ChangePassword", (req, res) => {
   console.log("Trying to update password");
   const { email, newPassword } = req.body;
-  const sql = "UPDATE utilisateur SET mot_de_passe = ? WHERE courriel = ?";
 
-  con.query(sql, [newPassword, email], (err, results) => {
+  bcrypt.hash(newPassword, 10, (err, hashedPassword) => {
     if (err) {
-      console.error("Database error: ", err);
+      console.error("Error hashing password:", err);
       return res.status(500).json({ message: "Internal server error" });
     }
-    if (results.affectedRows > 0) {
-      console.log("PASSWORD UPDATED !!!!!");
-      return res
-        .status(200)
-        .json({ success: true, message: "Your password was updated !" });
-    } else {
-      console.log("Error, couldnt update password");
-      return res
-        .status(404)
-        .json({ succes: false, message: "Error, couldnt create user..." });
-    }
+
+    const sql = "UPDATE utilisateur SET mot_de_passe = ? WHERE courriel = ?";
+    con.query(sql, [hashedPassword, email], (err, results) => {
+      if (err) {
+        console.error("Database error: ", err);
+        return res.status(500).json({ message: "Internal server error" });
+      }
+      if (results.affectedRows > 0) {
+        console.log("PASSWORD UPDATED !!!!!");
+        return res
+          .status(200)
+          .json({ success: true, message: "Your password was updated!" });
+      } else {
+        console.log("Error, couldn't update password");
+        return res
+          .status(404)
+          .json({ success: false, message: "Error, couldn't update user..." });
+      }
+    });
   });
 });
 
@@ -547,7 +576,7 @@ app.post("/api/watched", (req, res) => {
 // Get watched movies
 app.get("/api/watched/:userId", (req, res) => {
   const { userId } = req.params;
-  const sql = `SELECT films_film_id, valeur_note FROM note WHERE utilisateur_utilisateur_id = ?`;
+  const sql = `SELECT films_film_id, valeur_note, commentaire FROM note WHERE utilisateur_utilisateur_id = ?`;
   con.query(sql, [userId], async (err, results) => {
     if (err) return res.status(500).json({ message: "Error fetching watched" });
 
@@ -567,7 +596,11 @@ app.get("/api/watched/:userId", (req, res) => {
           options
         );
         const movie = await res.json();
-        return { ...movie, rating: row.valeur_note };
+        return {
+          ...movie,
+          rating: row.valeur_note,
+          commentaire: row.commentaire,
+        };
       })
     );
 
