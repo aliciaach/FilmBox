@@ -702,6 +702,40 @@ app.get("/api/movies/:id/images", async (req, res) => {
 
 /* ============================= REQUETE NOSQL =========================== */
 
+/* ============================= NOSQL RELATED TO PERSONALIZED LIST =========================== */
+
+app.get("/mongo/getPersonalizedList", async (req, res) => {
+  const { userId } = req.query;
+
+  const uri = process.env.DB_URI;
+  const client = new MongoClient(uri);
+
+  try {
+    await client.connect();
+    const db = client.db("FilmBox");
+    const lists = db.collection("CustomLists");
+
+    const usersList = await lists.find({ user_id: userId }).toArray(); //Va chercher toutes les listes correspondant à l'id de l'utilisateur
+    if (usersList.length === 0) {
+      return res.status(401).json({ message: "The user doesnt have any personalized list" });
+    } else {
+      console.log("Lists succesfully found for " + userId);
+    }
+
+    return res.json({
+      message: "Lists successfully found",
+      data: usersList
+    });
+  } catch (error) {
+    console.error("Error during list fetch:", error);
+    return res.status(500).json({ message: "Server Error" });
+  } finally {
+    await client.close();
+  }
+});
+
+/* ============================= NOSQL RELATED TO MANAGEMENT =========================== */
+
 //Pour permettre à un admin de se connecter
 app.post("/adminLogin", async (req, res) => {
   const { username, password } = req.body;

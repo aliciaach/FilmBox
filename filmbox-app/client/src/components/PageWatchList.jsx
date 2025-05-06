@@ -11,23 +11,26 @@ function PageWatchList() {
   const [lowestRated, setLowestRated] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [personalizedLists, setPersonalizedLists] = useState([]);
   const navigate = useNavigate();
 
-  const userId = localStorage.getItem("userId"); 
+  const userId = localStorage.getItem("userId");
 
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [watchlistRes, watchedRes] = await Promise.all([
+        const [watchlistRes, watchedRes, personalizedRes] = await Promise.all([
           fetch(`http://localhost:4000/api/watchlist/${userId}`),
           fetch(`http://localhost:4000/api/watched/${userId}`),
+          fetch(`http://localhost:4000/mongo/getPersonalizedList?userId=${userId}`)
         ]);
 
         if (!watchlistRes.ok || !watchedRes.ok) throw new Error("Failed to fetch watchlist or watched movies");
 
         const watchlistData = await watchlistRes.json();
         const watchedData = await watchedRes.json();
+        const personalizedData = await personalizedRes.json();
 
         const watchedIds = watchedData.map(m => m.id);
         const filteredWatchlist = watchlistData.filter(m => !watchedIds.includes(m.id));
@@ -39,6 +42,8 @@ function PageWatchList() {
         setWatched(watchedData);
         setHighestRated(highest);
         setLowestRated(lowest);
+        setPersonalizedLists(personalizedData.data || []);
+
       } catch (err) {
         setError(err.message);
       } finally {
@@ -56,8 +61,8 @@ function PageWatchList() {
             className="card bg-transparent border-0 h-100"
             style={{ cursor: "pointer", transition: "transform 0.3s" }}
             onClick={() => navigate(`/movies/${movie.id}`)}
-            onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)" )}
-            onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)" )}
+            onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
+            onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
           >
             <img
               src={movie.poster_path ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}` : "https://via.placeholder.com/500x750?text=No+Poster"}
@@ -132,6 +137,13 @@ function PageWatchList() {
 
         <h2 className="fw-bold mt-5 mb-4">Lowest Rated (0-2 ⭐)</h2>
         {lowestRated.length > 0 ? renderMovieRow(lowestRated) : <p>No low rated movies yet.</p>}
+
+        {personalizedLists.length > 0 && personalizedLists.map((list) => (
+          <div key={list._id}>
+            <h2 className="fw-bold mt-5 mb-4">{list.name}</h2>
+            {list.movies && list.movies.length > 0 ? renderMovieRow(list.movies) : <p>No movies in this list yet.</p>}
+          </div>
+        ))}
       </div>
     </div>
   );
