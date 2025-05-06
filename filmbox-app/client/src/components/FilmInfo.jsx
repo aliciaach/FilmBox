@@ -52,7 +52,7 @@ const FilmInfo = () => {
         }
       });
 
-      fetch(`http://localhost:4000/mongo/getPersonalizedList?userId=${userId}`)
+    fetch(`http://localhost:4000/mongo/getPersonalizedList?userId=${userId}`)
       .then((res) => res.json())
       .then((data) => {
         if (data.data) {
@@ -111,7 +111,7 @@ const FilmInfo = () => {
           userId,
           movieId: numericFilmId,
           rating,
-          comment, 
+          comment,
         }),
       });
       alert("Rating saved!");
@@ -144,7 +144,7 @@ const FilmInfo = () => {
   const handleAddNewPersonalizedList = async () => {
     const listName = prompt("Enter a name for your new list:");
     if (!listName) return;
-  
+
     try {
       const response = await fetch("http://localhost:4000/mongo/createPersonalizedList", {
         method: "POST",
@@ -208,17 +208,19 @@ const FilmInfo = () => {
 
           {/* Drop button  */}
           <DropdownButton id="list-dropdown" title="add to list >">
-            {personalizedLists.length > 0 ? (
+            {personalizedLists.length === 0 && (
+              <Dropdown.Item disabled>No lists available</Dropdown.Item>
+            )}
+
+            {personalizedLists.length > 0 &&
               personalizedLists.map((list) => (
                 <Dropdown.Item key={list._id} onClick={() => handleAddToList(list._id)}>
                   {list.name}
                 </Dropdown.Item>
-              ))
-            ) : (
-              <Dropdown.Item disabled>No lists available</Dropdown.Item>
-            )}
+              ))}
 
             <Dropdown.Divider />
+
             <Dropdown.Item onClick={handleAddNewPersonalizedList}>
               Create New List
             </Dropdown.Item>
