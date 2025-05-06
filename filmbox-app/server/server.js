@@ -122,6 +122,23 @@ app.post("/login", (req, res) => {
 
 app.post("/LoginRegister", (req, res) => {
   const { email, password, firstName, lastName, phoneNumber } = req.body;
+  
+  //https://stackabuse.com/bytes/check-if-a-string-contains-numbers-in-javascript/
+  //email only one working for now, use the link just here to do the rest
+  if (!email.includes("@"))  {
+    return res.status(400).json({ success: false, message: "Please enter a valid email adress" });
+  }
+  if (firstName.includes(Number))
+  {
+    return res.status(400).json({ success: false, message: "Please enter your real name (symboles and numbers are not authorized)" });
+  }
+  if (lastName.includes(Number))
+    {
+      return res.status(400).json({ success: false, message: "Please enter your real last name (symboles and numbers are not authorized)" });
+    }
+
+  const sql =
+    "INSERT INTO utilisateur (prenom, nom, courriel, telephone, mot_de_passe) VALUES (?, ?, ?, ?, ?)"; //Place holder (pour eviter sql injections, comme derniere session)
 
   bcrypt.hash(password, 10, (err, hashedPassword) => {
     if (err) {
