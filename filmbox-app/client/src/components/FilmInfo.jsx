@@ -208,18 +208,18 @@ const FilmInfo = () => {
 
           {/* Drop button  */}
           <DropdownButton id="list-dropdown" title="add to list >">
-            {personalizedLists.length === 0 && (
+            {personalizedLists.length === 0 && ( //si il y a 0 listes, on desactive le dropdown et affiche no list available
               <Dropdown.Item disabled>No lists available</Dropdown.Item>
             )}
 
-            {personalizedLists.length > 0 &&
+            {personalizedLists.length > 0 && //si il y a des listes personnalisees, on les affiche
               personalizedLists.map((list) => (
-                <Dropdown.Item key={list._id} onClick={() => handleAddToList(list._id)}>
+                <Dropdown.Item key={list._id} onClick={() => handleAddToList(list._id)}>  {/* Appelle la fonction qui handle l'ajout a une liste, en renvoyant le id de la list selectionnes */}
                   {list.name}
                 </Dropdown.Item>
               ))}
 
-            <Dropdown.Divider />
+            <Dropdown.Divider /> {/* Ligne separatrice entre les choix de liste et le bouton pour ajouter une creer une nouvelle liste*/}
 
             <Dropdown.Item onClick={handleAddNewPersonalizedList}>
               Create New List
