@@ -32,14 +32,20 @@ function PageWatchList() {
         const watchedData = await watchedRes.json();
         const personalizedData = await personalizedRes.json();
 
-        const watchedIds = watchedData.map(m => m.id);
-        const filteredWatchlist = watchlistData.filter(m => !watchedIds.includes(m.id));
+        // Supprimer les films avec titre "N/A"
+        const cleanedWatchlist = watchlistData.filter(m => m.title && m.title !== "N/A");
+        const cleanedWatched = watchedData.filter(m => m.title && m.title !== "N/A");
 
-        const highest = watchedData.filter(m => m.rating >= 3 && m.rating <= 5);
-        const lowest = watchedData.filter(m => m.rating >= 0 && m.rating <= 2);
+        // Exclure de la watchlist ceux déjà marqués comme vus
+        const watchedIds = cleanedWatched.map(m => m.id);
+        const filteredWatchlist = cleanedWatchlist.filter(m => !watchedIds.includes(m.id));
 
         setWatchlist(filteredWatchlist);
-        setWatched(watchedData);
+        setWatched(cleanedWatched);
+
+        const highest = cleanedWatched.filter(m => m.rating >= 3 && m.rating <= 5);
+        const lowest = cleanedWatched.filter(m => m.rating >= 0 && m.rating <= 2);
+
         setHighestRated(highest);
         setLowestRated(lowest);
         setPersonalizedLists(personalizedData.data || []);
@@ -72,8 +78,8 @@ function PageWatchList() {
               onError={(e) => { e.target.src = "https://via.placeholder.com/500x750?text=No+Poster"; }}
             />
             <div className="card-body px-0">
-              <h6 className="card-title fw-bold text-white" style={{ fontSize: "1rem" }}>{movie.title}</h6>
-              <p className="card-text fw-bold text-white">
+              <h6 className="card-title text-white text-decoration-none" style={{ fontSize: "1rem" }}>{movie.title}</h6>
+              <p className="card-text text-white text-decoration-none">
                 {movie.release_date ? new Date(movie.release_date).getFullYear() : "N/A"}
                 {movie.vote_average && (
                   <span className="float-end">⭐ {movie.vote_average.toFixed(1)}</span>
@@ -126,16 +132,16 @@ function PageWatchList() {
       </header>
 
       <div className="container">
-        <h2 className="fw-bold mb-4">My Watchlist</h2>
+        <h2 className="text-white text-decoration-none mb-4">My Watchlist</h2>
         {watchlist.length > 0 ? renderMovieRow(watchlist) : <p>Your watchlist is empty.</p>}
 
-        <h2 className="fw-bold mt-5 mb-4">Watched Movies</h2>
+        <h2 className="text-white text-decoration-none mt-5 mb-4">Watched Movies</h2>
         {watched.length > 0 ? renderMovieRow(watched) : <p>No movies marked as watched yet.</p>}
 
-        <h2 className="fw-bold mt-5 mb-4">Highest Rated (3-5 ⭐)</h2>
+        <h2 className="text-white text-decoration-none mt-5 mb-4">Highest Rated (3-5 ⭐)</h2>
         {highestRated.length > 0 ? renderMovieRow(highestRated) : <p>No high rated movies yet.</p>}
 
-        <h2 className="fw-bold mt-5 mb-4">Lowest Rated (0-2 ⭐)</h2>
+        <h2 className="text-white text-decoration-none mt-5 mb-4">Lowest Rated (0-2 ⭐)</h2>
         {lowestRated.length > 0 ? renderMovieRow(lowestRated) : <p>No low rated movies yet.</p>}
 
         {personalizedLists.length > 0 && personalizedLists.map((list) => (

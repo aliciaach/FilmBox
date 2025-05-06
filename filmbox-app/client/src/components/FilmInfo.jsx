@@ -13,6 +13,7 @@ const FilmInfo = () => {
   const [isInWatchlist, setIsInWatchlist] = useState(false);
   const [markedWatched, setMarkedWatched] = useState(false);
   const [rating, setRating] = useState(5);
+  const [comment, setComment] = useState("");
   const navigate = useNavigate();
 
   const userId = localStorage.getItem("userId"); //local storage idea given by chatgpt
@@ -22,23 +23,23 @@ const FilmInfo = () => {
       setErreur("ID de film invalide.");
       return;
     }
-  
+
     fetch(`http://localhost:4000/api/movies/${numericFilmId}`)
       .then((res) => res.json())
       .then(setFilm)
       .catch((err) => setErreur(err.message));
-  
+
     fetch(`http://localhost:4000/api/movies/${numericFilmId}/images`)
       .then((res) => res.json())
       .then((data) => setMovieLogo(data.logos?.[0]))
       .catch((err) => setErreur(err.message));
-  
+
     fetch(`http://localhost:4000/api/watchlist/${userId}`)
       .then((res) => res.json())
       .then((watchlist) => {
         setIsInWatchlist(watchlist.some((movie) => movie.id === numericFilmId));
       });
-  
+
     fetch(`http://localhost:4000/api/watched/${userId}`)
       .then(res => res.json())
       .then(data => {
@@ -46,9 +47,10 @@ const FilmInfo = () => {
         if (watched) {
           setMarkedWatched(true);
           setRating(watched.rating);
+          if (watched.commentaire) setComment(watched.commentaire); 
         }
       });
-  });
+  }, [filmId, numericFilmId]);
 
 
   const handleWatchlist = async () => {
@@ -73,17 +75,16 @@ const FilmInfo = () => {
 
   const handleWatched = async () => {
     if (markedWatched) {
-      // User is unmarking it — remove rating from DB
       try {
         await fetch(`http://localhost:4000/api/watched/${userId}/${numericFilmId}`, {
           method: "DELETE",
         });
         setMarkedWatched(false);
+        setComment("");
       } catch (err) {
         console.error("Failed to remove from watched:", err);
       }
     } else {
-      // Just toggle on visually — rating is saved only on submit
       setMarkedWatched(true);
     }
   };
@@ -97,7 +98,7 @@ const FilmInfo = () => {
           userId,
           movieId: numericFilmId,
           rating,
-          comment: "",
+          comment, // <-- ici
         }),
       });
       alert("Rating saved!");
@@ -120,13 +121,15 @@ const FilmInfo = () => {
       color: "#fff", fontFamily: "Fredoka",
     }}>
       <header className="d-flex justify-content-between align-items-center p-3">
-        <img src={imageLogo} alt="Logo" style={{ width: "150px" }} />
+        <a href="/listeFilms">
+          <img src={imageLogo} alt="Logo" style={{ width: "150px" }} />
+        </a>
         <nav className="d-flex align-items-center gap-3">
           <a href="/" className="text-white text-decoration-none">HOME</a>
           <a href="/PageWatchlist" className="text-white text-decoration-none">MY MOVIES</a>
           <DropdownButton id="profile-dropdown" align="end" title={<span className="text-white">Profil</span>} variant="transparent">
             <Dropdown.Item href="/settings">Settings</Dropdown.Item>
-            <Dropdown.Item href="/logout">Logout</Dropdown.Item>
+            <Dropdown.Item href="/connexion">Logout</Dropdown.Item>
           </DropdownButton>
         </nav>
       </header>
@@ -159,7 +162,20 @@ const FilmInfo = () => {
             >
               {[1, 2, 3, 4, 5].map((r) => <option key={r} value={r}>{r} ⭐</option>)}
             </select>
-            <button className="btn btn-primary mt-2" onClick={handleRatingSubmit}>Submit Rating</button>
+
+            <div className="mt-3">
+              <label htmlFor="comment" className="form-label">Comment:</label>
+              <textarea
+                id="comment"
+                className="form-control"
+                rows="3"
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                style={{ maxWidth: "500px" }}
+              />
+            </div>
+
+            <button className="btn btn-primary mt-3" onClick={handleRatingSubmit}>Submit Rating</button>
           </div>
         )}
       </div>
