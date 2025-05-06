@@ -8,14 +8,13 @@ import { fileURLToPath } from "url";
 import mysql from "mysql";
 import { body, validationResult } from "express-validator";
 import dateFormat from "dateformat";
-import { MongoClient } from "mongodb";
 import { config } from "dotenv";
 import bcrypt from "bcrypt";
 import cors from "cors";
 import fetch from "node-fetch";
+import { MongoClient, ObjectId } from "mongodb";
 
 config();
-
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -28,7 +27,7 @@ const con = mysql.createConnection({
   host: "localhost",
   user: "scott",
   password: "oracle",
-  database: "prototype",
+  database: "filmbox",
 });
 
 con.connect(function (err) {
@@ -771,6 +770,60 @@ app.get("/api/movies/:id/images", async (req, res) => {
 
 /* ============================= NOSQL RELATED TO PERSONALIZED LIST =========================== */
 
+/* =============================== ADD A MOVIE TO A PERSONALIZED LIST ========================= */
+app.post("/mongo/addToPersonalizedList", async (req, res) => {
+  const {userId, personalizedListId, filmId} = req.body;
+
+  const uri = process.env.DB_URI;
+  const client = new MongoClient(uri);
+
+  try {
+    await client.connect();
+    const db = client.db("FilmBox");
+    const lists = db.collection("CustomLists");
+
+    const result = await lists.updateOne(
+      { _id: new ObjectId(personalizedListId) },
+      { $addToSet: { movies: filmId } }
+    );
+    res.json({ message: "Movie added to list" });
+  } catch (error) {
+    console.error("Error adding movie:", error);
+    res.status(500).json({ message: "Server error" });
+  } finally {
+    await client.close();
+  }
+});
+
+/* =============================== ADD A NEW PERSONALIZED LIST ================================ */
+app.post("/mongo/createPersonalizedList", async (req, res) => {
+  const {userId, listName} = req.body;
+
+  const uri = process.env.DB_URI;
+  const client = new MongoClient(uri);
+
+  try {
+    await client.connect();
+    const db = client.db("FilmBox");
+    const lists = db.collection("CustomLists");
+
+    const newListDocument = {
+      user_id: userId,
+      name: listName,
+      movies: []
+    };
+
+    const postResult = await lists.insertOne(newListDocument);
+
+    res.json({ message: "list created"});
+  } catch (error) {
+    console.error("Error creating list:", error);
+    res.status(500).json({ message: "Server error" });
+  } finally {
+    await client.close();
+  }
+});
+/* =============================== GET ALL THE PERSONALIZED LIST ================================ */
 app.get("/mongo/getPersonalizedList", async (req, res) => {
   const { userId } = req.query;
 
@@ -781,7 +834,7 @@ app.get("/mongo/getPersonalizedList", async (req, res) => {
     await client.connect();
     const db = client.db("FilmBox");
     const lists = db.collection("CustomLists");
-
+    
     const usersList = await lists.find({ user_id: userId }).toArray(); //Va chercher toutes les listes correspondant à l'id de l'utilisateur
     if (usersList.length === 0) {
       return res.status(401).json({ message: "The user doesnt have any personalized list" });

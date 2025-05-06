@@ -14,6 +14,7 @@ const FilmInfo = () => {
   const [markedWatched, setMarkedWatched] = useState(false);
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
+  const [personalizedLists, setPersonalizedLists] = useState([]);
   const navigate = useNavigate();
 
   const userId = localStorage.getItem("userId"); //local storage idea given by chatgpt
@@ -47,9 +48,21 @@ const FilmInfo = () => {
         if (watched) {
           setMarkedWatched(true);
           setRating(watched.rating);
-          if (watched.commentaire) setComment(watched.commentaire); 
+          if (watched.commentaire) setComment(watched.commentaire);
         }
       });
+
+      fetch(`http://localhost:4000/mongo/getPersonalizedList?userId=${userId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.data) {
+          setPersonalizedLists(data.data);
+        } else {
+          console.warn("No personalized lists found");
+        }
+      })
+      .catch((err) => console.error("Error fetching personalized lists:", err));
+
   }, [filmId, numericFilmId]);
 
 
@@ -98,12 +111,56 @@ const FilmInfo = () => {
           userId,
           movieId: numericFilmId,
           rating,
-          comment, // <-- ici
+          comment, 
         }),
       });
       alert("Rating saved!");
     } catch (err) {
       console.error("Error saving rating:", err);
+    }
+  };
+
+  const handleAddToList = async (listId) => {
+    const personalizedListId = listId;
+    try {
+      const response = await fetch("http://localhost:4000/mongo/addToPersonalizedList", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, personalizedListId, filmId: numericFilmId })
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        alert("Movie added created to list!");
+      } else {
+        alert(data.message);
+      }
+    } catch (error) {
+      console.error("Error adding film to list:", error);
+      alert("Server error while adding film to list");
+    }
+  };
+
+  const handleAddNewPersonalizedList = async () => {
+    const listName = prompt("Enter a name for your new list:");
+    if (!listName) return;
+  
+    try {
+      const response = await fetch("http://localhost:4000/mongo/createPersonalizedList", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, listName })
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        alert("List created!");
+      } else {
+        alert(data.message);
+      }
+    } catch (error) {
+      console.error("Error creating list:", error);
+      alert("Server error while creating list");
     }
   };
 
@@ -148,6 +205,24 @@ const FilmInfo = () => {
           <button className="btn btn-outline-light" onClick={handleWatchlist}>
             {isInWatchlist ? "In Watchlist" : "Add to Watchlist"}
           </button>
+
+          {/* Drop button  */}
+          <DropdownButton id="list-dropdown" title="add to list >">
+            {personalizedLists.length > 0 ? (
+              personalizedLists.map((list) => (
+                <Dropdown.Item key={list._id} onClick={() => handleAddToList(list._id)}>
+                  {list.name}
+                </Dropdown.Item>
+              ))
+            ) : (
+              <Dropdown.Item disabled>No lists available</Dropdown.Item>
+            )}
+
+            <Dropdown.Divider />
+            <Dropdown.Item onClick={handleAddNewPersonalizedList}>
+              Create New List
+            </Dropdown.Item>
+          </DropdownButton>
         </div>
 
         {markedWatched && (
