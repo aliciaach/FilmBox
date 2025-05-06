@@ -142,7 +142,7 @@ const FilmInfo = () => {
   };
 
   const handleAddNewPersonalizedList = async () => {
-    const listName = prompt("Enter a name for your new list:");
+    const listName = prompt("Enter a name for your new list:"); 
     if (!listName) return;
 
     try {
@@ -206,7 +206,7 @@ const FilmInfo = () => {
             {isInWatchlist ? "In Watchlist" : "Add to Watchlist"}
           </button>
 
-          {/* Drop button  */}
+          {/* Drop button pour les listes personalisées  */}
           <DropdownButton id="list-dropdown" title="add to list >">
             {personalizedLists.length === 0 && ( //si il y a 0 listes, on desactive le dropdown et affiche no list available
               <Dropdown.Item disabled>No lists available</Dropdown.Item>
