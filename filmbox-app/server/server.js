@@ -8,14 +8,13 @@ import { fileURLToPath } from "url";
 import mysql from "mysql";
 import { body, validationResult } from "express-validator";
 import dateFormat from "dateformat";
-import { MongoClient } from "mongodb";
 import { config } from "dotenv";
 import bcrypt from "bcrypt";
 import cors from "cors";
 import fetch from "node-fetch";
+import { MongoClient, ObjectId } from "mongodb";
 
 config();
-
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -28,7 +27,7 @@ const con = mysql.createConnection({
   host: "localhost",
   user: "scott",
   password: "oracle",
-  database: "prototype",
+  database: "filmbox",
 });
 
 con.connect(function (err) {
@@ -122,20 +121,18 @@ app.post("/login", (req, res) => {
 
 app.post("/LoginRegister", (req, res) => {
   const { email, password, firstName, lastName, phoneNumber } = req.body;
-  
+
   //https://stackabuse.com/bytes/check-if-a-string-contains-numbers-in-javascript/
   //email only one working for now, use the link just here to do the rest
-  if (!email.includes("@"))  {
+  if (!email.includes("@")) {
     return res.status(400).json({ success: false, message: "Please enter a valid email adress" });
   }
-  if (firstName.includes(Number))
-  {
+  if (firstName.includes(Number)) {
     return res.status(400).json({ success: false, message: "Please enter your real name (symboles and numbers are not authorized)" });
   }
-  if (lastName.includes(Number))
-    {
-      return res.status(400).json({ success: false, message: "Please enter your real last name (symboles and numbers are not authorized)" });
-    }
+  if (lastName.includes(Number)) {
+    return res.status(400).json({ success: false, message: "Please enter your real last name (symboles and numbers are not authorized)" });
+  }
 
   const sql =
     "INSERT INTO utilisateur (prenom, nom, courriel, telephone, mot_de_passe) VALUES (?, ?, ?, ?, ?)"; //Place holder (pour eviter sql injections, comme derniere session)
@@ -748,8 +745,7 @@ app.get("/api/movies/:id/images", async (req, res) => {
     headers: {
       accept: "application/json",
       //Need to find a way to make this secure !!
-      Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+      Authorization: "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
     },
   };
 
@@ -771,6 +767,60 @@ app.get("/api/movies/:id/images", async (req, res) => {
 
 /* ============================= NOSQL RELATED TO PERSONALIZED LIST =========================== */
 
+/* =============================== ADD A MOVIE TO A PERSONALIZED LIST ========================= */
+app.post("/mongo/addToPersonalizedList", async (req, res) => {
+  const { userId, personalizedListId, filmId } = req.body;
+
+  const uri = process.env.DB_URI;
+  const client = new MongoClient(uri);
+
+  try {
+    await client.connect();
+    const db = client.db("FilmBox");
+    const lists = db.collection("CustomLists");
+
+    const result = await lists.updateOne(
+      { _id: new ObjectId(personalizedListId) },
+      { $addToSet: { movies: filmId } }
+    );
+    res.json({ message: "Movie added to list" });
+  } catch (error) {
+    console.error("Error adding movie:", error);
+    res.status(500).json({ message: "Server error" });
+  } finally {
+    await client.close();
+  }
+});
+
+/* =============================== ADD A NEW PERSONALIZED LIST ================================ */
+app.post("/mongo/createPersonalizedList", async (req, res) => {
+  const { userId, listName } = req.body;
+
+  const uri = process.env.DB_URI;
+  const client = new MongoClient(uri);
+
+  try {
+    await client.connect();
+    const db = client.db("FilmBox");
+    const lists = db.collection("CustomLists");
+
+    const newListDocument = {
+      user_id: userId,
+      name: listName,
+      movies: []
+    };
+
+    const postResult = await lists.insertOne(newListDocument);
+
+    res.json({ message: "list created" });
+  } catch (error) {
+    console.error("Error creating list:", error);
+    res.status(500).json({ message: "Server error" });
+  } finally {
+    await client.close();
+  }
+});
+/* =============================== GET ALL THE PERSONALIZED LIST ================================ */
 app.get("/mongo/getPersonalizedList", async (req, res) => {
   const { userId } = req.query;
 
@@ -787,6 +837,28 @@ app.get("/mongo/getPersonalizedList", async (req, res) => {
       return res.status(401).json({ message: "The user doesnt have any personalized list" });
     } else {
       console.log("Lists succesfully found for " + userId);
+      for (const list of usersList) {
+        const movieDetails = [];
+
+
+        //fetch the movies from the api directly in the backend, and send all the data movie straight to the frontend
+        if (Array.isArray(list.movies)) {
+        for (const movieId of list.movies) {
+          const tmdbResponse = await fetch(`https://api.themoviedb.org/3/movie/${movieId}`, {
+            method: "GET",
+            headers: {
+              accept: "application/json",
+              Authorization: "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+            }
+          });
+          const movieData = await tmdbResponse.json();
+          movieDetails.push(movieData);
+        }
+      }
+
+        // Replace movie IDs with full movie objects
+        list.movies = movieDetails;
+      }
     }
 
     return res.json({
