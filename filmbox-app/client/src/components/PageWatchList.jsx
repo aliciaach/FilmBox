@@ -12,7 +12,7 @@ function PageWatchList() {
   const [lowestRated, setLowestRated] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [personalizedLists, setPersonalizedLists] = useState([]);
+  //const [personalizedLists, setPersonalizedLists] = useState([]);
   const navigate = useNavigate();
 
   const userId = localStorage.getItem("userId");
@@ -20,17 +20,17 @@ function PageWatchList() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [watchlistRes, watchedRes, personalizedRes] = await Promise.all([
+        const [watchlistRes, watchedRes] = await Promise.all([
           fetch(`http://localhost:4000/api/watchlist/${userId}`),
           fetch(`http://localhost:4000/api/watched/${userId}`),
-          fetch(`http://localhost:4000/mongo/getPersonalizedList?userId=${userId}`)
+          //fetch(`http://localhost:4000/mongo/getPersonalizedList?userId=${userId}`)
         ]);
 
         if (!watchlistRes.ok || !watchedRes.ok) throw new Error("Failed to fetch watchlist or watched movies");
 
         const watchlistData = await watchlistRes.json();
         const watchedData = await watchedRes.json();
-        const personalizedData = await personalizedRes.json();
+        //const personalizedData = await personalizedRes.json();
 
         // Supprimer les films avec titre "N/A"
         const cleanedWatchlist = watchlistData.filter(m => m.title && m.title !== "N/A");
@@ -50,7 +50,7 @@ function PageWatchList() {
 
         setHighestRated(highest);
         setLowestRated(lowest);
-        setPersonalizedLists(personalizedData.data || []);
+        //setPersonalizedLists(personalizedData.data || []);
 
       } catch (err) {
         setError(err.message);
@@ -137,35 +137,34 @@ function PageWatchList() {
 
       <div className="container">
 
-        <div style={sectionBoxStyle}>
+        <div style={{sectionBoxStyle, marginTop : "60px"}}>
           <h2 className="text-white text-decoration-none mb-4">My Watchlist</h2>
           {watchlist.length > 0 ? renderMovieRow(watchlist) : <p>Your watchlist is empty.</p>}
-        </div>
+        </div>  
 
         <div style={sectionBoxStyle}>
-          <h2 className="text-white text-decoration-none mb-4">Watched Movies</h2>
+          <h2 className="text-white text-decoration-none mb-4">My Watched Movies</h2>
           {watched.length > 0 ? renderMovieRow(watched) : <p>No movies marked as watched yet.</p>}
         </div>
 
         <div style={sectionBoxStyle}>
-          <h2 className="text-white text-decoration-none mb-4">Highest Rated (3-5 ⭐)</h2>
+          <h2 className="text-white text-decoration-none mb-4">My Highest Rated Movies(3-5 ⭐)</h2>
           {highestRated.length > 0 ? renderMovieRow(highestRated) : <p>No high rated movies yet.</p>}
         </div>
 
         <div style={sectionBoxStyle}>
-          <h2 className="text-white text-decoration-none mb-4">Lowest Rated (0-2 ⭐)</h2>
+          <h2 className="text-white text-decoration-none mb-4">My Lowest Rated Movies (0-2 ⭐)</h2>
           {lowestRated.length > 0 ? renderMovieRow(lowestRated) : <p>No low rated movies yet.</p>}
         </div>
 
-        <h2 className="text-white text-decoration-none mt-5 mb-4">Lowest Rated (0-2 ⭐)</h2>
-        {lowestRated.length > 0 ? renderMovieRow(lowestRated) : <p>No low rated movies yet.</p>}
 
+        {/* Render personalized lists only if there are any 
         {personalizedLists.length > 0 && personalizedLists.map((list) => (
           <div key={list._id}>
             <h2 className="fw-bold mt-5 mb-4">{list.name}</h2>
             {list.movies && list.movies.length > 0 ? renderMovieRow(list.movies) : <p>No movies in this list yet.</p>}
           </div>
-        ))}
+        ))}*/}
       </div>
 
       {/*Cette partie est entierement creer par CHATGPT pour le style du scrollbar */}

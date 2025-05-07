@@ -27,7 +27,7 @@ const con = mysql.createConnection({
   host: "localhost",
   user: "scott",
   password: "oracle",
-  database: "filmbox",
+  database: "prototype",
 });
 
 con.connect(function (err) {
@@ -125,13 +125,23 @@ app.post("/LoginRegister", (req, res) => {
   //https://stackabuse.com/bytes/check-if-a-string-contains-numbers-in-javascript/
   //email only one working for now, use the link just here to do the rest
   if (!email.includes("@")) {
-    return res.status(400).json({ success: false, message: "Please enter a valid email adress" });
+    return res
+      .status(400)
+      .json({ success: false, message: "Please enter a valid email adress" });
   }
   if (firstName.includes(Number)) {
-    return res.status(400).json({ success: false, message: "Please enter your real name (symboles and numbers are not authorized)" });
+    return res.status(400).json({
+      success: false,
+      message:
+        "Please enter your real name (symboles and numbers are not authorized)",
+    });
   }
   if (lastName.includes(Number)) {
-    return res.status(400).json({ success: false, message: "Please enter your real last name (symboles and numbers are not authorized)" });
+    return res.status(400).json({
+      success: false,
+      message:
+        "Please enter your real last name (symboles and numbers are not authorized)",
+    });
   }
 
   const sql =
@@ -743,7 +753,8 @@ app.get("/api/movies/:id/images", async (req, res) => {
     headers: {
       accept: "application/json",
       //Need to find a way to make this secure !!
-      Authorization: "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+      Authorization:
+        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
     },
   };
 
@@ -805,7 +816,7 @@ app.post("/mongo/createPersonalizedList", async (req, res) => {
     const newListDocument = {
       user_id: userId,
       name: listName,
-      movies: []
+      movies: [],
     };
 
     const postResult = await lists.insertOne(newListDocument);
@@ -832,27 +843,32 @@ app.get("/mongo/getPersonalizedList", async (req, res) => {
 
     const usersList = await lists.find({ user_id: userId }).toArray(); //Va chercher toutes les listes correspondant à l'id de l'utilisateur
     if (usersList.length === 0) {
-      return res.status(401).json({ message: "The user doesnt have any personalized list" });
+      return res
+        .status(401)
+        .json({ message: "The user doesnt have any personalized list" });
     } else {
       console.log("Lists succesfully found for " + userId);
       for (const list of usersList) {
         const movieDetails = [];
 
-
         //fetch the movies from the api directly in the backend, and send all the data movie straight to the frontend
         if (Array.isArray(list.movies)) {
-        for (const movieId of list.movies) {
-          const tmdbResponse = await fetch(`https://api.themoviedb.org/3/movie/${movieId}`, {
-            method: "GET",
-            headers: {
-              accept: "application/json",
-              Authorization: "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
-            }
-          });
-          const movieData = await tmdbResponse.json();
-          movieDetails.push(movieData);
+          for (const movieId of list.movies) {
+            const tmdbResponse = await fetch(
+              `https://api.themoviedb.org/3/movie/${movieId}`,
+              {
+                method: "GET",
+                headers: {
+                  accept: "application/json",
+                  Authorization:
+                    "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+                },
+              }
+            );
+            const movieData = await tmdbResponse.json();
+            movieDetails.push(movieData);
+          }
         }
-      }
 
         // Replace movie IDs with full movie objects
         list.movies = movieDetails;
@@ -861,7 +877,7 @@ app.get("/mongo/getPersonalizedList", async (req, res) => {
 
     return res.json({
       message: "Lists successfully found",
-      data: usersList
+      data: usersList,
     });
   } catch (error) {
     console.error("Error during list fetch:", error);

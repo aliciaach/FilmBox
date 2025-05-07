@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Header from "../components/Header";
+import { Dropdown, DropdownButton } from "react-bootstrap";
 
 const FilmInfo = () => {
   const { filmId } = useParams();
+  const navigate = useNavigate();
   const numericFilmId = Number(filmId);
+  const userId = localStorage.getItem("userId");
+
   const [film, setFilm] = useState(null);
   const [movieLogo, setMovieLogo] = useState(null);
   const [erreur, setErreur] = useState(null);
@@ -14,14 +18,7 @@ const FilmInfo = () => {
   const [rating, setRating] = useState(5);
   const [hoverRating, setHoverRating] = useState(0);
   const [comment, setComment] = useState("");
-<<<<<<< HEAD
-  const userId = localStorage.getItem("userId");
-=======
   const [personalizedLists, setPersonalizedLists] = useState([]);
-  const navigate = useNavigate();
-
-  const userId = localStorage.getItem("userId"); //local storage idea given by chatgpt
->>>>>>> 3a35d45394be82a0886e99d62a6224254dc41283
 
   useEffect(() => {
     if (!filmId || isNaN(numericFilmId)) {
@@ -51,14 +48,12 @@ const FilmInfo = () => {
           setRating(watched.rating);
           if (watched.commentaire) setComment(watched.commentaire);
         }
-<<<<<<< HEAD
       } catch (err) {
-        setErreur("Une erreur s'est produite lors du chargement des données.");
-        console.error(err);
+        console.error("Erreur lors du chargement des données:", err);
       }
     };
-=======
-      });
+
+    fetchData();
 
     fetch(`http://localhost:4000/mongo/getPersonalizedList?userId=${userId}`)
       .then((res) => res.json())
@@ -70,11 +65,6 @@ const FilmInfo = () => {
         }
       })
       .catch((err) => console.error("Error fetching personalized lists:", err));
-
-  }, [filmId, numericFilmId]);
->>>>>>> 3a35d45394be82a0886e99d62a6224254dc41283
-
-    fetchData();
   }, [filmId, numericFilmId, userId]);
 
   const handleWatchlist = async () => {
@@ -132,17 +122,16 @@ const FilmInfo = () => {
   };
 
   const handleAddToList = async (listId) => {
-    const personalizedListId = listId;
     try {
       const response = await fetch("http://localhost:4000/mongo/addToPersonalizedList", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, personalizedListId, filmId: numericFilmId })
+        body: JSON.stringify({ userId, personalizedListId: listId, filmId: numericFilmId }),
       });
 
       const data = await response.json();
       if (response.ok) {
-        alert("Movie added created to list!");
+        alert("Movie added to list!");
       } else {
         alert(data.message);
       }
@@ -153,14 +142,14 @@ const FilmInfo = () => {
   };
 
   const handleAddNewPersonalizedList = async () => {
-    const listName = prompt("Enter a name for your new list:"); 
+    const listName = prompt("Enter a name for your new list:");
     if (!listName) return;
 
     try {
       const response = await fetch("http://localhost:4000/mongo/createPersonalizedList", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, listName })
+        body: JSON.stringify({ userId, listName }),
       });
 
       const data = await response.json();
@@ -192,13 +181,13 @@ const FilmInfo = () => {
       fontFamily: "Fredoka",
     }}>
       <Header />
-
+      
       <div className="container py-5 text-start" style={{ maxWidth: "800px" }}>
         {movieLogo && (
           <img
             src={`https://image.tmdb.org/t/p/original${movieLogo.file_path}`}
             alt="Movie Logo"
-            style={{ maxHeight: 100, marginBottom: 20 }}
+            style={{ maxHeight: 100, marginBottom: 20, marginTop : "70px" }}
           />
         )}
 
@@ -209,39 +198,36 @@ const FilmInfo = () => {
 
         <div className="d-flex align-items-center gap-3 mt-4">
           <button className="btn btn-light" onClick={handleWatched}>
-            {markedWatched ? "Unmark Watched" : "Mark as Watched"}
-          </button>
-          <button className="btn btn-outline-light" onClick={handleWatchlist}>
-            {isInWatchlist ? "In Watchlist" : "Add to Watchlist"}
+            {markedWatched ? "Unmark Watched" : "Mark As Watched"}
           </button>
 
-          {/* Drop button pour les listes personalisées  */}
-          <DropdownButton id="list-dropdown" title="add to list >">
-            {personalizedLists.length === 0 && ( //si il y a 0 listes, on desactive le dropdown et affiche no list available
-              <Dropdown.Item disabled>No lists available</Dropdown.Item>
+          {!markedWatched && (
+            <button className="btn btn-outline-light" onClick={handleWatchlist}>
+              {isInWatchlist ? "In Watchlist" : "Add To Watchlist"}
+            </button>
+)}
+          <DropdownButton id="list-dropdown" title="Add To List">
+            {personalizedLists.length === 0 && (
+              <Dropdown.Item disabled>No Lists Available</Dropdown.Item>
             )}
-
-            {personalizedLists.length > 0 && //si il y a des listes personnalisees, on les affiche
-              personalizedLists.map((list) => (
-                <Dropdown.Item key={list._id} onClick={() => handleAddToList(list._id)}>  {/* Appelle la fonction qui handle l'ajout a une liste, en renvoyant le id de la list selectionnes */}
-                  {list.name}
-                </Dropdown.Item>
-              ))}
-
-            <Dropdown.Divider /> {/* Ligne separatrice entre les choix de liste et le bouton pour ajouter une creer une nouvelle liste*/}
-
+            {personalizedLists.map((list) => (
+              <Dropdown.Item key={list._id} onClick={() => handleAddToList(list._id)}>
+                {list.name}
+              </Dropdown.Item>
+            ))}
+            <Dropdown.Divider />
             <Dropdown.Item onClick={handleAddNewPersonalizedList}>
               Create New List
             </Dropdown.Item>
           </DropdownButton>
         </div>
-
+        
         {markedWatched && (
           <div className="mt-4">
             <label className="form-label">Rate this movie:</label>
             <div className="d-flex gap-2">
               {[1, 2, 3, 4, 5].map((star) => (
-                <span
+                <spa  n
                   key={star}
                   style={{
                     fontSize: "2rem",
@@ -253,7 +239,7 @@ const FilmInfo = () => {
                   onMouseLeave={() => setHoverRating(0)}
                 >
                   ★
-                </span>
+                </spa>
               ))}
             </div>
 
