@@ -226,10 +226,11 @@ CREATE TABLE films (
     pays_origin_film VARCHAR(255) NOT NULL,
     langue_original VARCHAR(255) NOT NULL,
     status VARCHAR(255) NOT NULL,
-    directeur_directeur_id INT NOT NULL,
+    directeur_directeur_id INT,
     PRIMARY KEY (film_id),
-    FOREIGN KEY (directeur_directeur_id) REFERENCES directeur(directeur_id) ON DELETE CASCADE
+    FOREIGN KEY (directeur_directeur_id) REFERENCES directeur(directeur_id) ON DELETE SET NULL
 );
+
 
 CREATE TABLE genre (
     genre_id INT NOT NULL AUTO_INCREMENT,
