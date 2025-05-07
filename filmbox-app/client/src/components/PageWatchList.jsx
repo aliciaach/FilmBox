@@ -12,6 +12,7 @@ function PageWatchList() {
   const [lowestRated, setLowestRated] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [personalizedLists, setPersonalizedLists] = useState([]);
   const navigate = useNavigate();
 
   const userId = localStorage.getItem("userId");
@@ -19,15 +20,19 @@ function PageWatchList() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [watchlistRes, watchedRes] = await Promise.all([
+        const [watchlistRes, watchedRes, personalizedRes] = await Promise.all([
           fetch(`http://localhost:4000/api/watchlist/${userId}`),
           fetch(`http://localhost:4000/api/watched/${userId}`),
+          fetch(`http://localhost:4000/mongo/getPersonalizedList?userId=${userId}`)
         ]);
 
         if (!watchlistRes.ok || !watchedRes.ok) throw new Error("Failed to fetch watchlist or watched movies");
 
         const watchlistData = await watchlistRes.json();
         const watchedData = await watchedRes.json();
+        const personalizedData = await personalizedRes.json();
+
+        // Supprimer les films avec titre "N/A"
         const cleanedWatchlist = watchlistData.filter(m => m.title && m.title !== "N/A");
         const cleanedWatched = watchedData.filter(m => m.title && m.title !== "N/A");
 
@@ -45,6 +50,8 @@ function PageWatchList() {
 
         setHighestRated(highest);
         setLowestRated(lowest);
+        setPersonalizedLists(personalizedData.data || []);
+
       } catch (err) {
         setError(err.message);
       } finally {
@@ -150,6 +157,15 @@ function PageWatchList() {
           {lowestRated.length > 0 ? renderMovieRow(lowestRated) : <p>No low rated movies yet.</p>}
         </div>
 
+        <h2 className="text-white text-decoration-none mt-5 mb-4">Lowest Rated (0-2 ⭐)</h2>
+        {lowestRated.length > 0 ? renderMovieRow(lowestRated) : <p>No low rated movies yet.</p>}
+
+        {personalizedLists.length > 0 && personalizedLists.map((list) => (
+          <div key={list._id}>
+            <h2 className="fw-bold mt-5 mb-4">{list.name}</h2>
+            {list.movies && list.movies.length > 0 ? renderMovieRow(list.movies) : <p>No movies in this list yet.</p>}
+          </div>
+        ))}
       </div>
 
       {/*Cette partie est entierement creer par CHATGPT pour le style du scrollbar */}

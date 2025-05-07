@@ -14,7 +14,14 @@ const FilmInfo = () => {
   const [rating, setRating] = useState(5);
   const [hoverRating, setHoverRating] = useState(0);
   const [comment, setComment] = useState("");
+<<<<<<< HEAD
   const userId = localStorage.getItem("userId");
+=======
+  const [personalizedLists, setPersonalizedLists] = useState([]);
+  const navigate = useNavigate();
+
+  const userId = localStorage.getItem("userId"); //local storage idea given by chatgpt
+>>>>>>> 3a35d45394be82a0886e99d62a6224254dc41283
 
   useEffect(() => {
     if (!filmId || isNaN(numericFilmId)) {
@@ -44,11 +51,28 @@ const FilmInfo = () => {
           setRating(watched.rating);
           if (watched.commentaire) setComment(watched.commentaire);
         }
+<<<<<<< HEAD
       } catch (err) {
         setErreur("Une erreur s'est produite lors du chargement des données.");
         console.error(err);
       }
     };
+=======
+      });
+
+    fetch(`http://localhost:4000/mongo/getPersonalizedList?userId=${userId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.data) {
+          setPersonalizedLists(data.data);
+        } else {
+          console.warn("No personalized lists found");
+        }
+      })
+      .catch((err) => console.error("Error fetching personalized lists:", err));
+
+  }, [filmId, numericFilmId]);
+>>>>>>> 3a35d45394be82a0886e99d62a6224254dc41283
 
     fetchData();
   }, [filmId, numericFilmId, userId]);
@@ -107,6 +131,50 @@ const FilmInfo = () => {
     }
   };
 
+  const handleAddToList = async (listId) => {
+    const personalizedListId = listId;
+    try {
+      const response = await fetch("http://localhost:4000/mongo/addToPersonalizedList", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, personalizedListId, filmId: numericFilmId })
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        alert("Movie added created to list!");
+      } else {
+        alert(data.message);
+      }
+    } catch (error) {
+      console.error("Error adding film to list:", error);
+      alert("Server error while adding film to list");
+    }
+  };
+
+  const handleAddNewPersonalizedList = async () => {
+    const listName = prompt("Enter a name for your new list:"); 
+    if (!listName) return;
+
+    try {
+      const response = await fetch("http://localhost:4000/mongo/createPersonalizedList", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, listName })
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        alert("List created!");
+      } else {
+        alert(data.message);
+      }
+    } catch (error) {
+      console.error("Error creating list:", error);
+      alert("Server error while creating list");
+    }
+  };
+
   if (erreur) return <p className="text-danger text-center">{erreur}</p>;
   if (!film) return <p className="text-center text-white">Chargement...</p>;
 
@@ -143,11 +211,29 @@ const FilmInfo = () => {
           <button className="btn btn-light" onClick={handleWatched}>
             {markedWatched ? "Unmark Watched" : "Mark as Watched"}
           </button>
-          {!markedWatched && (
-            <button className="btn btn-outline-light" onClick={handleWatchlist}>
-              {isInWatchlist ? "In Watchlist" : "Add to Watchlist"}
-            </button>
-          )}
+          <button className="btn btn-outline-light" onClick={handleWatchlist}>
+            {isInWatchlist ? "In Watchlist" : "Add to Watchlist"}
+          </button>
+
+          {/* Drop button pour les listes personalisées  */}
+          <DropdownButton id="list-dropdown" title="add to list >">
+            {personalizedLists.length === 0 && ( //si il y a 0 listes, on desactive le dropdown et affiche no list available
+              <Dropdown.Item disabled>No lists available</Dropdown.Item>
+            )}
+
+            {personalizedLists.length > 0 && //si il y a des listes personnalisees, on les affiche
+              personalizedLists.map((list) => (
+                <Dropdown.Item key={list._id} onClick={() => handleAddToList(list._id)}>  {/* Appelle la fonction qui handle l'ajout a une liste, en renvoyant le id de la list selectionnes */}
+                  {list.name}
+                </Dropdown.Item>
+              ))}
+
+            <Dropdown.Divider /> {/* Ligne separatrice entre les choix de liste et le bouton pour ajouter une creer une nouvelle liste*/}
+
+            <Dropdown.Item onClick={handleAddNewPersonalizedList}>
+              Create New List
+            </Dropdown.Item>
+          </DropdownButton>
         </div>
 
         {markedWatched && (
