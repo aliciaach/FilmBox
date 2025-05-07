@@ -776,6 +776,32 @@ app.get("/api/movies/:id/images", async (req, res) => {
 
 /* ============================= NOSQL RELATED TO PERSONALIZED LIST =========================== */
 
+/* ============================= NOSQL REMOVE A MOVIE FROM A PERSONALIZED LIST ================ */
+
+app.delete("/mongo/removeMovieFromList/:listId/:movieId", async (req, res) => {
+  const listId = req.params.listId;
+  const movieId = req.params.movieId;
+
+  const uri = process.env.DB_URI;
+  const client = new MongoClient(uri);
+
+  try {
+    await client.connect();
+    const db = client.db("FilmBox");
+    const list = db.collection("CustomLists");
+
+    const result = await list.updateOne(
+      { _id:  new ObjectId(listId) },
+      { $pull: { movies: { _id: new ObjectId(movieId) } } }
+    );
+    res.json({ message: "Movie removed from list" });
+  } catch (error) {
+    console.error("Error removing movie: " + movieId + "from list: " + listId, error);
+    res.status(500).json({ message: "Server error"});
+  } finally {
+    await client.close();
+  }
+});
 /* =============================== ADD A MOVIE TO A PERSONALIZED LIST ========================= */
 app.post("/mongo/addToPersonalizedList", async (req, res) => {
   const { userId, personalizedListId, filmId } = req.body;
@@ -854,17 +880,14 @@ app.get("/mongo/getPersonalizedList", async (req, res) => {
         //fetch the movies from the api directly in the backend, and send all the data movie straight to the frontend
         if (Array.isArray(list.movies)) {
           for (const movieId of list.movies) {
-            const tmdbResponse = await fetch(
-              `https://api.themoviedb.org/3/movie/${movieId}`,
-              {
-                method: "GET",
-                headers: {
-                  accept: "application/json",
-                  Authorization:
-                    "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
-                },
+
+            const tmdbResponse = await fetch(`https://api.themoviedb.org/3/movie/${movieId}`, {
+              method: "GET",
+              headers: {
+                accept: "application/json",
+                Authorization: "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
               }
-            );
+            });
             const movieData = await tmdbResponse.json();
             movieDetails.push(movieData);
           }

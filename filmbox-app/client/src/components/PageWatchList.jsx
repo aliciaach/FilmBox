@@ -4,7 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import imageLogo from "../assets/logo_FilmBox.png";
 import Header from '../components/Header';
 import { Dropdown, DropdownButton } from "react-bootstrap";
-
+import ContainerManageList from './ContainerManageList';
 function PageWatchList() {
   const [watchlist, setWatchlist] = useState([]);
   const [watched, setWatched] = useState([]);
@@ -12,10 +12,21 @@ function PageWatchList() {
   const [lowestRated, setLowestRated] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  //const [personalizedLists, setPersonalizedLists] = useState([]);
+  const [personalizedLists, setPersonalizedLists] = useState([]);
+  const [selectedList, setSelectedList] = useState(null);
+
   const navigate = useNavigate();
 
-  const userId = localStorage.getItem("userId");
+  const userId = localStorage.getItem("userId"); //Faudra changer ça !!!
+
+
+  const handleGestionList = (list) => {
+    setSelectedList(list);  // On stocke l’objet complet
+  };
+
+  const handleCloseContainer = () => {
+    setSelectedList(null);  // Pour fermer
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -161,10 +172,35 @@ function PageWatchList() {
         {/* Render personalized lists only if there are any 
         {personalizedLists.length > 0 && personalizedLists.map((list) => (
           <div key={list._id}>
-            <h2 className="fw-bold mt-5 mb-4">{list.name}</h2>
+            <div className="d-flex justify-content-between align-items-center mt-5 mb-4">
+              <h2 className="fw-bold mt-0">{list.name}</h2>
+              <button className="btn btn-primary" style={{
+                backgroundColor: "transparent",
+                backgroundRepeat: "no-repeat",
+                border: "none",
+                cursor: "pointer",
+                overflow: "hidden"
+              }} onClick={() => handleGestionList(list)} >Manage List</button>
+            </div>
             {list.movies && list.movies.length > 0 ? renderMovieRow(list.movies) : <p>No movies in this list yet.</p>}
           </div>
         ))}*/}
+        ))}
+
+        {selectedList && ( //Si une liste est selectionnée, on affiche le container 
+          <ContainerManageList list={selectedList} onClose={handleCloseContainer} />
+        )}
+
+        <style>{`
+          .movie-card:hover {
+            border: 2px solid #4a6bff !important;
+            transform: translateY(-5px) !important;
+            box-shadow: 0 10px 20px rgba(74, 107, 255, 0.3) !important;
+          }
+          .movie-card:hover img {
+            opacity: 0.9;
+          }
+        `}</style>
       </div>
 
       {/*Cette partie est entierement creer par CHATGPT pour le style du scrollbar */}
