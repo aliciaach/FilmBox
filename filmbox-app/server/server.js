@@ -386,11 +386,7 @@ const uri = "mongodb://localhost:27017";
 const client = new MongoClient(uri);
 const dbName = "FilmBox";
 
-app.use(
-  cors({
-    origin: "http://localhost:5173", // Allow only requests from React's local dev server
-  })
-);
+app.use(cors());
 
 // API to fetch admins
 app.get("/adminsTab", async (req, res) => {
@@ -450,6 +446,61 @@ app.put("/adminsTab/:id", async (req, res) => {
     res.status(500).json({ message: "erreur serveur" });
   } finally {
     await client.close();
+  }
+});
+
+//Pour la creation d'admin
+app.post("/createAdmin", async (req, res) => {
+  console.log(JSON.stringify(req.body, null, 2));
+  console.log("Contenu brut de req.body:", req.body);
+  const { username, email, role, password, name, lastName, phoneNumber } =
+    req.body;
+  console.log("Champs individuels:");
+  console.log("Username: ", username);
+  console.log("Name: ", name);
+  console.log("Last Name: ", lastName);
+  console.log("Email: ", email);
+  console.log("Password: ", password);
+  //validation
+  if (!username || !email || !password || !name || !lastName) {
+    return res.status(400).json({ error: "champs doivent etre complets" });
+  }
+  console.log("BODY RECEIVED:", req.body);
+  try {
+    //Connexion a la base de donnees
+    await client.connect();
+    const db = client.db(dbName);
+    const collection = db.collection("AdminUsers");
+
+    //check si username et admin existe deja
+    const adminExist = await collection.findOne({
+      $or: [{ username }, { email }],
+    });
+
+    if (adminExist) {
+      return res.status(400).json({ error: "admin existe deja" });
+    }
+    const nouvelAdmin = {
+      username,
+      email,
+      role,
+      password,
+      lastName,
+      name,
+      phoneNumber,
+      lastLogin: null,
+      accountStatus: "active",
+      createdAt: new Date(),
+      deletedAt: null,
+    };
+
+    const resultat = await collection.insertOne(nouvelAdmin);
+    res
+      .status(201)
+      .json({ message: "creation admin avec succes: ", nouvelAdmin });
+  } catch (err) {
+    console.error("Erreur creation nouvel admin: ", err);
+    res.status(500).json({ error: "Probleme avec serveur" });
   }
 });
 
