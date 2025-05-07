@@ -13,7 +13,26 @@
   .input-section {
     margin-bottom: 2rem;
   }
+ 
+ /* input */   
+  .inputFormSettings {
+    border: solid #7465F7;
+    background-color: rgba(116, 101, 247, 0.1);
+    outline: none;
+    background-position: right 10px center;
+    background-repeat: no-repeat;
+    background-size: 20px;
+    color: white;
+    border-radius: 8px;
+    padding: 12px 18px;
+    width: 100%;
+  }
   
+  .inputFormSettings:focus {
+    border: 2px solid rgba(116, 101, 247, 0.9);
+    box-shadow: 0 0 15px rgba(116, 101, 247, 0.5);
+  }
+
   /* Nouveau bouton Save stylisé */
   .btnSaveCustom {
     background: linear-gradient(to right, #2b22a0, #735fd6);
@@ -30,25 +49,6 @@
     box-shadow: 0 0 30px rgba(116, 101, 247, 0.5);
     background: linear-gradient(to right, #5921ba, #be79ff);
   }
-  
-  .inputForm {
-    border: solid #7465F7;
-    background-color: rgba(116, 101, 247, 0.1);
-    outline: none;
-    background-position: right 10px center;
-    background-repeat: no-repeat;
-    background-size: 20px;
-    color: white;
-    border-radius: 8px;
-    padding: 12px 18px;
-    width: 100%;
-  }
-  
-  .inputForm:focus {
-    border: 2px solid rgba(116, 101, 247, 0.9);
-    box-shadow: 0 0 15px rgba(116, 101, 247, 0.5);
-  }
-  
 
 
   .btnDeleteCustom {

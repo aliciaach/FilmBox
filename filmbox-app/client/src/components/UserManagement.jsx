@@ -27,7 +27,21 @@ function ManageUsers(){
         setUsers(data);  // Mettre à jour la liste des utilisateurs avec les nouvelles données
       })
       .catch((erreur) => setError(erreur.message));  // Gérer les erreurs
-  }, []);
+
+              // Récupérer l'admin connecté
+    fetch("http://localhost:4000/get-session", { credentials: 'include' }) //pour envoyer les cookies avec la requête
+    .then((response) => {
+      if (!response.ok) throw new Error("Erreur dans la récupération de la session");
+      return response.json();
+    })
+    .then((data) => {
+      if(data.loggedIn){
+        setAdmin(data.user);
+      }
+
+    })
+    .catch((erreur) => setError(erreur.message));  // Gérer les erreurs
+    }, []);
  
     const clickObtenirInformationsUser = (userId) => {
     const user = users.find(u => u.utilisateur_id === userId);
@@ -51,19 +65,7 @@ function ManageUsers(){
       }
     };
 
-        // Récupérer l'admin connecté
-    fetch("http://localhost:4000/get-session", { credentials: 'include' }) //pour envoyer les cookies avec la requête
-      .then((response) => {
-        if (!response.ok) throw new Error("Erreur dans la récupération de la session");
-        return response.json();
-      })
-      .then((data) => {
-        if(data.loggedIn){
-          setAdmin(data.user);
-        }
- 
-      })
-      .catch((erreur) => setError(erreur.message));  // Gérer les erreurs
+
 };    
 /*
 

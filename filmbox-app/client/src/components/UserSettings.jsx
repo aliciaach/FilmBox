@@ -205,7 +205,7 @@ function UserSettings() {
             <div className="input-section col-6">
               <p style={{ fontSize: '22px', marginBottom: '0.2rem'}}>First Name</p>
               <input
-                className="inputForm"
+                className="inputFormSettings"
                 type="text"
                 placeholder={user.prenom || "John"}
                 required
@@ -218,7 +218,7 @@ function UserSettings() {
             <div className="input-section col-6">
               <p style={{ fontSize: '22px', marginBottom: '0.2rem' }}>Last Name</p>
               <input
-                className="inputForm"
+                className="inputFormSettings"
                 type="text"
                 placeholder={user.nom || "Doe"}
                 value={tempoUser.nom || ""}
@@ -232,7 +232,7 @@ function UserSettings() {
            <div className="input-section">
             <p style={{ fontSize: '22px', marginBottom: '0.2rem' }}>Email</p>
             <input
-              className="inputForm"
+              className="inputFormSettings"
               type="email"
               placeholder={user.courriel || "johndoe@gmail.com"}
               value={tempoUser.courriel || ""}
@@ -244,7 +244,7 @@ function UserSettings() {
           <div className="input-section">
             <p style={{ fontSize: '22px', marginBottom: '0.2rem' }}>Phone Number</p>
             <input
-              className="inputForm"
+              className="inputFormSettings"
               type="text"
               placeholder={user.telephone || "514-321-1234"}
               value={tempoUser.telephone || ""}
@@ -257,7 +257,7 @@ function UserSettings() {
           <div className="input-section">
             <p style={{ fontSize: '22px', marginBottom: '0.2rem' }}>Password</p>
             <input
-              className="inputForm"
+              className="inputFormSettings"
               type="password"
               placeholder="***********"
               readOnly
@@ -268,7 +268,7 @@ function UserSettings() {
           <div className="mb-3">
             <p style={{ fontSize: '22px', marginBottom: '0.2rem' }}>New Password</p>
             <input
-              className="inputForm"
+              className="inputFormSettings"
               type="password"
 
             />
