@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import imageLogo from "../assets/logo_FilmBox.png";
+import Header from '../components/Header';
 import { Dropdown, DropdownButton } from "react-bootstrap";
 
 function PageWatchList() {
@@ -13,8 +14,7 @@ function PageWatchList() {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  const userId = localStorage.getItem("userId"); 
-
+  const userId = localStorage.getItem("userId");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -28,20 +28,20 @@ function PageWatchList() {
 
         const watchlistData = await watchlistRes.json();
         const watchedData = await watchedRes.json();
-
-        // Supprimer les films avec titre "N/A"
         const cleanedWatchlist = watchlistData.filter(m => m.title && m.title !== "N/A");
         const cleanedWatched = watchedData.filter(m => m.title && m.title !== "N/A");
 
-        // Exclure de la watchlist ceux déjà marqués comme vus
         const watchedIds = cleanedWatched.map(m => m.id);
         const filteredWatchlist = cleanedWatchlist.filter(m => !watchedIds.includes(m.id));
 
         setWatchlist(filteredWatchlist);
         setWatched(cleanedWatched);
 
-        const highest = cleanedWatched.filter(m => m.rating >= 3 && m.rating <= 5);
-        const lowest = cleanedWatched.filter(m => m.rating >= 0 && m.rating <= 2);
+        const highestUnsorted = cleanedWatched.filter(m => m.rating >= 3 && m.rating <= 5);
+        const lowestUnsorted = cleanedWatched.filter(m => m.rating >= 0 && m.rating <= 2);
+
+        const highest = highestUnsorted.sort((a, b) => b.rating - a.rating);
+        const lowest = lowestUnsorted.sort((a, b) => a.rating - b.rating);
 
         setHighestRated(highest);
         setLowestRated(lowest);
@@ -55,9 +55,19 @@ function PageWatchList() {
   }, [userId]);
 
   const renderMovieRow = (movies) => (
-    <div style={{ display: "flex", overflowX: "auto", gap: "1rem", paddingBottom: "1rem" }}>
+    <div
+      style={{
+        display: "flex",
+        overflowX: "auto",
+        scrollSnapType: "x mandatory",
+        gap: "1rem",
+        paddingBottom: "1rem",
+        scrollBehavior: "smooth"
+      }}
+      className="movie-slider"
+    >
       {movies.map((movie) => (
-        <div key={movie.id} style={{ minWidth: 200, flex: "0 0 auto" }}>
+        <div key={movie.id} style={{ minWidth: 200, flex: "0 0 auto", scrollSnapAlign: "start" }}>
           <div
             className="card bg-transparent border-0 h-100"
             style={{ cursor: "pointer", transition: "transform 0.3s" }}
@@ -98,6 +108,14 @@ function PageWatchList() {
     minHeight: "100vh",
   };
 
+  const sectionBoxStyle = {
+    backgroundColor: "#121a49",
+    borderRadius: "16px",
+    padding: "20px",
+    marginBottom: "40px",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+  };
+
   if (loading || error) {
     return (
       <div className="d-flex justify-content-center align-items-center min-vh-100" style={backgroundStyle}>
@@ -108,37 +126,52 @@ function PageWatchList() {
 
   return (
     <div style={backgroundStyle}>
-      <header className="d-flex justify-content-between align-items-center px-4 mb-4">
-        <img
-          src={imageLogo}
-          alt="Logo"
-          style={{ width: 150, cursor: "pointer" }}
-          onClick={() => navigate("/listeFilms")}
-        />
-        <nav className="d-flex align-items-center gap-4">
-          <a href="/" className="text-white text-decoration-none">HOME</a>
-          <a href="/PageWatchlist" className="text-white text-decoration-none">MY MOVIES</a>
-          <span className="text-white">|</span>
-          <DropdownButton id="profile-dropdown" align="end" title={<span className="text-white">Profil</span>} variant="transparent">
-            <Dropdown.Item href="/userSettings">Settings</Dropdown.Item>
-            <Dropdown.Item href="/connexion">Logout</Dropdown.Item>
-          </DropdownButton>
-        </nav>
-      </header>
+      <Header />
 
       <div className="container">
-        <h2 className="text-white text-decoration-none mb-4">My Watchlist</h2>
-        {watchlist.length > 0 ? renderMovieRow(watchlist) : <p>Your watchlist is empty.</p>}
 
-        <h2 className="text-white text-decoration-none mt-5 mb-4">Watched Movies</h2>
-        {watched.length > 0 ? renderMovieRow(watched) : <p>No movies marked as watched yet.</p>}
+        <div style={sectionBoxStyle}>
+          <h2 className="text-white text-decoration-none mb-4">My Watchlist</h2>
+          {watchlist.length > 0 ? renderMovieRow(watchlist) : <p>Your watchlist is empty.</p>}
+        </div>
 
-        <h2 className="text-white text-decoration-none mt-5 mb-4">Highest Rated (3-5 ⭐)</h2>
-        {highestRated.length > 0 ? renderMovieRow(highestRated) : <p>No high rated movies yet.</p>}
+        <div style={sectionBoxStyle}>
+          <h2 className="text-white text-decoration-none mb-4">Watched Movies</h2>
+          {watched.length > 0 ? renderMovieRow(watched) : <p>No movies marked as watched yet.</p>}
+        </div>
 
-        <h2 className="text-white text-decoration-none mt-5 mb-4">Lowest Rated (0-2 ⭐)</h2>
-        {lowestRated.length > 0 ? renderMovieRow(lowestRated) : <p>No low rated movies yet.</p>}
+        <div style={sectionBoxStyle}>
+          <h2 className="text-white text-decoration-none mb-4">Highest Rated (3-5 ⭐)</h2>
+          {highestRated.length > 0 ? renderMovieRow(highestRated) : <p>No high rated movies yet.</p>}
+        </div>
+
+        <div style={sectionBoxStyle}>
+          <h2 className="text-white text-decoration-none mb-4">Lowest Rated (0-2 ⭐)</h2>
+          {lowestRated.length > 0 ? renderMovieRow(lowestRated) : <p>No low rated movies yet.</p>}
+        </div>
+
       </div>
+
+      {/*Cette partie est entierement creer par CHATGPT pour le style du scrollbar */}
+      <style>{`
+        .movie-slider::-webkit-scrollbar {
+          height: 8px;
+        }
+
+        .movie-slider::-webkit-scrollbar-track {
+          background: #1c1c3c;
+          border-radius: 4px;
+        }
+
+        .movie-slider::-webkit-scrollbar-thumb {
+          background: #555;
+          border-radius: 4px;
+        }
+
+        .movie-slider::-webkit-scrollbar-thumb:hover {
+          background: #777;
+        }
+     `}</style>
     </div>
   );
 }

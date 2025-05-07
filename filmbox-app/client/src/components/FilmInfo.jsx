@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Dropdown, DropdownButton } from "react-bootstrap";
-import imageLogo from "../assets/logo_FilmBox.png";
+import Header from "../components/Header";
 
 const FilmInfo = () => {
   const { filmId } = useParams();
@@ -13,10 +12,9 @@ const FilmInfo = () => {
   const [isInWatchlist, setIsInWatchlist] = useState(false);
   const [markedWatched, setMarkedWatched] = useState(false);
   const [rating, setRating] = useState(5);
+  const [hoverRating, setHoverRating] = useState(0);
   const [comment, setComment] = useState("");
-  const navigate = useNavigate();
-
-  const userId = localStorage.getItem("userId"); //local storage idea given by chatgpt
+  const userId = localStorage.getItem("userId");
 
   useEffect(() => {
     if (!filmId || isNaN(numericFilmId)) {
@@ -24,34 +22,36 @@ const FilmInfo = () => {
       return;
     }
 
-    fetch(`http://localhost:4000/api/movies/${numericFilmId}`)
-      .then((res) => res.json())
-      .then(setFilm)
-      .catch((err) => setErreur(err.message));
+    const fetchData = async () => {
+      try {
+        const filmRes = await fetch(`http://localhost:4000/api/movies/${numericFilmId}`);
+        const filmData = await filmRes.json();
+        setFilm(filmData);
 
-    fetch(`http://localhost:4000/api/movies/${numericFilmId}/images`)
-      .then((res) => res.json())
-      .then((data) => setMovieLogo(data.logos?.[0]))
-      .catch((err) => setErreur(err.message));
+        const imageRes = await fetch(`http://localhost:4000/api/movies/${numericFilmId}/images`);
+        const imageData = await imageRes.json();
+        setMovieLogo(imageData.logos?.[0]);
 
-    fetch(`http://localhost:4000/api/watchlist/${userId}`)
-      .then((res) => res.json())
-      .then((watchlist) => {
-        setIsInWatchlist(watchlist.some((movie) => movie.id === numericFilmId));
-      });
+        const watchlistRes = await fetch(`http://localhost:4000/api/watchlist/${userId}`);
+        const watchlistData = await watchlistRes.json();
+        setIsInWatchlist(watchlistData.some(movie => movie.id === numericFilmId));
 
-    fetch(`http://localhost:4000/api/watched/${userId}`)
-      .then(res => res.json())
-      .then(data => {
-        const watched = data.find(movie => movie.id === numericFilmId);
+        const watchedRes = await fetch(`http://localhost:4000/api/watched/${userId}`);
+        const watchedData = await watchedRes.json();
+        const watched = watchedData.find(movie => movie.id === numericFilmId);
         if (watched) {
           setMarkedWatched(true);
           setRating(watched.rating);
-          if (watched.commentaire) setComment(watched.commentaire); 
+          if (watched.commentaire) setComment(watched.commentaire);
         }
-      });
-  }, [filmId, numericFilmId]);
+      } catch (err) {
+        setErreur("Une erreur s'est produite lors du chargement des données.");
+        console.error(err);
+      }
+    };
 
+    fetchData();
+  }, [filmId, numericFilmId, userId]);
 
   const handleWatchlist = async () => {
     try {
@@ -68,24 +68,24 @@ const FilmInfo = () => {
         });
         setIsInWatchlist(true);
       }
-    } catch (error) {
-      console.error("Error:", error);
+    } catch (err) {
+      console.error("Erreur lors de la modification de la watchlist:", err);
     }
   };
 
   const handleWatched = async () => {
-    if (markedWatched) {
-      try {
+    try {
+      if (markedWatched) {
         await fetch(`http://localhost:4000/api/watched/${userId}/${numericFilmId}`, {
           method: "DELETE",
         });
         setMarkedWatched(false);
         setComment("");
-      } catch (err) {
-        console.error("Failed to remove from watched:", err);
+      } else {
+        setMarkedWatched(true);
       }
-    } else {
-      setMarkedWatched(true);
+    } catch (err) {
+      console.error("Erreur lors du changement de statut 'vu':", err);
     }
   };
 
@@ -98,12 +98,12 @@ const FilmInfo = () => {
           userId,
           movieId: numericFilmId,
           rating,
-          comment, // <-- ici
+          comment,
         }),
       });
-      alert("Rating saved!");
+      alert("Note enregistrée !");
     } catch (err) {
-      console.error("Error saving rating:", err);
+      console.error("Erreur lors de l'enregistrement de la note:", err);
     }
   };
 
@@ -111,31 +111,29 @@ const FilmInfo = () => {
   if (!film) return <p className="text-center text-white">Chargement...</p>;
 
   const cheminImage = `https://image.tmdb.org/t/p/original/${film.backdrop_path}`;
-  const genres = film.genres?.map((g) => g.name).join(", ");
-  const countries = film.production_countries?.map((c) => c.name).join(", ");
+  const genres = film.genres?.map(g => g.name).join(", ");
+  const countries = film.production_countries?.map(c => c.name).join(", ");
 
   return (
     <div className="min-vh-100" style={{
       backgroundImage: `linear-gradient(to bottom, rgba(7, 0, 66, 0.5), rgba(5, 0, 50, 0.7)), url(${cheminImage})`,
-      backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat",
-      color: "#fff", fontFamily: "Fredoka",
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      backgroundRepeat: "no-repeat",
+      color: "#fff",
+      fontFamily: "Fredoka",
     }}>
-      <header className="d-flex justify-content-between align-items-center p-3">
-        <a href="/listeFilms">
-          <img src={imageLogo} alt="Logo" style={{ width: "150px" }} />
-        </a>
-        <nav className="d-flex align-items-center gap-3">
-          <a href="/" className="text-white text-decoration-none">HOME</a>
-          <a href="/PageWatchlist" className="text-white text-decoration-none">MY MOVIES</a>
-          <DropdownButton id="profile-dropdown" align="end" title={<span className="text-white">Profil</span>} variant="transparent">
-            <Dropdown.Item href="/settings">Settings</Dropdown.Item>
-            <Dropdown.Item href="/connexion">Logout</Dropdown.Item>
-          </DropdownButton>
-        </nav>
-      </header>
+      <Header />
 
       <div className="container py-5 text-start" style={{ maxWidth: "800px" }}>
-        {movieLogo && <img src={`https://image.tmdb.org/t/p/original${movieLogo.file_path}`} alt="Logo" style={{ maxHeight: 100, marginBottom: 20 }} />}
+        {movieLogo && (
+          <img
+            src={`https://image.tmdb.org/t/p/original${movieLogo.file_path}`}
+            alt="Movie Logo"
+            style={{ maxHeight: 100, marginBottom: 20 }}
+          />
+        )}
+
         <p>{new Date(film.release_date).getFullYear()} • {film.runtime} min • {genres}</p>
         <p>{film.overview}</p>
         <p><strong>Langue:</strong> {film.original_language}</p>
@@ -145,23 +143,33 @@ const FilmInfo = () => {
           <button className="btn btn-light" onClick={handleWatched}>
             {markedWatched ? "Unmark Watched" : "Mark as Watched"}
           </button>
-          <button className="btn btn-outline-light" onClick={handleWatchlist}>
-            {isInWatchlist ? "In Watchlist" : "Add to Watchlist"}
-          </button>
+          {!markedWatched && (
+            <button className="btn btn-outline-light" onClick={handleWatchlist}>
+              {isInWatchlist ? "In Watchlist" : "Add to Watchlist"}
+            </button>
+          )}
         </div>
 
         {markedWatched && (
-          <div className="mt-3">
-            <label htmlFor="rating" className="form-label">Rate this movie:</label>
-            <select
-              id="rating"
-              className="form-select"
-              style={{ maxWidth: "120px" }}
-              value={rating}
-              onChange={(e) => setRating(Number(e.target.value))}
-            >
-              {[1, 2, 3, 4, 5].map((r) => <option key={r} value={r}>{r} ⭐</option>)}
-            </select>
+          <div className="mt-4">
+            <label className="form-label">Rate this movie:</label>
+            <div className="d-flex gap-2">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <span
+                  key={star}
+                  style={{
+                    fontSize: "2rem",
+                    color: (hoverRating || rating) >= star ? "#FFD700" : "#CCCCCC",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => setRating(star)}
+                  onMouseEnter={() => setHoverRating(star)}
+                  onMouseLeave={() => setHoverRating(0)}
+                >
+                  ★
+                </span>
+              ))}
+            </div>
 
             <div className="mt-3">
               <label htmlFor="comment" className="form-label">Comment:</label>
@@ -175,7 +183,9 @@ const FilmInfo = () => {
               />
             </div>
 
-            <button className="btn btn-primary mt-3" onClick={handleRatingSubmit}>Submit Rating</button>
+            <button className="btn btn-primary mt-3" onClick={handleRatingSubmit}>
+              Submit Rating
+            </button>
           </div>
         )}
       </div>

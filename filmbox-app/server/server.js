@@ -178,12 +178,10 @@ app.post("/saveUserAccountChanges", (req, res) => {
         .json({ success: true, message: "User information updated." });
     } else {
       console.log("Error, couldn't update user information");
-      return res
-        .status(404)
-        .json({
-          success: false,
-          message: "User not found or no changes made.",
-        });
+      return res.status(404).json({
+        success: false,
+        message: "User not found or no changes made.",
+      });
     }
   });
 });
