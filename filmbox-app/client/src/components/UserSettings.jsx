@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import BlackImage from '../assets/BlackImage.png'
 import Header from '../components/Header'; 
 import { useNavigate } from 'react-router-dom';
+import '../styles/UserSettings.css';
 
 /*
     https://www.youtube.com/watch?v=oYGhoHW7zqI
@@ -126,7 +127,7 @@ function UserSettings() {
       fontWeight: 300,
            background: `linear-gradient(to bottom,
                 rgba(5, 14, 66, 1),
-                rgba(26, 0, 255, 0.6),
+
                 rgba(0, 0, 255, 0.5),
                 rgba(5, 0, 50, 1)),
                 url(${BlackImage})`,
@@ -170,8 +171,8 @@ function UserSettings() {
       </div>
 
       {/* TOP PART SECTION WITH USER'S NAME AND ALL*/}{/* TOP PART SECTION WITH USER'S NAME AND ALL*/}
-      <div class="mb-5" style={{ textAlign: 'start' }}>
-        <h2 style={{ fontSize: '40px', fontFamily: "fredoka", fontWeight: 'bolder' }}>User Settings</h2>
+      <div class="mb-5 d-flex align-items-center gap-3" style={{ textAlign: 'start' }}>
+
         
 
         {/* Icone profile avec les initiale */}
@@ -193,108 +194,72 @@ function UserSettings() {
             {initials}
           </div>
         )}
+        
+        <h2 style={{ fontSize: '40px', fontFamily: "fredoka", fontWeight: 'bolder' }}>User Settings</h2>
+      
       </div>
 
+      <div className="settings-container">
           <div class="row">
             {/* First Name Input */}
-            <div className="mb-3 col-6">
+            <div className="input-section col-6">
               <p style={{ fontSize: '22px', marginBottom: '0.2rem'}}>First Name</p>
               <input
-                className="w-100 pe-5 ps-3 text-white border-1 rounded-1"
+                className="inputForm"
                 type="text"
                 placeholder={user.prenom || "John"}
                 required
                 value={tempoUser.prenom || ""}
                 onChange={(e) => setTempoUser({ ...tempoUser, prenom: e.target.value })}
-                style={{
-                  padding: '0.50rem',
-                  border: 'solid #FFFFFF',
-                  backgroundColor: 'rgba(116, 101, 247, 0)',
-                  outline: 'none',
-                  backgroundPosition: 'right 10px center',
-                  backgroundRepeat: 'no-repeat',
-                  backgroundSize: '20px'
-                }}
               />
             </div>
 
             {/* Last Name Input */}
-            <div className="mb-3 col-6">
+            <div className="input-section col-6">
               <p style={{ fontSize: '22px', marginBottom: '0.2rem' }}>Last Name</p>
               <input
-                className="w-100 p-2 pe-5 ps-3 text-white border-1 rounded-1"
+                className="inputForm"
                 type="text"
                 placeholder={user.nom || "Doe"}
                 value={tempoUser.nom || ""}
                 onChange={(e) => setTempoUser({ ...tempoUser, nom: e.target.value })}
-                style={{
-                  padding: '0.50rem',
-                  border: 'solid #FFFFFF',
-                  backgroundColor: 'rgba(116, 101, 247, 0)',
-                  outline: 'none',
-                  backgroundPosition: 'right 10px center',
-                  backgroundRepeat: 'no-repeat',
-                  backgroundSize: '20px'
-                }}
+
               />
             </div>
           </div>
           
            {/* Email Input */}
-           <div className="mb-3">
+           <div className="input-section">
             <p style={{ fontSize: '22px', marginBottom: '0.2rem' }}>Email</p>
             <input
-              className="w-100 p-2 pe-5 ps-3 text-white border-1 rounded-2"
+              className="inputForm"
               type="email"
               placeholder={user.courriel || "johndoe@gmail.com"}
               value={tempoUser.courriel || ""}
               onChange={(e) => setTempoUser({ ...tempoUser, courriel: e.target.value })}
-              style={{
-                border: 'solid #FFFFFF',
-                backgroundColor: 'rgba(116, 101, 247, 0)',
-                outline: 'none',
-                backgroundPosition: 'right 10px center',
-                backgroundRepeat: 'no-repeat',
-                backgroundSize: '20px'
-              }}
             />
           </div>
 
           {/* Phone Number Input */}
-          <div className="mb-3">
+          <div className="input-section">
             <p style={{ fontSize: '22px', marginBottom: '0.2rem' }}>Phone Number</p>
             <input
-              className="w-100 p-2 pe-5 ps-3 text-white border-1 rounded-2"
+              className="inputForm"
               type="text"
               placeholder={user.telephone || "514-321-1234"}
               value={tempoUser.telephone || ""}
               onChange={(e) => setTempoUser({ ...tempoUser, telephone: e.target.value })}
-              style={{
-                border: 'solid #FFFFFF',
-                backgroundColor: 'rgba(116, 101, 247, 0)',
-                outline: 'none',
-                backgroundPosition: 'right 10px center',
-                backgroundRepeat: 'no-repeat',
-                backgroundSize: '20px'
-              }}
+
             />
           </div>
 
           {/* Password Input (read-only) */}
-          <div className="mb-3">
+          <div className="input-section">
             <p style={{ fontSize: '22px', marginBottom: '0.2rem' }}>Password</p>
             <input
-              className="w-100 p-2 pe-5 ps-3 text-white border-1 rounded-2"
+              className="inputForm"
               type="password"
               placeholder="***********"
-              style={{
-                border: 'solid #FFFFFF',
-                backgroundColor: 'rgba(116, 101, 247, 0)',
-                outline: 'none',
-                backgroundPosition: 'right 10px center',
-                backgroundRepeat: 'no-repeat',
-                backgroundSize: '20px'
-              }}
               readOnly
             />
           </div>
@@ -303,18 +268,12 @@ function UserSettings() {
           <div className="mb-3">
             <p style={{ fontSize: '22px', marginBottom: '0.2rem' }}>New Password</p>
             <input
-              className="w-100 p-2 pe-5 ps-3 text-white border-1 rounded-2"
+              className="inputForm"
               type="password"
-              style={{
-                border: 'solid #FFFFFF',
-                backgroundColor: 'rgba(116, 101, 247, 0)',
-                outline: 'none',
-                backgroundPosition: 'right 10px center',
-                backgroundRepeat: 'no-repeat',
-                backgroundSize: '20px'
-              }}
+
             />
           </div>
+      </div>
         {/* Change Password Form 
         <form onSubmit={handleSubmit} className="mb-3">
           <input
@@ -346,7 +305,7 @@ function UserSettings() {
     <form onSubmit={handleSubmitSave}>
       <button
         type="submit"
-        className="btn w-100"
+        className="btnSaveCustom w-100"
         style={{
           backgroundColor: "rgba(111, 79, 255, 0.3)",
           color: "white",
@@ -361,7 +320,7 @@ function UserSettings() {
 
         {/* Delete Account Form */}
         <form onSubmit={handleSubmitDelete}>
-          <button type="submit" className="btn btn-danger">
+          <button type="submit" className="btnDeleteCustom">
             Delete Account
           </button>
         </form>
