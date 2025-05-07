@@ -31,17 +31,17 @@ function PageWatchList() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [watchlistRes, watchedRes] = await Promise.all([
+        const [watchlistRes, watchedRes, personalizedRes] = await Promise.all([
           fetch(`http://localhost:4000/api/watchlist/${userId}`),
           fetch(`http://localhost:4000/api/watched/${userId}`),
-          //fetch(`http://localhost:4000/mongo/getPersonalizedList?userId=${userId}`)
+          fetch(`http://localhost:4000/mongo/getPersonalizedList?userId=${userId}`)
         ]);
 
         if (!watchlistRes.ok || !watchedRes.ok) throw new Error("Failed to fetch watchlist or watched movies");
 
         const watchlistData = await watchlistRes.json();
         const watchedData = await watchedRes.json();
-        //const personalizedData = await personalizedRes.json();
+        const personalizedData = await personalizedRes.json();
 
         // Supprimer les films avec titre "N/A"
         const cleanedWatchlist = watchlistData.filter(m => m.title && m.title !== "N/A");
@@ -61,7 +61,7 @@ function PageWatchList() {
 
         setHighestRated(highest);
         setLowestRated(lowest);
-        //setPersonalizedLists(personalizedData.data || []);
+        setPersonalizedLists(personalizedData.data || []);
 
       } catch (err) {
         setError(err.message);
@@ -169,7 +169,7 @@ function PageWatchList() {
         </div>
 
 
-        {/* Render personalized lists only if there are any 
+        {/* Render personalized lists only if there are any movies */}
         {personalizedLists.length > 0 && personalizedLists.map((list) => (
           <div key={list._id}>
             <div className="d-flex justify-content-between align-items-center mt-5 mb-4">
@@ -184,7 +184,6 @@ function PageWatchList() {
             </div>
             {list.movies && list.movies.length > 0 ? renderMovieRow(list.movies) : <p>No movies in this list yet.</p>}
           </div>
-        ))}*/}
         ))}
 
         {selectedList && ( //Si une liste est selectionnée, on affiche le container 
