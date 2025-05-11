@@ -455,13 +455,16 @@ app.post("/createAdmin", async (req, res) => {
   console.log("Contenu brut de req.body:", req.body);
   const { username, email, role, password, name, lastName, phoneNumber } =
     req.body;
-  console.log("Champs individuels:");
-  console.log("Username: ", username);
-  console.log("Name: ", name);
-  console.log("Last Name: ", lastName);
-  console.log("Email: ", email);
-  console.log("Password: ", password);
+
   //validation
+  const emailValide = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  const phoneNumberValide = /^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/;
+  if (!emailValide.test(email)) {
+    return res.status(400).json({ error: "Email invalide" });
+  }
+  if (!phoneNumberValide.test(phoneNumber)) {
+    return res.status(400).json({ error: "Numero Telephone invalide" });
+  }
   if (!username || !email || !password || !name || !lastName) {
     return res.status(400).json({ error: "champs doivent etre complets" });
   }
@@ -501,6 +504,30 @@ app.post("/createAdmin", async (req, res) => {
   } catch (err) {
     console.error("Erreur creation nouvel admin: ", err);
     res.status(500).json({ error: "Probleme avec serveur" });
+  }
+});
+
+// Supprimer les Admins
+app.delete("/deleteAdmin/:id", async (req, res) => {
+  const adminId = req.params.id;
+  try {
+    //Connexion a la base de donnees
+    await client.connect();
+    const db = client.db(dbName);
+    const collection = db.collection("AdminUsers");
+
+    const resultat = await collection.deleteOne({
+      _id: new ObjectId(adminId),
+    });
+
+    if (resultat.deletedCount === 1) {
+      res.status(200).json({ message: "Admin DELETED :)" });
+    } else {
+      res.status(404).json({ message: "Admin pas trouve :(" });
+    }
+  } catch (error) {
+    console.error("Erreur pour supprimer admin :", error);
+    res.status(500).json({ error: "Probleme avec serveur :(" });
   }
 });
 

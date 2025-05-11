@@ -19,6 +19,7 @@ function AdminManagement() {
   const [adminChoisi, setAdminChoisi] = useState(null);
   const [adminOriginal, setAdminOriginal] = useState(null);
   const [montrerModal, setMontrerModal] = useState(false);
+  const [formErrors, setFormErrors] = useState({});
   const [dataForm, setDataForm] = useState({
     username: "",
     name: "",
@@ -34,6 +35,29 @@ function AdminManagement() {
     setDataForm((prev) => ({ ...prev, [name]: value }));
   };
   const handleCreerAdmin = async () => {
+    const errors = {};
+    const emailValide = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    const phoneNumberValide = /^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/;
+
+    if (!dataForm.username) errors.username = "username Required";
+    if (!dataForm.name) errors.name = "Name Required";
+    if (!dataForm.lastName) errors.lastName = "Last Name Required";
+    if (!dataForm.email || !emailValide.test(dataForm.email)) {
+      errors.email = "Email required";
+    }
+    if (
+      !dataForm.phoneNumber ||
+      !phoneNumberValide.test(dataForm.phoneNumber)
+    ) {
+      errors.phoneNumber = "Phone Number Required";
+    }
+    if (!dataForm.password) errors.password = "Password must be entered";
+
+    //si il y a des erreurs, faire un set et retourner l'erreur
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
+    }
     try {
       console.log("Donnees du nouvel admin : ", dataForm);
       const reponse = await fetch("http://localhost:4000/createAdmin", {
@@ -57,6 +81,8 @@ function AdminManagement() {
           role: "admin",
           password: "",
         });
+        setFormErrors({});
+        window.location.reload();
       } else {
         alert("erreur : " + data.error);
       }
@@ -108,7 +134,6 @@ function AdminManagement() {
   useEffect(() => {
     fetchAdmins();
   }, []);
-
   //UPDATE
   const handleUpdateSave = async (e) => {
     e.preventDefault(); //Devrait empecher de refresh la page
@@ -168,6 +193,7 @@ function AdminManagement() {
               : admin
           )
         );
+        window.location.reload();
       } else {
         console.error("Erreur dans le changement admin: ", reponse.statusText);
       }
@@ -175,6 +201,36 @@ function AdminManagement() {
       console.error("Erreur durant le UPDATE: ", error);
     }
   };
+  const handleSupprimerAdmin = async (adminId, adminName) => {
+    const confirmerSupprimer = window.confirm(
+      `Etes vous sure de vouloir supprimer "${adminName}"?`
+    );
+    //si non
+    if (!confirmerSupprimer) return;
+
+    try {
+      const reponse = await fetch(
+        `http://localhost:4000/deleteAdmin/${adminId}`,
+        {
+          method: "DELETE",
+        }
+      );
+      if (reponse.ok) {
+        //update fonctionne
+        const data = await reponse.json();
+        alert("Supprimation de l'admin reussi");
+
+        window.location.reload();
+      } else {
+        console.error("Erreur dans la supprimation admin: ", data.error);
+      }
+    } catch (error) {
+      console.error("Erreur serveur durant action de supprimer:", error);
+      alert("Erreur serveur durant action de supprimer");
+      // window.location.reload();
+    }
+  };
+
   //function pour mettre premiere lettre majuscule
   const premiereLettreMajuscule = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -409,7 +465,13 @@ function AdminManagement() {
                       {admin.role}
                     </td>
                     <td className="text-center bg-transparent">
-                      <button className="btn p-0 border-0 bg-transparent">
+                      <button
+                        className="btn p-0 border-0 bg-transparent"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleSupprimerAdmin(admin._id, admin.username);
+                        }}
+                      >
                         <i className="bi bi-trash">
                           <img
                             src={trash}
@@ -453,64 +515,127 @@ function AdminManagement() {
 
               {/* Username */}
               <input
-                className="form-control mb-2"
+                className={`form-control mb-2 text-white rounded-3 border-0 ${
+                  formErrors.username ? "is-invalid" : ""
+                }`}
                 name="username"
                 placeholder="Username"
                 value={dataForm.username}
                 onChange={handleChange}
+                style={{
+                  backgroundColor: `rgba(149, 137, 255, 0.78)`,
+                  color: "white",
+                }}
               />
+              {formErrors.username && (
+                <div className="text-danger">{formErrors.username}</div>
+              )}
               {/* Prenom */}
               <input
-                className="form-control mb-2"
+                className={`form-control mb-2 text-white rounded-3 border-0 ${
+                  formErrors.name ? "is-invalid" : ""
+                }`}
                 name="name"
                 placeholder="Name"
                 value={dataForm.name}
                 onChange={handleChange}
+                style={{
+                  backgroundColor: `rgba(149, 137, 255, 0.78)`,
+                  color: "white",
+                }}
               />
+              {formErrors.name && (
+                <div className="text-danger">{formErrors.name}</div>
+              )}
               {/* Nom famille */}
               <input
-                className="form-control mb-2"
+                className={`form-control mb-2 text-white rounded-3 border-0 ${
+                  formErrors.lastName ? "is-invalid" : ""
+                }`}
                 name="lastName"
                 placeholder="Last Name"
                 value={dataForm.lastName}
                 onChange={handleChange}
+                style={{
+                  backgroundColor: `rgba(149, 137, 255, 0.78)`,
+                  color: "white",
+                }}
               />
+              {formErrors.lastName && (
+                <div className="text-danger">{formErrors.lastName}</div>
+              )}
               {/* Email */}
               <input
-                className="form-control mb-2"
+                className={`form-control mb-2 text-white rounded-3 border-0 ${
+                  formErrors.email ? "is-invalid" : ""
+                }`}
                 type="email"
                 name="email"
                 placeholder="Email"
                 value={dataForm.email}
                 onChange={handleChange}
+                style={{
+                  backgroundColor: `rgba(149, 137, 255, 0.78)`,
+                  color: "white",
+                }}
               />
+              {formErrors.email && (
+                <div className="text-danger">{formErrors.email}</div>
+              )}
               {/* # telephone */}
               <input
-                className="form-control mb-2"
+                className={`form-control mb-2 text-white rounded-3 border-0 ${
+                  formErrors.phoneNumber ? "is-invalid" : ""
+                }`}
                 name="phoneNumber"
                 placeholder="Phone Number"
                 value={dataForm.phoneNumber}
                 onChange={handleChange}
+                style={{
+                  backgroundColor: `rgba(149, 137, 255, 0.78)`,
+                  color: "white",
+                }}
               />
+              {formErrors.phoneNumber && (
+                <div className="text-danger">{formErrors.phoneNumber}</div>
+              )}
               {/* Role */}
               <select
-                className="form-control mb-2"
+                className={`form-select mb-2 text-white rounded-3 border-0 ${
+                  formErrors.role ? "is-invalid" : ""
+                }`}
                 name="role"
                 value={dataForm.role}
                 onChange={handleChange}
+                style={{
+                  backgroundColor: `rgba(149, 137, 255, 0.78)`,
+                  color: "white",
+                }}
               >
                 <option value="Admin">Admin</option>
                 <option value="Moderator">Moderator</option>
               </select>
+              {formErrors.role && (
+                <div className="text-danger">{formErrors.role}</div>
+              )}
               {/* Mot de Passe */}
               <input
                 type="password"
-                className="form-control mb-2"
+                className={`form-control mb-2 text-white rounded-3 border-0 ${
+                  formErrors.password ? "is-invalid" : ""
+                }`}
                 name="password"
                 placeholder="Password"
                 value={dataForm.password}
                 onChange={handleChange}
+                style={{
+                  backgroundColor: `rgba(149, 137, 255, 0.78)`,
+                  color: "white",
+                }}
               />
+              {formErrors.password && (
+                <div className="text-danger">{formErrors.password}</div>
+              )}
               {/* boutons Save & Cancel */}
               <div className="d-flex justify-content-end">
                 <button
