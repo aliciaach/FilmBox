@@ -34,6 +34,7 @@ function Connexion(){
           console.log("data:" + data);
           if (response.ok)
           {
+            localStorage.setItem("userId", data.userId);
             console.log("Going to film page");
             navigate('/listeFilms');
           } else {
@@ -72,7 +73,7 @@ return(
         color: '#fff'
   }}
   > 
-    <h2 style={{marginTop: '25px', marginBottom: '2rem'}}>Log in</h2>
+    <h2 style={{marginTop: '15vh', marginBottom: '2rem'}}>Log in</h2>
      
      {/* Container du formulaire */}
     <div>
@@ -126,7 +127,15 @@ return(
 
         <p className='signup-text'>You don’t have an account? </p>
       
-        <button className="btn btn-outline-primary" >
+        <div className='btnWrapper' style={{ marginBottom: '15vh'}}>
+          <button className="btnFakeBorder" >
+            <Link to="/inscription" className="nav-link active " >
+              Create Account
+            </Link>
+          </button>
+        </div>
+
+        {/*<button className="btn btn-outline-primary" >
           <Link
             to="/inscription"
             className="nav-link active text-white text-"
@@ -134,7 +143,7 @@ return(
             >
           Create Account
             </Link>
-        </button>
+        </button>*/}        
       </div>
 
     </div>

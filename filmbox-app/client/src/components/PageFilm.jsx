@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import Header from '../components/Header'; 
 import "bootstrap/dist/css/bootstrap.min.css";
 import imageLogo from "../assets/logo_FilmBox.png";
 import BlackImage from '../assets/BlackImage.png';
@@ -16,6 +17,9 @@ const ListeFilms = () => {
   const [erreur, setErreur] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
   const videoRef = useRef();
+  const [topRatedMovies, setTopRatedMovies] = useState([]);
+  const [upcomingMovies, setUpcomingMovies] = useState([]);
+  const [actionMovies, setActionMovies] = useState([]);
 
   
   //Filter states
@@ -72,8 +76,8 @@ const ListeFilms = () => {
   
   const durationOptions = [
     { value: '', label: 'Toutes les durées' },
-    { value: 'short', label: 'Moins de 90 min' },
-    { value: 'medium', label: '90-120 min' },
+    { value: 'court', label: 'Moins de 90 min' },
+    { value: 'moyen', label: '90-120 min' },
     { value: 'long', label: 'Plus de 120 min' }
   ];
 
@@ -90,6 +94,43 @@ const ListeFilms = () => {
         setFilteredFilms(donnees);
       })
       .catch(erreur => setErreur(erreur.message));
+
+
+      //this one is for getting the top rated movies
+    fetch("http://localhost:4000/api/topRatedMovies")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Problème dans le chargement des top rated movies");
+      }
+      return response.json();
+    })
+    .then(donnees => setTopRatedMovies(donnees))
+    .catch(erreur => setErreur(erreur.message));
+
+
+     //this one is for getting upcoming movies 
+     fetch("http://localhost:4000/api/upcomingMovies")
+     .then((response) => {
+       if (!response.ok) {
+         throw new Error("Problème dans le chargement des upcoming movies");
+       }
+       return response.json();
+     })
+     .then(donnees => setUpcomingMovies(donnees))
+     .catch(erreur => setErreur(erreur.message));
+
+     //this one is for getting actions movies 
+     fetch("http://localhost:4000/api/moviesByGenres?genre=28")
+     .then((response) => {
+       if (!response.ok) {
+         throw new Error("Problème dans le chargement des films d'actions");
+       }
+       return response.json();
+     })
+     .then(donnees => setActionMovies(donnees))
+     .catch(erreur => setErreur(erreur.message));
+
+    
   }, []);
 
   useEffect(() => {
@@ -140,8 +181,8 @@ const ListeFilms = () => {
       result = result.filter(film => {
         
         if (!film.runtime) return false;
-        if (filters.duration === 'short') return film.runtime < 90;
-        if (filters.duration === 'medium') return film.runtime >= 90 && film.runtime <= 120;
+        if (filters.duration === 'court') return film.runtime < 90;
+        if (filters.duration === 'moyen') return film.runtime >= 90 && film.runtime <= 120;
         if (filters.duration === 'long') return film.runtime > 120;
         return true;
       });
@@ -176,7 +217,12 @@ const ListeFilms = () => {
         }}>
           
       <div className="text-center mt-0">
-        <div style={{ position: 'relative', width: '100%', height: '90vh', overflow: 'hidden' }}>
+        <div style={{ 
+          position: 'relative', 
+          width: '100%', 
+          minHeight: '70vh',
+          overflow: 'hidden' }}>
+          
           <video
             autoPlay
             muted
@@ -193,75 +239,12 @@ const ListeFilms = () => {
             }}
             ref={videoRef}
           >
+            
             <source src={WickedTrailer} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
           
-          <header
-            style={{
-              position: 'relative', 
-              zIndex: 1,            
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              padding: '10px 20px',
-              backgroundColor: 'rgba(116, 101, 247, 0)',
-              color: '#fff'
-            }}
-          >
-            {/* Logo */}
-            <div style={{ fontSize: "24px", fontWeight: "bold" }}>
-              <img src={imageLogo} alt="Logo" style={{ width: "150px", height: "auto" }} />
-            </div>
-            {/* Navigation */}
-            <nav style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-              <a
-                href="/"
-                style={{ textDecoration: 'none', color: '#fff', fontSize: '18px', marginTop:'-50px' }}
-              >
-                HOME
-              </a>
-              <a
-                href="/movies"
-                style={{ textDecoration: 'none', color: '#fff', fontSize: '18px', marginTop:'-50px'}}
-              >
-                MY MOVIES
-              </a>
-              <span style={{ fontSize: '18px', marginTop:'-50px' }}>|</span>
-
-              {/* Profile Section */}
-              <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginTop:'-25px'}}>
-                <DropdownButton 
-                  id="dropdown-basic-button" 
-                  align="end"
-                  title={
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <div
-                        style={{
-                        width: '32px',
-                        height: '32px',
-                        borderRadius: '50%',
-                        backgroundColor: '#fff',
-                        marginRight: '8px'
-                      }}
-                      ></div>
-                      <span style={{ fontSize: '18px', color: '#fff'}}>Profil</span>
-                    </div>
-                  }
-                  variant="transparent"
-                  style={{
-                    background: "transparent",
-                    border: "none",
-                    margin: "0px",
-                    padding: "0px"
-                  }}
-                >
-                  <Dropdown.Item href="/UserSettings">Settings</Dropdown.Item>
-                  <Dropdown.Item href="/connexion">Logout</Dropdown.Item>
-                </DropdownButton>
-              </div>
-            </nav>
-          </header>
+            <Header />
           
           <div className="movie-info" 
             style={{ 
@@ -300,7 +283,7 @@ const ListeFilms = () => {
       </div>
 
       {/* Movie List Section */}
-      <div className="container text-center mt-0" style={{paddingTop: '50px'}}>
+      <div className="container-fluid text-center mt-0" style={{paddingTop: '50px'}}>
         {/* Filtres déroulants */}
         <div className="mb-4 text-start">
           <button 
@@ -426,47 +409,132 @@ const ListeFilms = () => {
         {erreur ? (
           <p className="text-danger">{erreur}</p>
         ) : (
-          <div className="row mt-3">
-            {filteredFilms.map((film, index) => {
-              let cheminImage = film.poster_path 
-                ? `https://image.tmdb.org/t/p/w500/${film.poster_path}`
-                : BlackImage;
+          <div>
 
-              return (
-                <div key={film.id || index} className="col-lg-2" 
-                  style={{
-                    paddingBottom: "25px",
-                  }}>
-                  <div className="card border-0 shadow movie-card" 
-                    style={{
-                      borderRadius: "0px",
-                      transition: 'all 0.3s ease',
-                      transform: 'translateY(0)',
-                      backgroundColor: "transparent"
-                    }}>
-                    <Link to={`/movies/${film.id}`} className="text-decoration-none">
-                      <img
-                        src={cheminImage}
-                        alt={film.title}
-                        className="card-img-top"
-                        style={{ 
-                          height: "300px", 
-                          objectFit: "cover",
-                          transition: 'all 0.3s ease',
-                          borderRadius: "0px"
-                        }}
-                        onError={(e) => {
-                          e.target.src = BlackImage;
-                        }}
-                      />
-                    </Link>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+        <div style={{
+          fontSize: "30px",
+          textAlign: "left",
+          lineHeight: "1.2"
+        }}>
+          Start your next discovery here
+        </div>
+          <div className="horizontal-scroll">
+  {filteredFilms.map((film, index) => {
+    let cheminImage = film.poster_path 
+      ? `https://image.tmdb.org/t/p/w500/${film.poster_path}`
+      : BlackImage;
+
+    return (
+      <div key={film.id || index} className="movie-card">
+        <Link to={`/movies/${film.id}`}>
+          <img
+            src={cheminImage}
+            alt={film.title}
+            style={{ width: "150px", height: "225px", objectFit: "cover" }}
+            onError={(e) => { e.target.src = BlackImage; }}
+          />
+        </Link>
+      </div>
+    );
+  })}
+      </div>
+
+      <div style={{
+        fontSize: "30px",
+        textAlign: "left",
+        lineHeight: "1.2"
+      }}>
+        Sneak a peek at the future – Coming soon...
+      </div>
+  <div className="horizontal-scroll">
+    {upcomingMovies.map((film, index) => {
+      let cheminImage = film.poster_path 
+        ? `https://image.tmdb.org/t/p/w500/${film.poster_path}`
+        : BlackImage;
+
+      return (
+        <div key={`second-${film.id || index}`} className="movie-card">
+          <Link to={`/movies/${film.id}`}>
+            <img
+              src={cheminImage}
+              alt={film.title}
+              style={{ width: "150px", height: "225px", objectFit: "cover" }}
+              onError={(e) => { e.target.src = BlackImage; }}
+            />
+          </Link>
+        </div>
+      );
+    })}
+  </div>
+
+
+        <div style={{
+          fontSize: "30px",
+          textAlign: "left",
+          lineHeight: "1.2"
+        }}>
+          Top of the charts. Top of your list
+        </div>
+  <div className="horizontal-scroll">
+    {topRatedMovies.map((film, index) => {
+      let cheminImage = film.poster_path 
+        ? `https://image.tmdb.org/t/p/w500/${film.poster_path}`
+        : BlackImage;
+
+      return (
+        <div key={`second-${film.id || index}`} className="movie-card">
+          <Link to={`/movies/${film.id}`}>
+            <img
+              src={cheminImage}
+              alt={film.title}
+              style={{ width: "150px", height: "225px", objectFit: "cover" }}
+              onError={(e) => { e.target.src = BlackImage; }}
+            />
+          </Link>
+        </div>
+      );
+    })}
+  </div>
+
+        <div style={{
+          fontSize: "30px",
+          textAlign: "left",
+          lineHeight: "1.2"
+        }}>
+          Action Movies
+        </div>
+  <div className="horizontal-scroll">
+    {actionMovies.map((film, index) => {
+      let cheminImage = film.poster_path 
+        ? `https://image.tmdb.org/t/p/w500/${film.poster_path}`
+        : BlackImage;
+
+      return (
+        <div key={`second-${film.id || index}`} className="movie-card">
+          <Link to={`/movies/${film.id}`}>
+            <img
+              src={cheminImage}
+              alt={film.title}
+              style={{ width: "150px", height: "225px", objectFit: "cover" }}
+              onError={(e) => { e.target.src = BlackImage; }}
+            />
+          </Link>
+        </div>
+      );
+    })}
+  </div>
+
+</div>
         )}
       </div>
+
+      {/* Fadding pour que la page et le footer blend ensemble */}
+      <div
+        style={{
+          height: "40px",
+          background: "linear-gradient(to bottom, rgba(7, 0, 66, 0), rgba(7, 0, 66, 1))",
+        }}
+        />
 
       {/* styles personnalisés pour l'effet de survol */}
       <style>{`
@@ -477,6 +545,13 @@ const ListeFilms = () => {
         }
         .movie-card:hover img {
           opacity: 0.9;
+        }
+
+        .horizontal-scroll {
+          display: flex;
+          overflow-x: auto;
+          gap: 16px;
+          padding: 10px;
         }
       `}</style>
     </div>
