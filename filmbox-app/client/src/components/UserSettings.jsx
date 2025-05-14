@@ -179,12 +179,12 @@ function UserSettings() {
         <div className="flex-grow-1" style={{  maxWidth: '55%', margin: '0 auto' }}>
 
           {/* Titre */}
-          <h2 style={{ fontSize: '40px', fontFamily: "fredoka", fontWeight: 'bolder', marginTop: '10vh', marginBottom: '3vh' }}>
+          <h2 style={{ fontSize: '40px', fontFamily: "fredoka", fontWeight: 'bolder', marginTop: '10vh', marginBottom: '5vh' }}>
             User Settings
           </h2>
 
           {/* TOP PART SECTION WITH USER'S NAME AND ALL*/}
-          <div class="mb-5 d-flex align-items-center gap-3" style={{ textAlign: 'start' }}>
+          <div class="mb-4 d-flex align-items-center gap-3" style={{ textAlign: 'start' }}>
 
             {/* Icone profile avec les initiale */}
             {initials && (
@@ -207,7 +207,7 @@ function UserSettings() {
             )}
 
             {/* Nom Prenom */}
-            <h3 className="mb-0" style={{ fontSize: '28px', fontFamily: 'Fredoka, sans-serif' }}>
+            <h3 className="mb-0" style={{ fontSize: '28px', fontFamily: 'Fredoka, sans-serif', fontWeight: 'bolder' }}>
               {user.prenom} {user.nom}
             </h3>      
 
