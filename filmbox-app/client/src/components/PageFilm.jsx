@@ -10,6 +10,7 @@ import WickedTrailer from '../assets/Video/WickedTrailer.mp4';
 import WickedImage from '../assets/wicked.jpg';
 import { useRef } from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
+import '../styles/PageFilm.css';
 
 const ListeFilms = () => {
   const [films, setFilms] = useState([]);
@@ -418,7 +419,7 @@ const ListeFilms = () => {
         }}>
           Start your next discovery here
         </div>
-          <div className="horizontal-scroll">
+          <div className="horizontal-scroll horizontal-scrollbar">
   {filteredFilms.map((film, index) => {
     let cheminImage = film.poster_path 
       ? `https://image.tmdb.org/t/p/w500/${film.poster_path}`
@@ -442,11 +443,12 @@ const ListeFilms = () => {
       <div style={{
         fontSize: "30px",
         textAlign: "left",
-        lineHeight: "1.2"
+        lineHeight: "1.2",
+        marginTop:'40px'
       }}>
         Sneak a peek at the future – Coming soon...
       </div>
-  <div className="horizontal-scroll">
+  <div className="horizontal-scroll horizontal-scrollbar">
     {upcomingMovies.map((film, index) => {
       let cheminImage = film.poster_path 
         ? `https://image.tmdb.org/t/p/w500/${film.poster_path}`
@@ -471,11 +473,12 @@ const ListeFilms = () => {
         <div style={{
           fontSize: "30px",
           textAlign: "left",
-          lineHeight: "1.2"
+          lineHeight: "1.2",
+          marginTop:'40px'
         }}>
           Top of the charts. Top of your list
         </div>
-  <div className="horizontal-scroll">
+  <div className="horizontal-scroll horizontal-scrollbar">
     {topRatedMovies.map((film, index) => {
       let cheminImage = film.poster_path 
         ? `https://image.tmdb.org/t/p/w500/${film.poster_path}`
@@ -499,11 +502,12 @@ const ListeFilms = () => {
         <div style={{
           fontSize: "30px",
           textAlign: "left",
-          lineHeight: "1.2"
+          lineHeight: "1.2",
+          marginTop:'40px'
         }}>
           Action Movies
         </div>
-  <div className="horizontal-scroll">
+  <div className="horizontal-scroll horizontal-scrollbar">
     {actionMovies.map((film, index) => {
       let cheminImage = film.poster_path 
         ? `https://image.tmdb.org/t/p/w500/${film.poster_path}`
@@ -532,7 +536,7 @@ const ListeFilms = () => {
       <div
         style={{
           height: "40px",
-          background: "linear-gradient(to bottom, rgba(7, 0, 66, 0), rgba(7, 0, 66, 1))",
+          background: "linear-gradient(to bottom,       rgba(5, 14, 66, 1), rgba(0, 0, 255, 0.5), rgba(5, 0, 50, 1)), ",
         }}
         />
 
