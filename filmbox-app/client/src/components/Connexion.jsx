@@ -73,7 +73,7 @@ return(
         color: '#fff'
   }}
   > 
-    <h2 style={{marginTop: '25px', marginBottom: '2rem'}}>Log in</h2>
+    <h2 style={{marginTop: '15vh', marginBottom: '2rem'}}>Log in</h2>
      
      {/* Container du formulaire */}
     <div>
@@ -127,7 +127,7 @@ return(
 
         <p className='signup-text'>You don’t have an account? </p>
       
-        <div className='btnWrapper'>
+        <div className='btnWrapper' style={{ marginBottom: '15vh'}}>
           <button className="btnFakeBorder" >
             <Link to="/inscription" className="nav-link active " >
               Create Account

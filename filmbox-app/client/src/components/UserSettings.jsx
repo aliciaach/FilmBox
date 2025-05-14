@@ -140,14 +140,6 @@ function UserSettings() {
     }}>
 
       
-      
-      {/* User Inputs */}
-      <div style={{
-        padding: '20px',
-        maxWidth: '55%',
-        margin: '0 auto'
-      }}>
-
       {/* Return Button */}
       <div class="mb-5">
         <button
@@ -163,12 +155,22 @@ function UserSettings() {
             alignItems: 'center',
             justifyContent: 'center',
             cursor: 'pointer'
+            
           }}
           onClick={() => window.history.back()}
         >
           &lt;
         </button>
       </div>
+
+      {/* User Inputs */}
+      <div style={{
+            padding: '20px',
+            maxWidth: '55%',
+            margin: '0 auto'
+          }}>
+
+
 
       {/* TOP PART SECTION WITH USER'S NAME AND ALL*/}{/* TOP PART SECTION WITH USER'S NAME AND ALL*/}
       <div class="mb-5 d-flex align-items-center gap-3" style={{ textAlign: 'start' }}>
