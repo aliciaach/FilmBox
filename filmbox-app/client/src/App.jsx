@@ -8,7 +8,6 @@ import Inscription from "./components/Inscription";
 import ListeFilms from "./components/PageFilm";
 import FilmInfo from "./components/FilmInfo";
 import UserSettings from "./components/UserSettings";
-export default function App() {
 import AdminLogin from "./components/AdminLogin";
 import AdminManagement from "./components/adminManagement";
 import AdminManagementPage from "./components/AdminManagementPage";
@@ -41,18 +40,10 @@ function App() {
       <Footer/>
     </div>
     </BrowserRouter>
-
-    //<UserSettings />
-    //<AdminLogin />
-    // <UserManagement />
   );
 }
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(<App />);
-    //<UserManagement />
-    //<Connexion/>
-  );
-}
  
 export default App;
