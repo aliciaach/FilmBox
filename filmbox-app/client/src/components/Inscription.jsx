@@ -8,6 +8,8 @@ import upImage from '../assets/Upd.jpg';
 import SeigneurAnneauxImage from '../assets/seigneurDesAnneaux.png'; /////////
 import '../styles/Inscription.css';
 import { Link } from 'react-router-dom';
+import { validEmail, validPassword, validName, validPhoneNumber } from './regex.js';
+
  
 function LoginRegister() {
     const [email, setEmail] = useState('');
@@ -17,9 +19,46 @@ function LoginRegister() {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [message, setMessage] = useState('');
+    const [emailErr, setEmailErr] = useState(false);
+    const [pwdError, setPwdError] = useState(false);
+    const [phoneNumberError, setPhoneNumberError] = useState(false);
+    const [firstNameError, setFirstNameError] = useState(false);
+    const [lastNameError, setLastNameError] = useState(false);
+
+    const validate = () => {
+        let isValid = true;
+
+        if (!validEmail.test(email)) {
+            setEmailErr(true);
+            isValid = false;
+        }
+        if (!validPassword.test(password)) {
+            setPwdError(true);
+            isValid = false;
+        }
+        if (!validName.test(firstName) || !validName.test(firstName)) {
+            setFirstNameError(true);
+            isValid = false;
+        }
+        if (!validName.test(lastName) || !validName.test(lastName)) {
+            setLastNameError(true);
+            isValid = false;
+        }
+        if (!validPhoneNumber.test(phoneNumber)) {
+            setPhoneNumberError(true);
+            isValid = false;
+        }
+
+        return isValid;
+    }
  
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!validate())
+        {
+            return;
+        }
    
         const newUser = { firstName, lastName, email, phoneNumber, password, confirmPassword };
  
@@ -44,15 +83,11 @@ function LoginRegister() {
           style={{
             boxSizing: 'border-box', //
             fontFamily: 'Istok Web, sans-serif',
-
             minHeight: '120vh', // Page + haute   => minHeight: '100vh', ///////
             paddingTop: '15vh', //
             paddingBottom: '15vh', //
- 
-
             fontSize: 'large',
             gap: '2rem',
-       
             background: `linear-gradient(to bottom,
                 rgba(5, 14, 66, 1),
                 rgba(26, 0, 255, 0.6),
@@ -70,49 +105,52 @@ function LoginRegister() {
 
             <div className="d-flex flex-column rounded-2 mx-auto" style={{
                     width:'100%',//width: '110%',
-
                     background: 'rgba(0, 0, 0, 0.4)',
                     padding: '2.5rem 4rem',//'5rem 5rem',
                     boxShadow: '0 10px 20px rgba(17, 1, 1, 0.2)',
                     //transform: 'translateX(-5%)'
                 }}>
                 <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', columnGap: '5rem'}}>
+                        
                         {/* Nom Prenom */}
- 
                         <div className="input-box" id="blocForm haut" style={{gridColumn : '1/2',  marginTop:'2rem'}}>
                             <p id="titresForm"> First Name:</p>
                             <input id="inputForm" className='w-100 p-2 pe-5 ps-3 text-white border-1 rounded-4 ' type="text" placeholder="Ex: Lila" required value={firstName} onChange={(e) => setFirstName(e.target.value)}
                                 style={{ backgroundImage: `url(${cadenas})`}}/>
+                            {firstNameError && <p className="text-danger mt-1">Only letters allowed</p>}
                         </div>
                        
                         <div className="input-box" id="blocForm" style={{gridColumn : '2/3', marginTop:'2rem'}}>
                             <p id="titresForm"> Last Name:</p>
                             <input id="inputForm" className='w-100  p-2 pe-5 ps-3 text-white border-1 rounded-4 ' type="text" placeholder="Ex: Tremblay" required value={lastName} onChange={(e) => setLastName(e.target.value)}
                                 style={{ backgroundImage: `url(${cadenas})`}}/>
+                            {lastNameError && <p className="text-danger mt-1">Only letters allowed</p>}
                         </div>
  
                    
                         {/* Email / telephone */} {/* BTW : input className= 'p-2 pe-5' OU 'p-2 pe-5 ps-3'*/}
- 
                         <div className="input-box" id="blocForm" style={{gridColumn : '1/2',  marginTop:'4rem'}}>
                             <p id="titresForm"> Email:</p>
                             <input id="inputForm" className='w-100 p-2 pe-5 ps-3 text-white border-1 rounded-4 ' type="text" placeholder="Ex: lilatremblay@gmail.com" required value={email} onChange={(e) => setEmail(e.target.value)}
                                 style={{ backgroundImage: `url(${cadenas})`}}/>
+                            {emailErr && <p className="text-danger mt-1">Invalid email format</p>}
+
                         </div>
  
                         <div className="input-box" id="blocForm" style={{gridColumn : '2/3', marginTop:'4rem'}}>
                             <p id="titresForm"> Phone Number:</p>
                             <input id="inputForm" className='w-100 p-2 pe-5 ps-3 text-white border-1 rounded-4 'type="text" placeholder="Ex: 514-123-5678" required value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)}
                                 style={{ backgroundImage: `url(${cadenas})`}}/>
+                            {phoneNumberError && <p className="text-danger mt-1">Invalid phone number</p>}
                         </div>
  
                    
                         {/* Mot de passe */}
- 
                         <div className="input-box" id="blocForm" style={{gridColumn : '1/2', marginTop:'4rem'}}>
                             <p id="titresForm"> Password:</p>
                             <input id="inputForm" className='w-100  p-2 pe-5 ps-3 text-white border-1 rounded-4 ' type="password" placeholder="Enter your password" required value={password} onChange={(e) => setPassword(e.target.value)}
                                 style={{ backgroundImage: `url(${cadenas})`}}/>
+                            {pwdError && <p className="text-danger mt-1">Invalid password format</p>}
                         </div>
                        
                         <div className="input-box" id="blocForm" style={{gridColumn : '2/3', marginTop:'4rem'}}>
