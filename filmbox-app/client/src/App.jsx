@@ -1,4 +1,5 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap/dist/css/bootstrap.min.css";
+import ReactDOM from "react-dom/client";
 import React from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import BodyAccueil from "./components/BodyAccueil";
@@ -7,6 +8,7 @@ import Inscription from "./components/Inscription";
 import ListeFilms from "./components/PageFilm";
 import FilmInfo from "./components/FilmInfo";
 import UserSettings from "./components/UserSettings";
+export default function App() {
 import AdminLogin from "./components/AdminLogin";
 import AdminManagement from "./components/adminManagement";
 import AdminManagementPage from "./components/AdminManagementPage";
@@ -30,6 +32,7 @@ function App() {
         <Route path="/AdminLogin" element={<AdminLogin />} />
         <Route path="/userManagement" element={<UserManagement />} />
         <Route path="/adminManagement" element={<AdminManagement />} />
+        <Route path="/userManagement" element={<UserManagement />} />
         <Route path="/AdminManagementPage" element={<AdminManagementPage />} />
         <Route path="/PageWatchlist" element={<PageWatchList />} />
         <Route path="/SearchResults/:searchQuery" element={<SearchResults/>} />
@@ -41,11 +44,15 @@ function App() {
 
     //<UserSettings />
     //<AdminLogin />
+    // <UserManagement />
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
     //<UserManagement />
     //<Connexion/>
   );
 }
  
 export default App;
- 
- 

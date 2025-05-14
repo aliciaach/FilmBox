@@ -1,26 +1,102 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import imageProfil from "../assets/icone_utilisateur.png";
 import fondNoir from "../assets/BlackImage.png";
 import trash from "../assets/trash-2-512 1.png";
 import search from "../assets/search-13-512 1.png";
+import {
+  Dropdown,
+  DropdownToggle,
+  DropdownItem,
+  DropdownDivider,
+  DropdownMenu,
+} from "react-bootstrap";
 
 function AdminManagement() {
-  // Code from ChatGPT
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
   const [searchValue, setSearchValue] = useState("");
-  //Mon code
   const [admins, setAdmins] = useState([]);
   const [adminChoisi, setAdminChoisi] = useState(null);
+  const [adminOriginal, setAdminOriginal] = useState(null);
+  const [montrerModal, setMontrerModal] = useState(false);
+  const [formErrors, setFormErrors] = useState({});
+  const [dataForm, setDataForm] = useState({
+    username: "",
+    name: "",
+    lastName: "",
+    email: "",
+    phoneNumber: "",
+    role: "admin",
+    password: "",
+  });
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setDataForm((prev) => ({ ...prev, [name]: value }));
+  };
+  const handleCreerAdmin = async () => {
+    const errors = {};
+    const emailValide = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    const phoneNumberValide = /^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/;
+
+    if (!dataForm.username) errors.username = "username Required";
+    if (!dataForm.name) errors.name = "Name Required";
+    if (!dataForm.lastName) errors.lastName = "Last Name Required";
+    if (!dataForm.email || !emailValide.test(dataForm.email)) {
+      errors.email = "Email required";
+    }
+    if (
+      !dataForm.phoneNumber ||
+      !phoneNumberValide.test(dataForm.phoneNumber)
+    ) {
+      errors.phoneNumber = "Phone Number Required";
+    }
+    if (!dataForm.password) errors.password = "Password must be entered";
+
+    //si il y a des erreurs, faire un set et retourner l'erreur
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
+    }
+    try {
+      console.log("Donnees du nouvel admin : ", dataForm);
+      const reponse = await fetch("http://localhost:4000/createAdmin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dataForm),
+      });
+
+      const data = await reponse.json();
+      console.log("Reponse du serveur: ", data);
+
+      if (reponse.ok) {
+        alert("Creation Admin avec Succes");
+        setMontrerModal(false);
+        setDataForm({
+          username: "",
+          name: "",
+          lastName: "",
+          email: "",
+          phoneNumber: "",
+          role: "admin",
+          password: "",
+        });
+        setFormErrors({});
+        window.location.reload();
+      } else {
+        alert("erreur : " + data.error);
+      }
+    } catch (err) {
+      console.error("erreu dans handleCreerAdmin:", err);
+    }
+  };
   const handleClickRow = (admin) => {
     setAdminChoisi(admin);
+    setAdminOriginal(admin);
   };
-
-  useEffect(() => {
-    fetchAdmins();
-  }, []);
-
+  const handleCancel = () => {
+    setAdminChoisi(adminOriginal);
+  };
   const fetchAdmins = async () => {
     console.log("Fetching admins...");
     fetch("http://localhost:4000/adminsTab")
@@ -33,35 +109,10 @@ function AdminManagement() {
         console.error("Error fetching admins:", error);
       });
   };
-  //function pour update la date (chaque fields)
-  const updateDateField = (currentDate, field, value) => {
-    const date = new Date(currentDate); //Va cr/er un objet Date 'a partir de la date actuelle
-
-    switch (
-      field //Va d/pendre du field 'a changer
-    ) {
-      case "DD":
-        date.setDate(value);
-        break;
-      case "MM":
-        date.setMonth(value - 1); //index de depart est 0 donc valeur -1 pour que ce soit la bonne
-        break;
-      case "YYYY":
-        date.setFullYear(value);
-        break;
-      default:
-        break;
-    }
-
-    return date.toISOString();
-  };
-  //Back to code from ChatGPT
-
   const sortArrow = (key) => {
     if (sortConfig.key !== key) return "▲";
     return sortConfig.direction === "asc" ? "▲" : "▼";
   };
-
   const handleSort = (key) => {
     const direction =
       sortConfig.key === key && sortConfig.direction === "asc" ? "desc" : "asc";
@@ -70,6 +121,119 @@ function AdminManagement() {
   const handleSearch = (query) => {
     console.log("Searching for:", query);
     // You can add real search logic here when data is ready
+  };
+  const adminsFiltres = admins.filter((admin) => {
+    const recherche = searchValue.toLowerCase();
+    return (
+      admin.username.toLowerCase().includes(recherche) ||
+      admin.name.toLowerCase().includes(recherche) ||
+      admin.lastName.toLowerCase().includes(recherche)
+    );
+  });
+  //Appelle methode pour chercher admins
+  useEffect(() => {
+    fetchAdmins();
+  }, []);
+  //UPDATE
+  const handleUpdateSave = async (e) => {
+    e.preventDefault(); //Devrait empecher de refresh la page
+
+    if (!adminChoisi) {
+      console.log("Pas d'admin choisi pour modifier");
+      return;
+    }
+    const informationsAdminModifies = {};
+
+    const champsVerifier = [
+      "username",
+      "name",
+      "lastName",
+      "email",
+      "phoneNumber",
+      "role",
+    ];
+
+    champsVerifier.forEach((champ) => {
+      if (
+        adminChoisi[champ] !==
+        adminChoisi[`old${premiereLettreMajuscule(champ)}`]
+      ) {
+        informationsAdminModifies[champ] = adminChoisi[champ];
+        console.log("Chamgement de ce champ : " + champ);
+      }
+    });
+
+    //S'il n'y a aucun changement
+    if (Object.keys(informationsAdminModifies).length === 0) {
+      console.log("Pas de changement!!!");
+      return;
+    }
+
+    try {
+      const reponse = await fetch(
+        `http://localhost:4000/adminsTab/${adminChoisi._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(informationsAdminModifies),
+        }
+      );
+
+      if (reponse.ok) {
+        //update fonctionne
+        const data = await reponse.json();
+        console.log("Changement Admin reussi: ", data);
+
+        setAdmins((prevAdmin) =>
+          prevAdmin.map((admin) =>
+            admin.id === adminChoisi.id
+              ? { ...admin, ...informationsAdminModifies }
+              : admin
+          )
+        );
+        window.location.reload();
+      } else {
+        console.error("Erreur dans le changement admin: ", reponse.statusText);
+      }
+    } catch (error) {
+      console.error("Erreur durant le UPDATE: ", error);
+    }
+  };
+  const handleSupprimerAdmin = async (adminId, adminName) => {
+    const confirmerSupprimer = window.confirm(
+      `Etes vous sure de vouloir supprimer "${adminName}"?`
+    );
+    //si non
+    if (!confirmerSupprimer) return;
+
+    try {
+      const reponse = await fetch(
+        `http://localhost:4000/deleteAdmin/${adminId}`,
+        {
+          method: "DELETE",
+        }
+      );
+      if (reponse.ok) {
+        //update fonctionne
+        const data = await reponse.json();
+        alert("Supprimation de l'admin reussi");
+
+        window.location.reload();
+      } else {
+        console.error("Erreur dans la supprimation admin: ", data.error);
+      }
+    } catch (error) {
+      console.error("Erreur serveur durant action de supprimer:", error);
+      alert("Erreur serveur durant action de supprimer");
+      // window.location.reload();
+    }
+  };
+
+  //function pour mettre premiere lettre majuscule
+  const premiereLettreMajuscule = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
   };
 
   return (
@@ -130,44 +294,31 @@ function AdminManagement() {
         />
 
         {/* Profile */}
-        <div className="dropdown">
-          <button
-            className="btn dropdown-toggle d-flex align-items-center gap-2 border-0 bg-transparent text-white"
-            type="button"
-            id="profileDropdown"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
+        <Dropdown align="end">
+          <Dropdown.Toggle
+            as="div"
+            className="d-flex align-items-center gap-1 text-white"
+            style={{ cursor: "pointer" }}
+            id="profile-dropdown"
           >
             <img
               src={imageProfil}
-              alt="icone_profil"
-              width="40px"
-              height="40px"
-              className="me-2 rounded-circle "
+              alt="icone-profile"
+              width="40"
+              height="40"
+              className="rounded-circle"
             />
             <i className="bi bi-person-circle fs-5" />
             <span>Profil</span>
             <i className="bi bi-caret-down-fill small" />
-          </button>
-          <ul
-            className="dropdown-menu dropdown-menu-end mt-2"
-            aria-labelledby="profileDropdown"
-          >
-            <li>
-              <a className="dropdown-item" href="#">
-                Mon profil
-              </a>
-            </li>
-            <li>
-              <hr className="dropdown-divider" />
-            </li>
-            <li>
-              <a className="dropdown-item" href="#">
-                Déconnexion
-              </a>
-            </li>
-          </ul>
-        </div>
+          </Dropdown.Toggle>
+
+          <Dropdown.Menu>
+            <Dropdown.Item>Mon Profil</Dropdown.Item>
+            <Dropdown.Divider />
+            <Dropdown.Item>Deconnexion</Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
       </nav>
 
       {/* Main Content */}
@@ -289,10 +440,10 @@ function AdminManagement() {
               </tr>
             </thead>
             <tbody>
-              {admins && admins.length > 0 ? (
-                admins.map((admin) => (
+              {adminsFiltres && adminsFiltres.length > 0 ? (
+                adminsFiltres.map((admin) => (
                   <tr
-                    key={admin._id}
+                    key={admin.id}
                     className="bg-transparent border-bottom text-white"
                     onClick={() => handleClickRow(admin)}
                     style={{ cursor: "pointer" }}
@@ -314,7 +465,13 @@ function AdminManagement() {
                       {admin.role}
                     </td>
                     <td className="text-center bg-transparent">
-                      <button className="btn p-0 border-0 bg-transparent">
+                      <button
+                        className="btn p-0 border-0 bg-transparent"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleSupprimerAdmin(admin._id, admin.username);
+                        }}
+                      >
                         <i className="bi bi-trash">
                           <img
                             src={trash}
@@ -341,11 +498,162 @@ function AdminManagement() {
             <button
               className="btn rounded-0 text-white"
               style={{ background: "rgba(111,79,255,0.3)" }}
+              onClick={() => setMontrerModal(true)}
             >
               Create Admin
             </button>
           </div>
         </div>
+
+        {/* Modal Creation Admin */}
+        {montrerModal && (
+          <div className="modal-backdrop-custom">
+            <div className="modal-box-custom">
+              <h4 className="mb-3">Create Admin</h4>
+
+              {/* champs a completer */}
+
+              {/* Username */}
+              <input
+                className={`form-control mb-2 text-white rounded-3 border-0 ${
+                  formErrors.username ? "is-invalid" : ""
+                }`}
+                name="username"
+                placeholder="Username"
+                value={dataForm.username}
+                onChange={handleChange}
+                style={{
+                  backgroundColor: `rgba(149, 137, 255, 0.78)`,
+                  color: "white",
+                }}
+              />
+              {formErrors.username && (
+                <div className="text-danger">{formErrors.username}</div>
+              )}
+              {/* Prenom */}
+              <input
+                className={`form-control mb-2 text-white rounded-3 border-0 ${
+                  formErrors.name ? "is-invalid" : ""
+                }`}
+                name="name"
+                placeholder="Name"
+                value={dataForm.name}
+                onChange={handleChange}
+                style={{
+                  backgroundColor: `rgba(149, 137, 255, 0.78)`,
+                  color: "white",
+                }}
+              />
+              {formErrors.name && (
+                <div className="text-danger">{formErrors.name}</div>
+              )}
+              {/* Nom famille */}
+              <input
+                className={`form-control mb-2 text-white rounded-3 border-0 ${
+                  formErrors.lastName ? "is-invalid" : ""
+                }`}
+                name="lastName"
+                placeholder="Last Name"
+                value={dataForm.lastName}
+                onChange={handleChange}
+                style={{
+                  backgroundColor: `rgba(149, 137, 255, 0.78)`,
+                  color: "white",
+                }}
+              />
+              {formErrors.lastName && (
+                <div className="text-danger">{formErrors.lastName}</div>
+              )}
+              {/* Email */}
+              <input
+                className={`form-control mb-2 text-white rounded-3 border-0 ${
+                  formErrors.email ? "is-invalid" : ""
+                }`}
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={dataForm.email}
+                onChange={handleChange}
+                style={{
+                  backgroundColor: `rgba(149, 137, 255, 0.78)`,
+                  color: "white",
+                }}
+              />
+              {formErrors.email && (
+                <div className="text-danger">{formErrors.email}</div>
+              )}
+              {/* # telephone */}
+              <input
+                className={`form-control mb-2 text-white rounded-3 border-0 ${
+                  formErrors.phoneNumber ? "is-invalid" : ""
+                }`}
+                name="phoneNumber"
+                placeholder="Phone Number"
+                value={dataForm.phoneNumber}
+                onChange={handleChange}
+                style={{
+                  backgroundColor: `rgba(149, 137, 255, 0.78)`,
+                  color: "white",
+                }}
+              />
+              {formErrors.phoneNumber && (
+                <div className="text-danger">{formErrors.phoneNumber}</div>
+              )}
+              {/* Role */}
+              <select
+                className={`form-select mb-2 text-white rounded-3 border-0 ${
+                  formErrors.role ? "is-invalid" : ""
+                }`}
+                name="role"
+                value={dataForm.role}
+                onChange={handleChange}
+                style={{
+                  backgroundColor: `rgba(149, 137, 255, 0.78)`,
+                  color: "white",
+                }}
+              >
+                <option value="Admin">Admin</option>
+                <option value="Moderator">Moderator</option>
+              </select>
+              {formErrors.role && (
+                <div className="text-danger">{formErrors.role}</div>
+              )}
+              {/* Mot de Passe */}
+              <input
+                type="password"
+                className={`form-control mb-2 text-white rounded-3 border-0 ${
+                  formErrors.password ? "is-invalid" : ""
+                }`}
+                name="password"
+                placeholder="Password"
+                value={dataForm.password}
+                onChange={handleChange}
+                style={{
+                  backgroundColor: `rgba(149, 137, 255, 0.78)`,
+                  color: "white",
+                }}
+              />
+              {formErrors.password && (
+                <div className="text-danger">{formErrors.password}</div>
+              )}
+              {/* boutons Save & Cancel */}
+              <div className="d-flex justify-content-end">
+                <button
+                  className="btn btn-outline-success me-2"
+                  onClick={handleCreerAdmin}
+                >
+                  Create
+                </button>
+                <button
+                  className="btn btn-outline-secondary"
+                  onClick={() => setMontrerModal(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Admin Information Form */}
         {adminChoisi && (
@@ -443,17 +751,7 @@ function AdminManagement() {
                         ? new Date(adminChoisi.createdAt).getDate()
                         : ""
                     }
-                    onChange={(e) => {
-                      const day = e.target.value;
-                      setAdminChoisi((prevAdmin) => ({
-                        ...prevAdmin,
-                        createdAt: updateDateField(
-                          prevAdmin.createdAt,
-                          "DD",
-                          day
-                        ),
-                      }));
-                    }}
+                    readOnly
                     className="form-control bg-transparent text-white text-center"
                     style={{ borderColor: "rgba(116,101,247,0.6)" }}
                   />
@@ -469,17 +767,7 @@ function AdminManagement() {
                         ? new Date(adminChoisi.createdAt).getMonth() + 1
                         : ""
                     }
-                    onChange={(e) => {
-                      const month = e.target.value;
-                      setAdminChoisi((prevAdmin) => ({
-                        ...prevAdmin,
-                        createdAt: updateDateField(
-                          prevAdmin.createdAt,
-                          "MM",
-                          month
-                        ),
-                      }));
-                    }}
+                    readOnly
                     className="form-control bg-transparent text-white text-center"
                     style={{ borderColor: "rgba(116,101,247,0.6)" }}
                   />
@@ -495,17 +783,7 @@ function AdminManagement() {
                         ? new Date(adminChoisi.createdAt).getFullYear()
                         : ""
                     }
-                    onChange={(e) => {
-                      const annee = e.target.value;
-                      setAdminChoisi((prevAdmin) => ({
-                        ...prevAdmin,
-                        createdAt: updateDateField(
-                          prevAdmin.createdAt,
-                          "YYYY",
-                          annee
-                        ),
-                      }));
-                    }}
+                    readOnly
                     className="form-control bg-transparent text-white text-center"
                     style={{ borderColor: "rgba(116,101,247,0.6)" }}
                   />
@@ -541,6 +819,7 @@ function AdminManagement() {
                 <button
                   type="button"
                   className="btn bg-transparent"
+                  onClick={handleCancel}
                   style={{ color: "rgb(82,75,119)" }}
                 >
                   Cancel
@@ -548,6 +827,7 @@ function AdminManagement() {
                 <button
                   type="submit"
                   className="btn text-white rounded-2 w-25"
+                  onClick={handleUpdateSave}
                   style={{
                     background: "rgba(111,79,255,0.3)",
                     borderColor: "rgb(111,79,255)",

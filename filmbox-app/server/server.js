@@ -8,11 +8,11 @@ import { fileURLToPath } from "url";
 import mysql from "mysql";
 import { body, validationResult } from "express-validator";
 import dateFormat from "dateformat";
+import { MongoClient, ObjectId } from "mongodb";
 import { config } from "dotenv";
 import bcrypt from "bcrypt";
 import cors from "cors";
 import fetch from "node-fetch";
-import { MongoClient, ObjectId } from "mongodb";
 
 config();
 const app = express();
@@ -296,6 +296,7 @@ app.get("/getUsers", async (req, res) => {
       return res.status(500).json({ message: "Erreur du serveur" });
     }
 
+app.get("/");
     if (resultats.length === 0) {
       // Si aucun utilisateur n'a été trouvé avec cet ID, on renvoie une erreur 404
       return res.status(404).json({ message: "Utilisateur non trouvé" });
@@ -1246,11 +1247,7 @@ const uri = "mongodb://localhost:27017";
 const client = new MongoClient(uri);
 const dbName = "FilmBox";
 
-app.use(
-  cors({
-    origin: "http://localhost:5173", // Allow only requests from React's local dev server
-  })
-);
+app.use(cors());
 
 // API to fetch admins
 app.get("/adminsTab", async (req, res) => {
@@ -1273,6 +1270,125 @@ app.get("/adminsTab", async (req, res) => {
     res.status(500).json({ message: "erreur serveur" });
   } finally {
     await client.close();
+  }
+});
+
+//Pour les changements d<information des Admins
+//API pour update des admins
+app.put("/adminsTab/:id", async (req, res) => {
+  const adminId = req.params.id; //Cherche ID du admin du URL
+  const adminChange = req.body;
+
+  // On ne veux pas changer date de creation
+  const { dateCreation, ...informationsChanges } = adminChange;
+  try {
+    //Connexion a la base de donnees
+    await client.connect();
+    const db = client.db(dbName);
+    const collection = db.collection("AdminUsers");
+
+    const resultats = await collection.updateOne(
+      { _id: new ObjectId(adminId) },
+      { $set: informationsChanges }
+    );
+
+    //Assurer que changement successful :
+    if (resultats.matchedCount > 0) {
+      console.log("Update du Admin est fait successfully");
+      res.json({ message: "Update du Admin est fait successfully" });
+    } else {
+      res.status(404).json({ message: "Admin pas trouver" });
+    }
+  } catch (error) {
+    console.error(
+      "OOPS Il y a eu une erreur dans le changement des infos d'un admin ",
+      error
+    );
+    res.status(500).json({ message: "erreur serveur" });
+  } finally {
+    await client.close();
+  }
+});
+
+//Pour la creation d'admin
+app.post("/createAdmin", async (req, res) => {
+  console.log(JSON.stringify(req.body, null, 2));
+  console.log("Contenu brut de req.body:", req.body);
+  const { username, email, role, password, name, lastName, phoneNumber } =
+    req.body;
+
+  //validation
+  const emailValide = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  const phoneNumberValide = /^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/;
+  if (!emailValide.test(email)) {
+    return res.status(400).json({ error: "Email invalide" });
+  }
+  if (!phoneNumberValide.test(phoneNumber)) {
+    return res.status(400).json({ error: "Numero Telephone invalide" });
+  }
+  if (!username || !email || !password || !name || !lastName) {
+    return res.status(400).json({ error: "champs doivent etre complets" });
+  }
+  console.log("BODY RECEIVED:", req.body);
+  try {
+    //Connexion a la base de donnees
+    await client.connect();
+    const db = client.db(dbName);
+    const collection = db.collection("AdminUsers");
+
+    //check si username et admin existe deja
+    const adminExist = await collection.findOne({
+      $or: [{ username }, { email }],
+    });
+
+    if (adminExist) {
+      return res.status(400).json({ error: "admin existe deja" });
+    }
+    const nouvelAdmin = {
+      username,
+      email,
+      role,
+      password,
+      lastName,
+      name,
+      phoneNumber,
+      lastLogin: null,
+      accountStatus: "active",
+      createdAt: new Date(),
+      deletedAt: null,
+    };
+
+    const resultat = await collection.insertOne(nouvelAdmin);
+    res
+      .status(201)
+      .json({ message: "creation admin avec succes: ", nouvelAdmin });
+  } catch (err) {
+    console.error("Erreur creation nouvel admin: ", err);
+    res.status(500).json({ error: "Probleme avec serveur" });
+  }
+});
+
+// Supprimer les Admins
+app.delete("/deleteAdmin/:id", async (req, res) => {
+  const adminId = req.params.id;
+  try {
+    //Connexion a la base de donnees
+    await client.connect();
+    const db = client.db(dbName);
+    const collection = db.collection("AdminUsers");
+
+    const resultat = await collection.deleteOne({
+      _id: new ObjectId(adminId),
+    });
+
+    if (resultat.deletedCount === 1) {
+      res.status(200).json({ message: "Admin DELETED :)" });
+    } else {
+      res.status(404).json({ message: "Admin pas trouve :(" });
+    }
+  } catch (error) {
+    console.error("Erreur pour supprimer admin :", error);
+    res.status(500).json({ error: "Probleme avec serveur :(" });
   }
 });
 
