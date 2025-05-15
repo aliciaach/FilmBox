@@ -28,51 +28,50 @@ function PageWatchList() {
     setSelectedList(null);  // Pour fermer
   };
 
+  const refreshLists = async () => {
+  try {
+    const [watchlistRes, watchedRes, personalizedRes] = await Promise.all([
+      fetch(`http://localhost:4000/api/watchlist/${userId}`),
+      fetch(`http://localhost:4000/api/watched/${userId}`),
+      fetch(`http://localhost:4000/mongo/getPersonalizedList?userId=${userId}`)
+    ]);
+
+    if (!watchlistRes.ok || !watchedRes.ok) throw new Error("Failed to fetch watchlist or watched movies");
+
+    const watchlistData = await watchlistRes.json();
+    const watchedData = await watchedRes.json();
+    const personalizedData = await personalizedRes.json();
+
+    const cleanedWatchlist = watchlistData.filter(m => m.title && m.title !== "N/A");
+    const cleanedWatched = watchedData.filter(m => m.title && m.title !== "N/A");
+    const watchedIds = cleanedWatched.map(m => m.id);
+    const filteredWatchlist = cleanedWatchlist.filter(m => !watchedIds.includes(m.id));
+
+    setWatchlist(filteredWatchlist);
+    setWatched(cleanedWatched);
+
+    const highestUnsorted = cleanedWatched.filter(m => m.valeur_note >= 3 && m.valeur_note <= 5);
+    const lowestUnsorted = cleanedWatched.filter(m => m.valeur_note >= 0 && m.valeur_note <= 2);
+    const highest = highestUnsorted.sort((a, b) => b.rating - a.rating);
+    const lowest = lowestUnsorted.sort((a, b) => a.rating - b.rating);
+
+    setHighestRated(highest);
+    setLowestRated(lowest);
+    setPersonalizedLists(personalizedData.data || []);
+
+   
+
+  } catch (err) {
+    setError(err.message);
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+  
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [watchlistRes, watchedRes, personalizedRes] = await Promise.all([
-          fetch(`http://localhost:4000/api/watchlist/${userId}`),
-          fetch(`http://localhost:4000/api/watched/${userId}`),
-          fetch(`http://localhost:4000/mongo/getPersonalizedList?userId=${userId}`)
-        ]);
-
-        if (!watchlistRes.ok || !watchedRes.ok) throw new Error("Failed to fetch watchlist or watched movies");
-
-        const watchlistData = await watchlistRes.json();
-        const watchedData = await watchedRes.json();
-        const personalizedData = await personalizedRes.json();
-
-        // Supprimer les films avec titre "N/A"
-        const cleanedWatchlist = watchlistData.filter(m => m.title && m.title !== "N/A");
-        const cleanedWatched = watchedData.filter(m => m.title && m.title !== "N/A");
-
-        const watchedIds = cleanedWatched.map(m => m.id);
-        const filteredWatchlist = cleanedWatchlist.filter(m => !watchedIds.includes(m.id));
-
-        setWatchlist(filteredWatchlist);
-        setWatched(cleanedWatched);
-
-        //const highestUnsorted = cleanedWatched.filter(m => m.rating >= 3 && m.rating <= 5);
-        //const lowestUnsorted = cleanedWatched.filter(m => m.rating >= 0 && m.rating <= 2);
-
-        const highestUnsorted = cleanedWatched.filter(m => m.valeur_note >= 3 && m.valeur_note <= 5);
-        const lowestUnsorted = cleanedWatched.filter(m => m.valeur_note >= 0 && m.valeur_note <= 2);
-
-        const highest = highestUnsorted.sort((a, b) => b.rating - a.rating);
-        const lowest = lowestUnsorted.sort((a, b) => a.rating - b.rating);
-
-        setHighestRated(highest);
-        setLowestRated(lowest);
-        setPersonalizedLists(personalizedData.data || []);
-
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
+    refreshLists();
   }, [userId]);
 
   const renderMovieRow = (movies) => (
@@ -190,7 +189,7 @@ function PageWatchList() {
         ))}
 
         {selectedList && ( //Si une liste est selectionnée, on affiche le container 
-          <ContainerManageList list={selectedList} onClose={handleCloseContainer} />
+          <ContainerManageList list={selectedList} onClose={handleCloseContainer} onUpdate={refreshLists} />
         )}
 
         <style>{`

@@ -782,7 +782,7 @@ app.get("/api/movies/:id/images", async (req, res) => {
 app.delete("/mongo/removeMovieFromList/:listId/:movieId", async (req, res) => {
   const listId = req.params.listId;
   const movieId = req.params.movieId;
-
+  console.log("MOVIES ID THAT WE ARE REMOVING: " + movieId)
   const uri = process.env.DB_URI;
   const client = new MongoClient(uri);
 
@@ -793,7 +793,7 @@ app.delete("/mongo/removeMovieFromList/:listId/:movieId", async (req, res) => {
 
     const result = await list.updateOne(
       { _id: new ObjectId(listId) },
-      { $pull: { movies: parseInt(movieId) } }
+      { $pull: { movies: Number(movieId) } }
     );
     res.json({ message: "Movie removed from list" });
     console.log("Movie: " + movieId + " succesfully removes from list: " + listId);
