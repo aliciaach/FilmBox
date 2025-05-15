@@ -155,6 +155,13 @@ const FilmInfo = () => {
       const data = await response.json();
       if (response.ok) {
         alert("List created!");
+
+        //Fetch again to refresh
+        const updatedRes = await fetch(`http://localhost:4000/mongo/getPersonalizedList?userId=${userId}`);
+        const updatedData = await updatedRes.json();
+        if (updatedData.data) {
+          setPersonalizedLists(updatedData.data);
+        }
       } else {
         alert(data.message);
       }
@@ -181,13 +188,13 @@ const FilmInfo = () => {
       fontFamily: "Fredoka",
     }}>
       <Header />
-      
+
       <div className="container py-5 text-start" style={{ maxWidth: "800px", marginLeft: "0", paddingLeft: "2rem" }}>
         {movieLogo && (
           <img
             src={`https://image.tmdb.org/t/p/original${movieLogo.file_path}`}
             alt="Movie Logo"
-            style={{ maxHeight: 100, marginBottom: 20, marginTop : "70px" }}
+            style={{ maxHeight: 100, marginBottom: 20, marginTop: "70px" }}
           />
         )}
 
@@ -205,7 +212,7 @@ const FilmInfo = () => {
             <button className="btn btn-outline-light" onClick={handleWatchlist}>
               {isInWatchlist ? "In Watchlist" : "Add To Watchlist"}
             </button>
-)}
+          )}
           <DropdownButton id="list-dropdown" title="Add To List">
             {personalizedLists.length === 0 && (
               <Dropdown.Item disabled>No Lists Available</Dropdown.Item>
@@ -221,13 +228,13 @@ const FilmInfo = () => {
             </Dropdown.Item>
           </DropdownButton>
         </div>
-        
+
         {markedWatched && (
           <div className="mt-4">
             <label className="form-label">Rate this movie:</label>
             <div className="d-flex gap-2">
               {[1, 2, 3, 4, 5].map((star) => (
-                <spa  n
+                <spa n
                   key={star}
                   style={{
                     fontSize: "2rem",
