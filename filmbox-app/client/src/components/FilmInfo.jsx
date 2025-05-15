@@ -222,13 +222,17 @@ const FilmInfo = () => {
       <Header />
 
       <div className="container py-5 text-start" style={{ maxWidth: "800px", marginLeft: "0", paddingLeft: "2rem" }}>
-        {movieLogo && (
-          <img
-            src={`https://image.tmdb.org/t/p/original${movieLogo.file_path}`}
-            alt="Movie Logo"
-            style={{ maxHeight: 100, marginBottom: 20, marginTop: "70px" }}
-          />
-        )}
+        <div style={{ marginBottom: 20, marginTop: "70px" }}>
+          {movieLogo ? (
+            <img
+              src={`https://image.tmdb.org/t/p/original${movieLogo.file_path}`}
+              alt="Movie Logo"
+              style={{ maxHeight: 100 }}
+            />
+          ) : (
+            <h2 style={{ fontWeight: "bold" }}>{film.title}</h2>
+          )}
+        </div>
 
         <p>{new Date(film.release_date).getFullYear()} • {film.runtime} min • {genres}</p>
         <p>{film.overview}</p>
