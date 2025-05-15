@@ -296,7 +296,7 @@ app.get("/getUsers", async (req, res) => {
       return res.status(500).json({ message: "Erreur du serveur" });
     }
 
-app.get("/");
+    app.get("/");
     if (resultats.length === 0) {
       // Si aucun utilisateur n'a été trouvé avec cet ID, on renvoie une erreur 404
       return res.status(404).json({ message: "Utilisateur non trouvé" });
@@ -792,17 +792,21 @@ app.delete("/mongo/removeMovieFromList/:listId/:movieId", async (req, res) => {
     const list = db.collection("CustomLists");
 
     const result = await list.updateOne(
-      { _id:  new ObjectId(listId) },
-      { $pull: { movies: { _id: new ObjectId(movieId) } } }
+      { _id: new ObjectId(listId) },
+      { $pull: { movies: parseInt(movieId) } }
     );
     res.json({ message: "Movie removed from list" });
+    console.log("Movie: " + movieId + " succesfully removes from list: " + listId);
+
+    console.log("Movie succesfully removes from list ")
   } catch (error) {
     console.error("Error removing movie: " + movieId + "from list: " + listId, error);
-    res.status(500).json({ message: "Server error"});
+    res.status(500).json({ message: "Server error" });
   } finally {
     await client.close();
   }
 });
+
 /* =============================== ADD A MOVIE TO A PERSONALIZED LIST ========================= */
 app.post("/mongo/addToPersonalizedList", async (req, res) => {
   const { userId, personalizedListId, filmId } = req.body;
@@ -1135,7 +1139,7 @@ app.delete("/api/watchlist/:userId/:movieId", (req, res) => {
 
 app.post("/api/watched", (req, res) => {
   const { userId, movieId, rating, comment } = req.body;
-   console.log("Received watched POST:", req.body); 
+  console.log("Received watched POST:", req.body);
   // 1. Check if the film exists
   const checkFilmSql = "SELECT film_id FROM films WHERE film_id = ?";
   con.query(checkFilmSql, [movieId], (err, result) => {
