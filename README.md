@@ -22,7 +22,7 @@ Voici comment déployer notre projet FilmBox dans votre machine :
 
 6. Ouvrir deux terminaux dans Visual Studio.
 
-7. Il faut entrer dans le dossier "filmbox-app" dans les deux terminaux. Voici un exemple :cd C:\Users\farru\Downloads\FilmBox-main\FilmBox-main\filmbox-app
+7. Il faut entrer dans le dossier "filmbox-app" dans les deux terminaux. Voici un exemple : cd C:\Users\farru\Downloads\FilmBox-main\FilmBox-main\filmbox-app
 
 8. Entrer ensuite dans le dossier server avec cd server dans le premier terminal et exécuter la commande suivante : npm i express
 
