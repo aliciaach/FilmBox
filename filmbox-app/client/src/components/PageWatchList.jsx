@@ -53,8 +53,11 @@ function PageWatchList() {
         setWatchlist(filteredWatchlist);
         setWatched(cleanedWatched);
 
-        const highestUnsorted = cleanedWatched.filter(m => m.rating >= 3 && m.rating <= 5);
-        const lowestUnsorted = cleanedWatched.filter(m => m.rating >= 0 && m.rating <= 2);
+        //const highestUnsorted = cleanedWatched.filter(m => m.rating >= 3 && m.rating <= 5);
+        //const lowestUnsorted = cleanedWatched.filter(m => m.rating >= 0 && m.rating <= 2);
+
+        const highestUnsorted = cleanedWatched.filter(m => m.valeur_note >= 3 && m.valeur_note <= 5);
+        const lowestUnsorted = cleanedWatched.filter(m => m.valeur_note >= 0 && m.valeur_note <= 2);
 
         const highest = highestUnsorted.sort((a, b) => b.rating - a.rating);
         const lowest = lowestUnsorted.sort((a, b) => a.rating - b.rating);
@@ -148,10 +151,10 @@ function PageWatchList() {
 
       <div className="container">
 
-        <div style={{sectionBoxStyle, marginTop : "60px"}}>
+        <div style={{ sectionBoxStyle, marginTop: "60px" }}>
           <h2 className="text-white text-decoration-none mb-4">My Watchlist</h2>
           {watchlist.length > 0 ? renderMovieRow(watchlist) : <p>Your watchlist is empty.</p>}
-        </div>  
+        </div>
 
         <div style={sectionBoxStyle}>
           <h2 className="text-white text-decoration-none mb-4">My Watched Movies</h2>
