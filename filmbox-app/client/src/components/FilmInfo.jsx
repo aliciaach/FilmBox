@@ -34,7 +34,10 @@ const FilmInfo = () => {
 
         const imageRes = await fetch(`http://localhost:4000/api/movies/${numericFilmId}/images`);
         const imageData = await imageRes.json();
-        setMovieLogo(imageData.logos?.[0]);
+        //setMovieLogo(imageData.logos?.[0]);
+        //Code to get the logo in english given by chatgpt
+        const englishLogo = imageData.logos?.find(logo => logo.iso_639_1 === 'en');
+        setMovieLogo(englishLogo || null);
 
         const watchlistRes = await fetch(`http://localhost:4000/api/watchlist/${userId}`);
         const watchlistData = await watchlistRes.json();
@@ -134,16 +137,16 @@ const FilmInfo = () => {
       });
       alert("Note enregistrée !");
 
-         const watchedRes = await fetch(`http://localhost:4000/api/watched/${userId}`);
-    const watchedData = await watchedRes.json();
-    const watched = watchedData.find(movie =>
-      movie.id === numericFilmId || movie.films_film_id === numericFilmId
-    );
+      const watchedRes = await fetch(`http://localhost:4000/api/watched/${userId}`);
+      const watchedData = await watchedRes.json();
+      const watched = watchedData.find(movie =>
+        movie.id === numericFilmId || movie.films_film_id === numericFilmId
+      );
 
-    if (watched) {
-      setRating(watched.valeur_note);
-      setComment(watched.commentaire || "");
-    }
+      if (watched) {
+        setRating(watched.valeur_note);
+        setComment(watched.commentaire || "");
+      }
       console.error("Submitting rating:", rating, "comment:", comment);
     } catch (err) {
       console.error("Erreur lors de l'enregistrement de la note:", err);
