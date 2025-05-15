@@ -123,211 +123,224 @@ function UserSettings() {
 
     <>
     <div style={{
-      fontFamily: 'Fredoka, sans-serif',
-      fontWeight: 300,
-           background: `linear-gradient(to bottom,
-                rgba(5, 14, 66, 1),
+        fontFamily: 'Fredoka, sans-serif',
+        fontWeight: 300,
+            background: `linear-gradient(to bottom,
+                  rgba(5, 14, 66, 1),
 
-                rgba(0, 0, 255, 0.5),
-                rgba(5, 0, 50, 1)),
-                url(${BlackImage})`,
-       
-                backgroundSize: 'cover', //'auto'
-                backgroundPosition: 'center',
-                backgroundRepeat: 'no-repeat',
-      minHeight: '100vh',
-      color: '#fff'
-    }}>
+                  rgba(0, 0, 255, 0.5),
+                  rgba(5, 0, 50, 1)),
+                  url(${BlackImage})`,
+        
+                  backgroundSize: 'cover', //'auto'
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat',
+        minHeight: '100vh',
+        color: '#fff'
+      }}>
 
-      
-      {/* Return Button */}
-      <div class="mb-5">
-        <button
-          style={{
-            borderRadius: '50%',
-            width: '50px',
-            height: '50px',
-            backgroundColor: 'rgba(116, 101, 247, 0)',
-            color: '#fff',
-            border: '2px solid #FFFFFF',
-            fontSize: '1.5rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer'
-            
-          }}
-          onClick={() => window.history.back()}
-        >
-          &lt;
-        </button>
-      </div>
+    
 
-      {/* User Inputs */}
+      <div className="d-flex" style={{ minHeight: '100vh', position: 'relative' }} >
+
+      {/* Colonne gauche - Return Button */}
       <div style={{
-            padding: '20px',
-            maxWidth: '55%',
-            margin: '0 auto'
-          }}>
+          position: 'absolute',    
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'flex-start',
+          paddingTop: '10vh',   
+          paddingLeft:'10vh'
+        }}>
 
-
-
-      {/* TOP PART SECTION WITH USER'S NAME AND ALL*/}{/* TOP PART SECTION WITH USER'S NAME AND ALL*/}
-      <div class="mb-5 d-flex align-items-center gap-3" style={{ textAlign: 'start' }}>
-
-        
-
-        {/* Icone profile avec les initiale */}
-        {initials && (
-          <div
+        {/* Return Button */}
+        <div class="" >
+          <button
             style={{
-            width: '45px',
-            height: '45px',
-            borderRadius: '50%',
-            backgroundColor: '#fff',
-            color: 'black',
-            fontSize: '18px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginRight: '8px'
-          }}
-          >
-            {initials}
-          </div>
-        )}
-        
-        <h2 style={{ fontSize: '40px', fontFamily: "fredoka", fontWeight: 'bolder' }}>User Settings</h2>
-      
+              borderRadius: '50%',
+              width: '50px',
+              height: '50px',
+              backgroundColor: 'rgba(116, 101, 247, 0)',
+              color: '#fff',
+              border: '2px solid #FFFFFF',
+              fontSize: '1.5rem',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+            }}
+            onClick={() => window.history.back()}>
+          
+              &lt;
+          </button>
+        </div> 
       </div>
 
-      <div className="settings-container">
-          <div class="row">
-            {/* First Name Input */}
-            <div className="input-section col-6">
-              <p style={{ fontSize: '22px', marginBottom: '0.2rem'}}>First Name</p>
-              <input
-                className="inputFormSettings"
-                type="text"
-                placeholder={user.prenom || "John"}
-                required
-                value={tempoUser.prenom || ""}
-                onChange={(e) => setTempoUser({ ...tempoUser, prenom: e.target.value })}
-              />
-            </div>
+        {/* Colonne droite - CONTENU */}
+        <div className="flex-grow-1" style={{  maxWidth: '55%', margin: '0 auto' }}>
 
-            {/* Last Name Input */}
-            <div className="input-section col-6">
-              <p style={{ fontSize: '22px', marginBottom: '0.2rem' }}>Last Name</p>
-              <input
-                className="inputFormSettings"
-                type="text"
-                placeholder={user.nom || "Doe"}
-                value={tempoUser.nom || ""}
-                onChange={(e) => setTempoUser({ ...tempoUser, nom: e.target.value })}
+          {/* Titre */}
+          <h2 style={{ fontSize: '40px', fontFamily: "fredoka", fontWeight: 'bolder', marginTop: '10vh', marginBottom: '5vh' }}>
+            User Settings
+          </h2>
 
-              />
-            </div>
+          {/* TOP PART SECTION WITH USER'S NAME AND ALL*/}
+          <div class="mb-4 d-flex align-items-center gap-3" style={{ textAlign: 'start' }}>
+
+            {/* Icone profile avec les initiale */}
+            {initials && (
+              <div
+                style={{
+                width: '45px',
+                height: '45px',
+                borderRadius: '50%',
+                backgroundColor: '#fff',
+                color: 'black',
+                fontSize: '18px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginRight: '8px'
+              }}
+              >
+                {initials}
+              </div>
+            )}
+
+            {/* Nom Prenom */}
+            <h3 className="mb-0" style={{ fontSize: '28px', fontFamily: 'Fredoka, sans-serif', fontWeight: 'bolder' }}>
+              {user.prenom} {user.nom}
+            </h3>      
+
           </div>
           
-           {/* Email Input */}
-           <div className="input-section">
-            <p style={{ fontSize: '22px', marginBottom: '0.2rem' }}>Email</p>
-            <input
-              className="inputFormSettings"
-              type="email"
-              placeholder={user.courriel || "johndoe@gmail.com"}
-              value={tempoUser.courriel || ""}
-              onChange={(e) => setTempoUser({ ...tempoUser, courriel: e.target.value })}
-            />
+          {/* Ligne séparatrice */}
+          <div className="w-100 " style={{ height: '1px', backgroundColor: 'rgba(255, 255, 255, 0.5)'}}/>   
+
+          {/* Informations du user */}
+          <div className="settings-container">
+              <div class="row">
+                {/* First Name Input */}
+                <div className="input-section col-6">
+                  <p style={{ fontSize: '22px', marginBottom: '0.2rem'}}>First Name</p>
+                  <input
+                    className="inputFormSettings"
+                    type="text"
+                    placeholder={user.prenom || "John"}
+                    required
+                    value={tempoUser.prenom || ""}
+                    onChange={(e) => setTempoUser({ ...tempoUser, prenom: e.target.value })}
+                  />
+                </div>
+
+                {/* Last Name Input */}
+                <div className="input-section col-6">
+                  <p style={{ fontSize: '22px', marginBottom: '0.2rem' }}>Last Name</p>
+                  <input
+                    className="inputFormSettings"
+                    type="text"
+                    placeholder={user.nom || "Doe"}
+                    value={tempoUser.nom || ""}
+                    onChange={(e) => setTempoUser({ ...tempoUser, nom: e.target.value })}
+
+                  />
+                </div>
+              </div>
+              
+              {/* Email Input */}
+              <div className="input-section">
+                <p style={{ fontSize: '22px', marginBottom: '0.2rem' }}>Email</p>
+                <input
+                  className="inputFormSettings"
+                  type="email"
+                  placeholder={user.courriel || "johndoe@gmail.com"}
+                  value={tempoUser.courriel || ""}
+                  onChange={(e) => setTempoUser({ ...tempoUser, courriel: e.target.value })}
+                />
+              </div>
+
+              {/* Phone Number Input */}
+              <div className="input-section">
+                <p style={{ fontSize: '22px', marginBottom: '0.2rem' }}>Phone Number</p>
+                <input
+                  className="inputFormSettings"
+                  type="text"
+                  placeholder={user.telephone || "514-321-1234"}
+                  value={tempoUser.telephone || ""}
+                  onChange={(e) => setTempoUser({ ...tempoUser, telephone: e.target.value })}
+
+                />
+              </div>
+
+              {/* Password Input (read-only) */}
+              <div className="input-section">
+                <p style={{ fontSize: '22px', marginBottom: '0.2rem' }}>Password</p>
+                <input
+                  className="inputFormSettings"
+                  type="password"
+                  placeholder="***********"
+                  readOnly
+                />
+              </div>
+
+              {/* Confirm New Password Input */}
+              <div className="mb-3">
+                <p style={{ fontSize: '22px', marginBottom: '0.2rem' }}>New Password</p>
+                <input
+                  className="inputFormSettings"
+                  type="password"
+
+                />
+              </div>
+          </div>
+            {/* Change Password Form 
+            <form onSubmit={handleSubmit} className="mb-3">
+              <input
+                type="password"
+                placeholder="New Password"
+                required
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                style={{
+                  padding: '10px',
+                  width: '50%',
+                  marginRight: '10px'
+                }}
+              />
+              <button type="submit" className="btn btn-primary">
+                Update Password
+              </button>
+            </form>*/}
+
+          {/* Boutons Cancel et Save*/}          
+          <div className="row justify-content-center">
+
+            <div className="col-auto">
+              <form onSubmit={handleSubmitCancel}>
+                <button type="submit" className="btn me-2" style={{ color: "white" }}>
+                  Cancel
+                </button>
+              </form>
+            </div>
+
+            <div className="col-auto">
+              <form onSubmit={handleSubmitSave}>
+                <button type="submit" className="btnSaveCustom w-100" style={{ backgroundColor: "rgba(111, 79, 255, 0.3)", color: "white", }} >
+                  Save
+                </button>
+              </form>
+            </div>
           </div>
 
-          {/* Phone Number Input */}
-          <div className="input-section">
-            <p style={{ fontSize: '22px', marginBottom: '0.2rem' }}>Phone Number</p>
-            <input
-              className="inputFormSettings"
-              type="text"
-              placeholder={user.telephone || "514-321-1234"}
-              value={tempoUser.telephone || ""}
-              onChange={(e) => setTempoUser({ ...tempoUser, telephone: e.target.value })}
 
-            />
-          </div>
-
-          {/* Password Input (read-only) */}
-          <div className="input-section">
-            <p style={{ fontSize: '22px', marginBottom: '0.2rem' }}>Password</p>
-            <input
-              className="inputFormSettings"
-              type="password"
-              placeholder="***********"
-              readOnly
-            />
-          </div>
-
-          {/* Confirm New Password Input */}
-          <div className="mb-3">
-            <p style={{ fontSize: '22px', marginBottom: '0.2rem' }}>New Password</p>
-            <input
-              className="inputFormSettings"
-              type="password"
-
-            />
-          </div>
-      </div>
-        {/* Change Password Form 
-        <form onSubmit={handleSubmit} className="mb-3">
-          <input
-            type="password"
-            placeholder="New Password"
-            required
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            style={{
-              padding: '10px',
-              width: '50%',
-              marginRight: '10px'
-            }}
-          />
-          <button type="submit" className="btn btn-primary">
-            Update Password
-          </button>
-        </form>*/}
-<div className="row justify-content-center">
-  <div className="col-auto">
-    <form onSubmit={handleSubmitCancel}>
-      <button type="submit" className="btn me-2" style={{ color: "white" }}>
-        Cancel
-      </button>
-    </form>
-  </div>
-
-  <div className="col-auto">
-    <form onSubmit={handleSubmitSave}>
-      <button
-        type="submit"
-        className="btnSaveCustom w-100"
-        style={{
-          backgroundColor: "rgba(111, 79, 255, 0.3)",
-          color: "white",
-        }}
-      >
-        Save
-      </button>
-    </form>
-  </div>
-</div>
-
-
-        {/* Delete Account Form */}
-        <form onSubmit={handleSubmitDelete}>
-          <button type="submit" className="btnDeleteCustom">
-            Delete Account
-          </button>
-        </form>
-        
-        <p style={{ fontSize: '10px'}}>Ce site est protégé par reCAPTCHA et la politique de confidentialité et les conditions d'utilisation de FilmBox s'appliquent.</p>
+            {/* Bouton Delete Account */}
+            <form onSubmit={handleSubmitDelete}>
+              <button type="submit" className="btnDeleteCustom">
+                Delete Account
+              </button>
+            </form>
+            
+            <p style={{ fontSize: '10px'}}>Ce site est protégé par reCAPTCHA et la politique de confidentialité et les conditions d'utilisation de FilmBox s'appliquent.</p>
+        </div>
       </div>
     </div>
     </>

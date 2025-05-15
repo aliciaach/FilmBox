@@ -10,6 +10,7 @@ import WickedTrailer from '../assets/Video/WickedTrailer.mp4';
 import WickedImage from '../assets/wicked.jpg';
 import { useRef } from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
+import '../styles/PageFilm.css';
 
 const ListeFilms = () => {
   const [films, setFilms] = useState([]);
@@ -199,6 +200,36 @@ const ListeFilms = () => {
       duration: ''
     });
     setFilteredFilms(films);
+  };
+
+  // https://www.youtube.com/watch?v=1kVZEhg3Q_c
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const containerRef = useRef();
+
+  const containerRefDiscovery = useRef();
+  const containerRefUpcoming = useRef();
+  const containerRefTopRated = useRef();
+  const containerRefAction = useRef();
+
+  
+  // ancienne const (venant de la vidéo) 
+  // UTILISER COMME ÇA : handleScrollAncien (-160) et (160)
+  const handleScrollAncien = (scrollAmount) => {
+    const newScrollPosition = scrollPosition + scrollAmount;
+    setScrollPosition(newScrollPosition);
+    containerRef.current.scrollLeft = newScrollPosition;
+  };
+
+  // nouvelle const (aidée par chat)
+  const handleScroll = (direction, ref) => {
+    if (ref.current) {
+      const container = ref.current;
+      const scrollAmount = container.clientWidth; // largeur visible de la zone de scroll
+      const newScrollPosition = container.scrollLeft + direction * scrollAmount;
+
+      container.scrollLeft = newScrollPosition;
+      setScrollPosition(newScrollPosition);
+    }
   };
 
   return (
@@ -409,120 +440,164 @@ const ListeFilms = () => {
         {erreur ? (
           <p className="text-danger">{erreur}</p>
         ) : (
-          <div>
+        
+        <div>
 
-        <div style={{
-          fontSize: "30px",
-          textAlign: "left",
-          lineHeight: "1.2"
-        }}>
+        {/* Section Discovery */}
+
+        <div className="titre-section">
           Start your next discovery here
         </div>
-          <div className="horizontal-scroll">
-  {filteredFilms.map((film, index) => {
-    let cheminImage = film.poster_path 
-      ? `https://image.tmdb.org/t/p/w500/${film.poster_path}`
-      : BlackImage;
+        
+        <div style={{ display: "flex", alignItems: "center", position: "relative" }}>
 
-    return (
-      <div key={film.id || index} className="movie-card">
-        <Link to={`/movies/${film.id}`}>
-          <img
-            src={cheminImage}
-            alt={film.title}
-            style={{ width: "150px", height: "225px", objectFit: "cover" }}
-            onError={(e) => { e.target.src = BlackImage; }}
-          />
-        </Link>
-      </div>
-    );
-  })}
-      </div>
+          <button className="boutonScroll-gauche" onClick={() => handleScroll(-1, containerRefDiscovery)} > {/* Bouton gauche */}
+            &lt;
+          </button>
 
-      <div style={{
-        fontSize: "30px",
-        textAlign: "left",
-        lineHeight: "1.2"
-      }}>
-        Sneak a peek at the future – Coming soon...
-      </div>
-  <div className="horizontal-scroll">
-    {upcomingMovies.map((film, index) => {
-      let cheminImage = film.poster_path 
-        ? `https://image.tmdb.org/t/p/w500/${film.poster_path}`
-        : BlackImage;
+          <div className="horizontal-scroll horizontal-scrollbar" ref={containerRefDiscovery} >
+            {filteredFilms.map((film, index) => {
+              let cheminImage = film.poster_path 
+                ? `https://image.tmdb.org/t/p/w500/${film.poster_path}`
+                : BlackImage;
 
-      return (
-        <div key={`second-${film.id || index}`} className="movie-card">
-          <Link to={`/movies/${film.id}`}>
-            <img
-              src={cheminImage}
-              alt={film.title}
-              style={{ width: "150px", height: "225px", objectFit: "cover" }}
-              onError={(e) => { e.target.src = BlackImage; }}
-            />
-          </Link>
+              return (
+                <div key={film.id || index} className="movie-card">
+                  <Link to={`/movies/${film.id}`}>
+                    <img
+                      src={cheminImage}
+                      alt={film.title}
+                      style={{ width: "150px", height: "225px", objectFit: "cover" }}
+                      onError={(e) => { e.target.src = BlackImage; }}
+                    />
+                  </Link>
+                </div>
+              );
+            })}
+          </div>
+
+          <button className="boutonScroll-droite" onClick={() => handleScroll(1, containerRefDiscovery)} > {/* Bouton droite */}
+            ›
+          </button>
+
         </div>
-      );
-    })}
-  </div>
+        {/* Section futur */}
+        <div className="titre-section">
+          Sneak a peek at the future – Coming soon...
+        </div>
 
+        <div style={{ display: "flex", alignItems: "center", position: "relative" }}>
 
-        <div style={{
-          fontSize: "30px",
-          textAlign: "left",
-          lineHeight: "1.2"
-        }}>
+          <button className="boutonScroll-gauche" onClick={() => handleScroll(-1, containerRefUpcoming)} > {/* Bouton gauche */}
+            &lt;
+          </button>
+
+          <div className="horizontal-scroll horizontal-scrollbar" ref={containerRefUpcoming} >
+
+            {upcomingMovies.map((film, index) => {
+              let cheminImage = film.poster_path 
+                ? `https://image.tmdb.org/t/p/w500/${film.poster_path}`
+                : BlackImage;
+
+              return (
+                <div key={`second-${film.id || index}`} className="movie-card">
+                  <Link to={`/movies/${film.id}`}>
+                    <img
+                      src={cheminImage}
+                      alt={film.title}
+                      style={{ width: "150px", height: "225px", objectFit: "cover" }}
+                      onError={(e) => { e.target.src = BlackImage; }}
+                    />
+                  </Link>
+                </div>
+              );
+            })}
+          </div>
+
+          <button className="boutonScroll-droite" onClick={() => handleScroll(1, containerRefUpcoming)} > {/* Bouton droite */}
+            ›
+          </button>
+
+        </div>
+
+        {/* Section Top list */}
+
+        <div className="titre-section">
           Top of the charts. Top of your list
         </div>
-  <div className="horizontal-scroll">
-    {topRatedMovies.map((film, index) => {
-      let cheminImage = film.poster_path 
-        ? `https://image.tmdb.org/t/p/w500/${film.poster_path}`
-        : BlackImage;
 
-      return (
-        <div key={`second-${film.id || index}`} className="movie-card">
-          <Link to={`/movies/${film.id}`}>
-            <img
-              src={cheminImage}
-              alt={film.title}
-              style={{ width: "150px", height: "225px", objectFit: "cover" }}
-              onError={(e) => { e.target.src = BlackImage; }}
-            />
-          </Link>
-        </div>
-      );
-    })}
-  </div>
+        <div style={{ display: "flex", alignItems: "center", position: "relative" }}>
 
-        <div style={{
-          fontSize: "30px",
-          textAlign: "left",
-          lineHeight: "1.2"
-        }}>
+          <button className="boutonScroll-gauche" onClick={() => handleScroll(-1, containerRefTopRated)} > {/* Bouton gauche */}
+            &lt;
+          </button>
+
+          <div className="horizontal-scroll horizontal-scrollbar" ref={containerRefTopRated} > 
+                
+            {topRatedMovies.map((film, index) => {
+              let cheminImage = film.poster_path 
+                ? `https://image.tmdb.org/t/p/w500/${film.poster_path}`
+                : BlackImage;
+
+              return (
+                <div key={`second-${film.id || index}`} className="movie-card">
+                  <Link to={`/movies/${film.id}`}>
+                    <img
+                      src={cheminImage}
+                      alt={film.title}
+                      style={{ width: "150px", height: "225px", objectFit: "cover" }}
+                      onError={(e) => { e.target.src = BlackImage; }}
+                    />
+                  </Link>
+                </div>
+              );
+            })}
+          </div>
+
+          <button className="boutonScroll-droite" onClick={() => handleScroll(1, containerRefTopRated)} > {/* Bouton droite */}
+            ›
+          </button>
+
+      </div>
+
+        {/* Section Action Movies */}
+        <div className="titre-section" >
           Action Movies
         </div>
-  <div className="horizontal-scroll">
-    {actionMovies.map((film, index) => {
-      let cheminImage = film.poster_path 
-        ? `https://image.tmdb.org/t/p/w500/${film.poster_path}`
-        : BlackImage;
 
-      return (
-        <div key={`second-${film.id || index}`} className="movie-card">
-          <Link to={`/movies/${film.id}`}>
-            <img
-              src={cheminImage}
-              alt={film.title}
-              style={{ width: "150px", height: "225px", objectFit: "cover" }}
-              onError={(e) => { e.target.src = BlackImage; }}
-            />
-          </Link>
-        </div>
-      );
-    })}
-  </div>
+        <div style={{ display: "flex", alignItems: "center", position: "relative" }}>        
+
+          <button className="boutonScroll-gauche" onClick={() => handleScroll(-1, containerRefAction)} > {/* Bouton gauche */}
+            &lt;
+          </button>
+
+          <div className="horizontal-scroll horizontal-scrollbar" ref={containerRefAction} >
+
+            {actionMovies.map((film, index) => {
+              let cheminImage = film.poster_path 
+                ? `https://image.tmdb.org/t/p/w500/${film.poster_path}`
+                : BlackImage;
+
+              return (
+                <div key={`second-${film.id || index}`} className="movie-card">
+                  <Link to={`/movies/${film.id}`}>
+                    <img
+                      src={cheminImage}
+                      alt={film.title}
+                      style={{ width: "150px", height: "225px", objectFit: "cover" }}
+                      onError={(e) => { e.target.src = BlackImage; }}
+                    />
+                  </Link>
+                </div>
+              );
+            })}
+          </div>
+
+          <button className="boutonScroll-droite" onClick={() => handleScroll(1, containerRefAction)} > {/* Bouton droite */}
+            ›
+          </button>
+
+      </div>  
 
 </div>
         )}
@@ -532,7 +607,7 @@ const ListeFilms = () => {
       <div
         style={{
           height: "40px",
-          background: "linear-gradient(to bottom, rgba(7, 0, 66, 0), rgba(7, 0, 66, 1))",
+          background: "linear-gradient(to bottom,       rgba(5, 14, 66, 1), rgba(0, 0, 255, 0.5), rgba(5, 0, 50, 1)), ",
         }}
         />
 
@@ -548,10 +623,11 @@ const ListeFilms = () => {
         }
 
         .horizontal-scroll {
+          overflow-x: scroll;
+          scroll-behavior: smooth;
           display: flex;
-          overflow-x: auto;
           gap: 16px;
-          padding: 10px;
+          width: 100%;
         }
       `}</style>
     </div>
