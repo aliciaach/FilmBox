@@ -119,6 +119,7 @@ function LoginRegister() {
 
                 <div className="d-flex flex-column rounded-2 mx-auto" style={{
                     width: '100%',//width: '110%',
+                    overflow: 'hidden',
                     background: 'rgba(0, 0, 0, 0.4)',
                     padding: '2.5rem 4rem',//'5rem 5rem',
                     boxShadow: '0 10px 20px rgba(17, 1, 1, 0.2)',
@@ -132,23 +133,47 @@ function LoginRegister() {
                         {/* Nom Prenom */}
                         <div className="input-box" id="blocForm haut" style={{ gridColumn: '1/2', marginTop: '2rem' }}>
                             <p id="titresForm"> First Name:</p>
-                            <input id="inputForm" className='w-100 p-2 pe-5 ps-3 text-white border-1 rounded-4 ' type="text" placeholder="Ex: Lila" required value={firstName} onChange={(e) => setFirstName(e.target.value)}
+                            <input id="inputForm" className='w-100 p-2 pe-5 ps-3 text-white border-1 rounded-4 ' type="text" placeholder="Ex: Lila" required value={firstName}
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    setFirstName(e.target.value);
+                                    setFirstNameError(!validName.test(value));
+                                }}
                                 style={{ backgroundImage: `url(${cadenas})` }} />
                             {firstNameError && <p className="text-danger mt-1">Only letters allowed</p>}
                         </div>
 
                         <div className="input-box" id="blocForm" style={{ gridColumn: '2/3', marginTop: '2rem' }}>
                             <p id="titresForm"> Last Name:</p>
-                            <input id="inputForm" className='w-100  p-2 pe-5 ps-3 text-white border-1 rounded-4 ' type="text" placeholder="Ex: Tremblay" required value={lastName} onChange={(e) => setLastName(e.target.value)}
+                            <input id="inputForm" className='w-100  p-2 pe-5 ps-3 text-white border-1 rounded-4 ' type="text" placeholder="Ex: Tremblay" required value={lastName}
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    setLastName(e.target.value);
+                                    setLastNameError(!validName.test(value));
+                                }}
                                 style={{ backgroundImage: `url(${cadenas})` }} />
-                            {lastNameError && <p className="text-danger mt-1">Only letters allowed</p>}
+                            <div style={{ minHeight: '1.5rem' }}>
+
+                                {/* The code to use an invisible placeholder to not move the whole when showing an error was given by chat*/}
+                                {lastNameError ? (
+                                    <p className="text-danger mt-1">Only letters allowed</p>
+                                ) : (
+                                    <p className="invisible mt-1">Placeholder</p>
+                                )}
+                            </div>
+                            {/*lastNameError && <p className="text-danger mt-1">Only letters allowed</p>*/}
                         </div>
 
 
                         {/* Email / telephone */} {/* BTW : input className= 'p-2 pe-5' OU 'p-2 pe-5 ps-3'*/}
                         <div className="input-box" id="blocForm" style={{ gridColumn: '1/2', marginTop: '4rem' }}>
                             <p id="titresForm"> Email:</p>
-                            <input id="inputForm" className='w-100 p-2 pe-5 ps-3 text-white border-1 rounded-4 ' type="text" placeholder="Ex: lilatremblay@gmail.com" required value={email} onChange={(e) => setEmail(e.target.value)}
+                            <input id="inputForm" className='w-100 p-2 pe-5 ps-3 text-white border-1 rounded-4 ' type="text" placeholder="Ex: lilatremblay@gmail.com" required value={email}
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    setEmail(e.target.value);
+                                    setEmailErr(!validEmail.test(value));
+                                }}
                                 style={{ backgroundImage: `url(${cadenas})` }} />
                             {emailErr && <p className="text-danger mt-1">Invalid email format</p>}
 
