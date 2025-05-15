@@ -202,6 +202,30 @@ const ListeFilms = () => {
     setFilteredFilms(films);
   };
 
+  // https://www.youtube.com/watch?v=1kVZEhg3Q_c
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const containerRef = useRef();
+  
+  // ancienne const (venant de la vidéo) 
+  // UTILISER COMME ÇA : handleScrollAncien (-160) et (160)
+  const handleScrollAncien = (scrollAmount) => {
+    const newScrollPosition = scrollPosition + scrollAmount;
+    setScrollPosition(newScrollPosition);
+    containerRef.current.scrollLeft = newScrollPosition;
+  };
+
+  // nouvelle const (aidée par chat)
+  const handleScroll = (direction) => {
+    if (containerRef.current) {
+      const container = containerRef.current;
+      const scrollAmount = container.clientWidth; // largeur visible de la zone de scroll
+      const newScrollPosition = container.scrollLeft + direction * scrollAmount;
+
+      container.scrollLeft = newScrollPosition;
+      setScrollPosition(newScrollPosition);
+    }
+  };
+
   return (
     <div className="min-vh-100" 
         style={{
@@ -440,6 +464,7 @@ const ListeFilms = () => {
   })}
       </div>
 
+        {/* Section futur */}
       <div style={{
         fontSize: "30px",
         textAlign: "left",
@@ -448,27 +473,70 @@ const ListeFilms = () => {
       }}>
         Sneak a peek at the future – Coming soon...
       </div>
-  <div className="horizontal-scroll horizontal-scrollbar">
-    {upcomingMovies.map((film, index) => {
-      let cheminImage = film.poster_path 
-        ? `https://image.tmdb.org/t/p/w500/${film.poster_path}`
-        : BlackImage;
 
-      return (
-        <div key={`second-${film.id || index}`} className="movie-card">
-          <Link to={`/movies/${film.id}`}>
-            <img
-              src={cheminImage}
-              alt={film.title}
-              style={{ width: "150px", height: "225px", objectFit: "cover" }}
-              onError={(e) => { e.target.src = BlackImage; }}
-            />
-          </Link>
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <button
+          onClick={() => handleScroll(-1)}
+          style={{
+            fontSize: "24px",
+            padding: "10px",
+            backgroundColor: "#0352fc",
+            color: "white",
+            border: "none",
+            borderRadius: "50%",
+            cursor: "pointer"
+          }}
+        >
+          ‹
+        </button>
+
+        <div className="horizontal-scrollbar" ref={containerRef} 
+              style={{
+                overflowX: "scroll",
+                scrollBehavior: "smooth",
+                display: "flex",
+                gap: "16px",
+                width: "100%"
+              }} >
+
+          {upcomingMovies.map((film, index) => {
+            let cheminImage = film.poster_path 
+              ? `https://image.tmdb.org/t/p/w500/${film.poster_path}`
+              : BlackImage;
+
+            return (
+              <div key={`second-${film.id || index}`} className="movie-card">
+                <Link to={`/movies/${film.id}`}>
+                  <img
+                    src={cheminImage}
+                    alt={film.title}
+                    style={{ width: "150px", height: "225px", objectFit: "cover" }}
+                    onError={(e) => { e.target.src = BlackImage; }}
+                  />
+                </Link>
+              </div>
+            );
+          })}
         </div>
-      );
-    })}
-  </div>
 
+        <button
+          onClick={() => handleScroll(1)}
+          style={{
+            fontSize: "24px",
+            padding: "10px",
+            backgroundColor: "#0352fc",
+            color: "white",
+            border: "none",
+            borderRadius: "50%",
+            cursor: "pointer",
+            marginLeft: "8px"
+          }}
+        >
+          ›
+        </button>
+      </div>
+
+        {/* Section Top list */}
 
         <div style={{
           fontSize: "30px",
