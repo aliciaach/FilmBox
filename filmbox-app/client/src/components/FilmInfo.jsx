@@ -96,6 +96,14 @@ const FilmInfo = () => {
         setMarkedWatched(false);
         setComment("");
       } else {
+         await fetch("http://localhost:4000/api/watched", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId,
+          movieId: numericFilmId,
+        }),
+      });
         setMarkedWatched(true);
       }
     } catch (err) {
