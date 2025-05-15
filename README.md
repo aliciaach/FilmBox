@@ -2,7 +2,7 @@ Voici comment déployer notre projet FilmBox dans votre machine :
 
 1. Télécharger notre dépôt git sur votre PC (ou faire un git clone).
 
-2. Il faut préparer votre environnement Docker pour être capable d'insérer nos données :
+2. Il faut préparer votre environnement Docker pour être capable de se connecter a un server:
    
    a) Pour créer le conteneur (instance de l’image) qui exécutera mysql dans docker, ouvrir un invite de commande et lancer la commande :
       docker run -d -p 3306:3306 --name mysql-server -e MYSQL_ROOT_PASSWORD=oracle -e MYSQL_DATABASE=scott -e MYSQL_USER=scott -e MYSQL_PASSWORD=oracle mysql/mysql-server:latest
