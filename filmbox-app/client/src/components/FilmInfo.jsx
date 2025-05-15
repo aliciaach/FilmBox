@@ -182,7 +182,7 @@ const FilmInfo = () => {
     }}>
       <Header />
       
-      <div className="container py-5 text-start" style={{ maxWidth: "800px" }}>
+      <div className="container py-5 text-start" style={{ maxWidth: "800px", marginLeft: "0", paddingLeft: "2rem" }}>
         {movieLogo && (
           <img
             src={`https://image.tmdb.org/t/p/original${movieLogo.file_path}`}

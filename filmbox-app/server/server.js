@@ -282,7 +282,7 @@ app.delete("/deleteAccount", (req, res) => {
   });
 });*/
 /*
-    API - Obtenir tous les utilisateurs             -------------------------------------------------------------------------------------------------------------------
+    API - Obtenir tous les utilisateurs-------------------------------------------------------------------------------------------------------------------
 */
 //con query : méthode de connexion à la BDD MySQL dans Node.js. Elle est utilisée pour envoyer une requête SQL à la base de données
 // et récupérer des données ou effectuer des actions (comme INSERT, UPDATE, DELETE, ou SELECT).
