@@ -42,11 +42,19 @@ const FilmInfo = () => {
 
         const watchedRes = await fetch(`http://localhost:4000/api/watched/${userId}`);
         const watchedData = await watchedRes.json();
-        const watched = watchedData.find(movie => movie.id === numericFilmId);
+        const watched = watchedData.find(movie =>
+          movie.id === numericFilmId || movie.films_film_id === numericFilmId
+        );
+        //const watched = watchedData.find(movie => movie.id === numericFilmId || movie.films_film_id === numericFilmId);
+
         if (watched) {
           setMarkedWatched(true);
-          setRating(watched.rating);
-          if (watched.commentaire) setComment(watched.commentaire);
+          if (watched.valeur_note !== undefined && watched.valeur_note !== null) {
+            setRating(watched.valeur_note);
+          }
+          if (watched.commentaire) {
+            setComment(watched.commentaire);
+          }
         }
       } catch (err) {
         console.error("Erreur lors du chargement des données:", err);
@@ -96,14 +104,14 @@ const FilmInfo = () => {
         setMarkedWatched(false);
         setComment("");
       } else {
-         await fetch("http://localhost:4000/api/watched", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId,
-          movieId: numericFilmId,
-        }),
-      });
+        await fetch("http://localhost:4000/api/watched", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId,
+            movieId: numericFilmId,
+          }),
+        });
         setMarkedWatched(true);
       }
     } catch (err) {
@@ -112,6 +120,7 @@ const FilmInfo = () => {
   };
 
   const handleRatingSubmit = async () => {
+    console.log("Submitting rating:", rating, "comment:", comment);
     try {
       await fetch("http://localhost:4000/api/watched", {
         method: "POST",
@@ -119,11 +128,23 @@ const FilmInfo = () => {
         body: JSON.stringify({
           userId,
           movieId: numericFilmId,
-          rating,
+          rating: rating,
           comment,
         }),
       });
       alert("Note enregistrée !");
+
+         const watchedRes = await fetch(`http://localhost:4000/api/watched/${userId}`);
+    const watchedData = await watchedRes.json();
+    const watched = watchedData.find(movie =>
+      movie.id === numericFilmId || movie.films_film_id === numericFilmId
+    );
+
+    if (watched) {
+      setRating(watched.valeur_note);
+      setComment(watched.commentaire || "");
+    }
+      console.error("Submitting rating:", rating, "comment:", comment);
     } catch (err) {
       console.error("Erreur lors de l'enregistrement de la note:", err);
     }
@@ -242,19 +263,22 @@ const FilmInfo = () => {
             <label className="form-label">Rate this movie:</label>
             <div className="d-flex gap-2">
               {[1, 2, 3, 4, 5].map((star) => (
-                <spa n
+                <span
                   key={star}
                   style={{
                     fontSize: "2rem",
                     color: (hoverRating || rating) >= star ? "#FFD700" : "#CCCCCC",
                     cursor: "pointer",
                   }}
-                  onClick={() => setRating(star)}
+                  onClick={() => {
+                    if (!markedWatched) setMarkedWatched(true); // auto-activate the form
+                    setRating(star);
+                  }}
                   onMouseEnter={() => setHoverRating(star)}
                   onMouseLeave={() => setHoverRating(0)}
                 >
                   ★
-                </spa>
+                </span>
               ))}
             </div>
 

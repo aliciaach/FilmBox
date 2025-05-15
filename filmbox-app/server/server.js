@@ -1135,7 +1135,7 @@ app.delete("/api/watchlist/:userId/:movieId", (req, res) => {
 
 app.post("/api/watched", (req, res) => {
   const { userId, movieId, rating, comment } = req.body;
-
+   console.log("Received watched POST:", req.body); 
   // 1. Check if the film exists
   const checkFilmSql = "SELECT film_id FROM films WHERE film_id = ?";
   con.query(checkFilmSql, [movieId], (err, result) => {
@@ -1216,7 +1216,7 @@ app.get("/api/watched/:userId", (req, res) => {
         const movie = await res.json();
         return {
           ...movie,
-          rating: row.valeur_note,
+          valeur_note: row.valeur_note,
           commentaire: row.commentaire,
         };
       })
