@@ -18,32 +18,16 @@ c) Ensuite créer une base de données :
 
 4. Insérer les valeur des tables(ce trouve en bas du script).
 
-5. Ouvrir le dépôt git télécharger sur Visual Studio avec Docker ouvert.
+5. Ouvrir le dépôt git télécharger(ou cloner) sur Visual Studio avec la machine ouvert sur Docker.
 
-6. Ouvrir un terminal dans Visual Studio.
+6. Ouvrir deux terminaux dans Visual Studio.
 
-7. Rentrer dans le fichier "server" et faire la commande suivante : npm i express
+7. Il faut entrer dans le dossier "filmbox-app" dans les deux terminaux. Voici un exemple :cd C:\Users\farru\Downloads\FilmBox-main\FilmBox-main\filmbox-app
 
-8. Dans ce même fichier on fait : npm i
+8. Entrer ensuite dans le dossier server avec cd server dans le premier terminal et exécuter la commande suivante : npm i express
 
-9. Ensuite on rentre dans le fichier "client" pour faire : npm i
+9. Ensuite, entrer dans le dossier client avec cd client dans le deuxième terminal et exécuter la commande suivante : npm i
 
-10. Faire la commande suivante dans le fichier "client" : npm run build
+10. Finalement, retourner dans le premier terminal (server) pour activer notre serveur avec : node server.js
 
-11. Finalement on rentre dans le fichier "server" pour activer votre serveur : node server.js
-
---------------------------------------Note--------------------------------------------------------
-Les autres dépendances seront déjà installées!!!
-Faire les installs suivantes si nécessaire :
-
-npm install react-router-dom
-
-npm install express express-session mysql express-validator dateformat
-
-npm install react@18 react-dom@18
-
-npm install bootstrap
-
-
-
-
+Voila! Vous est prête.
