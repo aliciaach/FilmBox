@@ -65,7 +65,8 @@ function BrowseMovies() {
                 padding: "40px",
                 background: "rgb(5, 14, 66)",
                 color: "white",
-                minHeight: "100vh"
+                minHeight: "100vh",
+                marginTop: "60px"
             }}>
                 <Header />
 
