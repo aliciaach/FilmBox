@@ -59,7 +59,12 @@ function PageWatchList() {
     setLowestRated(lowest);
     setPersonalizedLists(personalizedData.data || []);
 
-   
+    if (selectedList) {
+      const updatedList = (personalizedData.data || []).find(list => list._id === selectedList._id);
+      if (updatedList) {
+        setSelectedList(updatedList);
+      }
+    }
 
   } catch (err) {
     setError(err.message);
