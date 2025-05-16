@@ -5,6 +5,7 @@ import imageLogo from "../assets/logo_FilmBox.png";
 import Header from '../components/Header';
 import { Dropdown, DropdownButton } from "react-bootstrap";
 import ContainerManageList from './ContainerManageList';
+import '../styles/PageWatchList.css'
 function PageWatchList() {
   const [watchlist, setWatchlist] = useState([]);
   const [watched, setWatched] = useState([]);
@@ -14,7 +15,6 @@ function PageWatchList() {
   const [error, setError] = useState(null);
   const [personalizedLists, setPersonalizedLists] = useState([]);
   const [selectedList, setSelectedList] = useState(null);
-
   const navigate = useNavigate();
 
   const userId = localStorage.getItem("userId"); //Faudra changer ça !!!
@@ -73,7 +73,15 @@ function PageWatchList() {
     }
   };
 
-
+  const SectionDivider = () => (
+    <div style={{
+      width: "100%",
+      height: "2px",
+      backgroundColor: "white",
+      opacity: 0.3,
+      margin: "10px 0"
+    }} />
+  );
 
   useEffect(() => {
     refreshLists();
@@ -104,7 +112,7 @@ function PageWatchList() {
               src={movie.poster_path ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}` : "https://via.placeholder.com/500x750?text=No+Poster"}
               alt={movie.title}
               className="card-img-top"
-              style={{ height: 300, width: 200, objectFit: "cover", borderRadius: 8 }}
+              style={{ height: 300, width: 200, objectFit: "cover", borderRadius: 0 }}
               onError={(e) => { e.target.src = "https://via.placeholder.com/500x750?text=No+Poster"; }}
             />
             <div className="card-body px-0">
@@ -128,14 +136,13 @@ function PageWatchList() {
   const backgroundStyle = {
     background: "linear-gradient(to bottom, #070042, #050032)",
     color: "#fff",
-    fontFamily: "Fredoka",
     padding: "20px",
     minHeight: "100vh",
   };
 
   const sectionBoxStyle = {
-    backgroundColor: "#121a49",
-    borderRadius: "16px",
+    //backgroundColor: "#121a49",
+    borderRadius: "0px",
     padding: "20px",
     marginBottom: "40px",
     boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
@@ -174,30 +181,34 @@ function PageWatchList() {
 
       <div className="container">
 
-        <div style={{ sectionBoxStyle, marginTop: "60px" }}>
-          <h2 className="text-white text-decoration-none mb-4">My Watchlist</h2>
+        <div className="text-white" style={sectionBoxStyle} >
+          <h2 className="text-white" style={{ marginBottom: "10px" }}>My Watchlist</h2>
+          <SectionDivider />
           {watchlist.length > 0 ? renderMovieRow(watchlist) : <p>Your watchlist is empty.</p>}
         </div>
 
         <div style={sectionBoxStyle}>
           <h2 className="text-white text-decoration-none mb-4">My Watched Movies</h2>
+          <SectionDivider />
           {watched.length > 0 ? renderMovieRow(watched) : <p>No movies marked as watched yet.</p>}
         </div>
 
         <div style={sectionBoxStyle}>
           <h2 className="text-white text-decoration-none mb-4">My Highest Rated Movies(3-5 ⭐)</h2>
+          <SectionDivider />
           {highestRated.length > 0 ? renderMovieRow(highestRated) : <p>No high rated movies yet.</p>}
         </div>
 
         <div style={sectionBoxStyle}>
           <h2 className="text-white text-decoration-none mb-4">My Lowest Rated Movies (0-2 ⭐)</h2>
+          <SectionDivider />
           {lowestRated.length > 0 ? renderMovieRow(lowestRated) : <p>No low rated movies yet.</p>}
         </div>
 
 
         {/* Render personalized lists only if there are any movies */}
         {personalizedLists.length > 0 && personalizedLists.map((list) => (
-          <div key={list._id}>
+          <div key={list._id} style={sectionBoxStyle}>
             <div className="d-flex justify-content-between align-items-center mt-5 mb-4">
               <h2 className="fw-bold mt-0">{list.name}</h2>
               <button className="btn btn-primary" style={{
@@ -208,6 +219,7 @@ function PageWatchList() {
                 overflow: "hidden"
               }} onClick={() => handleGestionList(list)} >Manage List</button>
             </div>
+            <SectionDivider />
             {list.movies && list.movies.length > 0 ? renderMovieRow(list.movies) : <p>No movies in this list yet.</p>}
           </div>
         ))}
