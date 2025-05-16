@@ -255,6 +255,8 @@ app.post("/ChangePassword", (req, res) => {
         if (!isMatch) {
           return res.status(401).json({ success: false, message: "Incorrect current password" });
         }
+        console.log("Password match, proceeding to hash new password");
+        
         bcrypt.hash(newPassword, 10, (err, hashedNewPassword) => {
           if (err) {
             console.error("Error hashing password:", err);

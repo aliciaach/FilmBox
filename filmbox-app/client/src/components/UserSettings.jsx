@@ -58,6 +58,34 @@ function UserSettings() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const errors = { ...validationErrors };
+    let isValid = true;
+
+    // Check if the password respects the minimum requirement
+    if (!validPassword.test(newPassword)) {
+      errors.newPassword = "Not complexe enough";
+      isValid = false;
+    } else {
+      errors.newPassword = "";
+    }
+
+    // Confirm password match
+    if (newPassword !== confirmNewPassword) {
+      errors.confirmPassword = "Passwords do not match";
+      isValid = false;
+    } else {
+      errors.confirmPassword = "";
+    }
+
+    setValidationErrors(errors);
+
+    if (!isValid) {
+      setValidationErrors(errors); 
+      setMessage("Please fix the password errors before submitting.");
+      return;
+    }
+
+
     try {
       const response = await fetch('http://localhost:4000/changePassword', {
         method: 'POST',
@@ -65,9 +93,18 @@ function UserSettings() {
         body: JSON.stringify({ email: user.courriel, currentPassword, newPassword }),
       });
       const data = await response.json();
+
+      
+    if (!response.ok) {
+      console.log("Server responded with:", response.status, data.message); 
+      setMessage(data.message || "An unknown error occurred");
+      return;
+    }
+
       setMessage(data.success ? "Password updated" : "Error, couldn't update password");
       setNewPassword('');
       setConfirmNewPassword('');
+      setCurrentPassword('');
     } catch (error) {
       console.error('Error updating password:', error);
       setMessage("An error occurred while updating the password.");
@@ -285,10 +322,10 @@ function UserSettings() {
                     onChange={(e) => setTempoUser({ ...tempoUser, prenom: e.target.value })}
                   />
                   {validationErrors.prenom && (
-                  <p className="text-danger mt-1">{validationErrors.prenom}</p>
-                )}
+                    <p className="text-danger mt-1">{validationErrors.prenom}</p>
+                  )}
                 </div>
-                
+
                 {/* Last Name Input */}
                 <div className="input-section col-6">
                   <p style={{ fontSize: '22px', marginBottom: '0.2rem' }}>Last Name</p>
@@ -403,6 +440,9 @@ function UserSettings() {
                     onChange={(e) => setConfirmNewPassword(e.target.value)}
                   />
                 </div>
+                {validationErrors.confirmPassword && (
+                  <p className="text-danger mt-1">{validationErrors.confirmPassword}</p>
+                )}
 
                 <div className="text-end" style={{ width: '100%' }}>
                   <button type="submit" className="btnSaveCustom"
