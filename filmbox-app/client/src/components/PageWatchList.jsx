@@ -29,52 +29,52 @@ function PageWatchList() {
   };
 
   const refreshLists = async () => {
-  try {
-    const [watchlistRes, watchedRes, personalizedRes] = await Promise.all([
-      fetch(`http://localhost:4000/api/watchlist/${userId}`),
-      fetch(`http://localhost:4000/api/watched/${userId}`),
-      fetch(`http://localhost:4000/mongo/getPersonalizedList?userId=${userId}`)
-    ]);
+    try {
+      const [watchlistRes, watchedRes, personalizedRes] = await Promise.all([
+        fetch(`http://localhost:4000/api/watchlist/${userId}`),
+        fetch(`http://localhost:4000/api/watched/${userId}`),
+        fetch(`http://localhost:4000/mongo/getPersonalizedList?userId=${userId}`)
+      ]);
 
-    if (!watchlistRes.ok || !watchedRes.ok) throw new Error("Failed to fetch watchlist or watched movies");
+      if (!watchlistRes.ok || !watchedRes.ok) throw new Error("Failed to fetch watchlist or watched movies");
 
-    const watchlistData = await watchlistRes.json();
-    const watchedData = await watchedRes.json();
-    const personalizedData = await personalizedRes.json();
+      const watchlistData = await watchlistRes.json();
+      const watchedData = await watchedRes.json();
+      const personalizedData = await personalizedRes.json();
 
-    const cleanedWatchlist = watchlistData.filter(m => m.title && m.title !== "N/A");
-    const cleanedWatched = watchedData.filter(m => m.title && m.title !== "N/A");
-    const watchedIds = cleanedWatched.map(m => m.id);
-    const filteredWatchlist = cleanedWatchlist.filter(m => !watchedIds.includes(m.id));
+      const cleanedWatchlist = watchlistData.filter(m => m.title && m.title !== "N/A");
+      const cleanedWatched = watchedData.filter(m => m.title && m.title !== "N/A");
+      const watchedIds = cleanedWatched.map(m => m.id);
+      const filteredWatchlist = cleanedWatchlist.filter(m => !watchedIds.includes(m.id));
 
-    setWatchlist(filteredWatchlist);
-    setWatched(cleanedWatched);
+      setWatchlist(filteredWatchlist);
+      setWatched(cleanedWatched);
 
-    const highestUnsorted = cleanedWatched.filter(m => m.valeur_note >= 3 && m.valeur_note <= 5);
-    const lowestUnsorted = cleanedWatched.filter(m => m.valeur_note >= 0 && m.valeur_note <= 2);
-    const highest = highestUnsorted.sort((a, b) => b.rating - a.rating);
-    const lowest = lowestUnsorted.sort((a, b) => a.rating - b.rating);
+      const highestUnsorted = cleanedWatched.filter(m => m.valeur_note >= 3 && m.valeur_note <= 5);
+      const lowestUnsorted = cleanedWatched.filter(m => m.valeur_note >= 0 && m.valeur_note <= 2);
+      const highest = highestUnsorted.sort((a, b) => b.rating - a.rating);
+      const lowest = lowestUnsorted.sort((a, b) => a.rating - b.rating);
 
-    setHighestRated(highest);
-    setLowestRated(lowest);
-    setPersonalizedLists(personalizedData.data || []);
+      setHighestRated(highest);
+      setLowestRated(lowest);
+      setPersonalizedLists(personalizedData.data || []);
 
-    if (selectedList) {
-      const updatedList = (personalizedData.data || []).find(list => list._id === selectedList._id);
-      if (updatedList) {
-        setSelectedList(updatedList);
+      if (selectedList) {
+        const updatedList = (personalizedData.data || []).find(list => list._id === selectedList._id);
+        if (updatedList) {
+          setSelectedList(updatedList);
+        }
       }
+
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
-
-  } catch (err) {
-    setError(err.message);
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
 
-  
+
   useEffect(() => {
     refreshLists();
   }, [userId]);
@@ -108,7 +108,7 @@ function PageWatchList() {
               onError={(e) => { e.target.src = "https://via.placeholder.com/500x750?text=No+Poster"; }}
             />
             <div className="card-body px-0">
-              <h6 className="card-title text-white text-decoration-none" style={{ fontSize: "1rem" }}>{movie.title}</h6>
+              <h6 className="card-title text-white text-decoration-none" style={{ fontSize: "1rem", maxWidth: "200px" }}>{movie.title}</h6>
               <p className="card-text text-white text-decoration-none">
                 {movie.release_date ? new Date(movie.release_date).getFullYear() : "N/A"}
                 {movie.vote_average && (
@@ -152,6 +152,25 @@ function PageWatchList() {
   return (
     <div style={backgroundStyle}>
       <Header />
+
+      <div style={{
+        backgroundColor: "#050032",
+        width: "100%",
+        marginLeft: 0,
+        marginRight: 0,
+        color: "white",
+        textAlign: "center",
+        padding: "40px 20px",
+      }}>
+        <h1>Seen it? Rate it!</h1>
+        <p style={{
+          maxWidth: "500px",
+          margin: "0 auto"
+        }}>
+          Don’t forget to leave your opinion on the movies you watch.
+          Every story deserves a final word. Will it be 5 stars or 0? The ending is yours to decide!
+        </p>
+      </div>
 
       <div className="container">
 
