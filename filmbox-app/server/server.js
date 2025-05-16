@@ -1057,7 +1057,7 @@ app.post("/api/watchlist", (req, res) => {
       const movieData = await tmdbResponse.json();
 
       //This is the data that will be saved on our local database
-      const newFilmSQL = `INSERT INTO films (film_id, titre, film_duree, date_sortie, pays_origin_film, langue_original, status, directeur_directeur_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+      const newFilmSQL = `INSERT INTO films (film_id, titre, film_duree, date_sortie, pays_origin_film, langue_original, status) VALUES (?, ?, ?, ?, ?, ?, ?)`;
 
       const filmValues = [
         movieData.id,
@@ -1067,8 +1067,7 @@ app.post("/api/watchlist", (req, res) => {
         movieData.production_countries?.[0]?.name || "Unknown",
         movieData.original_language || "Unknown",
         movieData.status || "Unknown",
-        null,
-      ]; //director is null for now, have to fix a bug first
+      ];
 
       con.query(newFilmSQL, filmValues, (insertErr) => {
         if (insertErr) {
@@ -1211,8 +1210,8 @@ app.post("/api/watched", (req, res) => {
     if (result.length === 0) {
       // 2. Insert placeholder film if not found
       const insertFilmSql = `
-        INSERT INTO films (film_id, titre, film_duree, date_sortie, pays_origin_film, langue_original, status, directeur_directeur_id)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO films (film_id, titre, film_duree, date_sortie, pays_origin_film, langue_original, status)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
       `;
       const now = new Date().toISOString().split("T")[0]; // format YYYY-MM-DD
 
@@ -1226,7 +1225,6 @@ app.post("/api/watched", (req, res) => {
           "USA", // Placeholder country
           "en", // Placeholder language
           "vu", // Placeholder status
-          1, // Default director (must exist)
         ],
         (err2) => {
           if (err2) {
