@@ -95,19 +95,40 @@ app.post("/login", (req, res) => {
       console.error("Database error: ", err);
       return res.status(500).json({ message: "Internal server error" });
     }
+
     if (results.length > 0) {
-      req.session.user = {
-        id: results[0].utilisateur_id, // Adjust column name if needed
-        prenom: results[0].prenom,
-        nom: results[0].nom,
-        courriel: results[0].courriel,
-        telephone: results[0].telephone,
-      };
-      console.log("USER FOUNDDDDDD" + results[0].courriel);
-      return res.status(200).json({
-        success: true,
-        message: "Login Successful!",
-        userId: results[0].utilisateur_id,
+      const user = results[0];
+
+      // Compare input password with hashed password in DB
+      bcrypt.compare(password, user.mot_de_passe, (err, isMatch) => {
+        if (err) {
+          console.error("Error comparing passwords:", err);
+          return res.status(500).json({ message: "Internal server error" });
+        }
+
+        if (!isMatch) {
+          console.log("Wrong password");
+          return res.status(401).json({
+            success: false,
+            message: "Access denied, wrong password or email",
+          });
+        }
+
+        // Password matches — create session
+        req.session.user = {
+          id: user.utilisateur_id,
+          prenom: user.prenom,
+          nom: user.nom,
+          courriel: user.courriel,
+          telephone: user.telephone,
+        };
+
+        console.log("USER LOGGED IN: " + user.courriel);
+        return res.status(200).json({
+          success: true,
+          message: "Login Successful!",
+          userId: user.utilisateur_id,
+        });
       });
     } else {
       console.log("USER NOT FOUND");
@@ -684,36 +705,6 @@ app.get("/discoverMoviesFiltered", async (req, res) => {
   }
 });*/
 
-/*
-    API - Obtenir un film par ID
-*/
-/*app.get("/api/movies/:id", (req, res) => {
-  const filmID = Number(req.params.id); //converti le id en nombre au cas ou
-  if (isNaN(filmID)) {
-    return res.status(400).json({ message: "ID invalide" }); //gestions des erreurs etc
-  }
-
-  //requete sql qui fait les jointures avec les tables
-  const sql = `
-    SELECT f.film_id, f.titre, f.film_duree, f.date_sortie, 
-           f.pays_origin_film, f.langue_original, d.nom_directeur, g.genre
-    FROM films f
-    JOIN directeur d ON f.directeur_directeur_id = d.directeur_id
-    LEFT JOIN genre g ON f.film_id = g.films_film_id
-    WHERE f.film_id = ?`;
-
-  con.query(sql, [filmID], (err, results) => {
-    if (err) {
-      console.error("Erreur SQL:", err);
-      return res.status(500).json({ message: "Erreur serveur" });
-    }
-    if (results.length === 0) {
-      return res.status(404).json({ message: "Film non trouvé" });
-    }
-    res.json(results[0]);
-  });
-});*/
-
 app.get("/api/movies/:id", async (req, res) => {
   const filmID = Number(req.params.id); //Conversion du id en nombbre au cas ou
   if (isNaN(filmID)) {
@@ -966,7 +957,7 @@ app.post("/api/watchlist", (req, res) => {
       const movieData = await tmdbResponse.json();
 
       //This is the data that will be saved on our local database
-      const newFilmSQL = `INSERT INTO films (film_id, titre, film_duree, date_sortie, pays_origin_film, langue_original, status, directeur_directeur_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+      const newFilmSQL = `INSERT INTO films (film_id, titre, film_duree, date_sortie, pays_origin_film, langue_original, status) VALUES (?, ?, ?, ?, ?, ?, ?)`;
 
       const filmValues = [
         movieData.id,
@@ -976,8 +967,7 @@ app.post("/api/watchlist", (req, res) => {
         movieData.production_countries?.[0]?.name || "Unknown",
         movieData.original_language || "Unknown",
         movieData.status || "Unknown",
-        null,
-      ]; //director is null for now, have to fix a bug first
+      ];
 
       con.query(newFilmSQL, filmValues, (insertErr) => {
         if (insertErr) {
@@ -1038,19 +1028,6 @@ app.post("/api/watchlist", (req, res) => {
     }
   });
 });
-
-/*const sql =
-  "INSERT INTO film_watchlist (film_id, utilisateur_utilisateur_id) VALUES (?, ?)";
-con.query(sql, [movieId, userId], (err, results) => {
-  if (err) {
-    console.error("Database error:", err);
-    return res.status(500).json({ message: "Internal server error" });
-  }
-  res
-    .status(201)
-    .json({ success: true, message: "Film ajoute dans watchlist" });
-});
-});*/
 
 // Get Watchlist
 // Get Watchlist - Updated to use TMDB API
@@ -1120,8 +1097,8 @@ app.post("/api/watched", (req, res) => {
     if (result.length === 0) {
       // 2. Insert placeholder film if not found
       const insertFilmSql = `
-        INSERT INTO films (film_id, titre, film_duree, date_sortie, pays_origin_film, langue_original, status, directeur_directeur_id)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO films (film_id, titre, film_duree, date_sortie, pays_origin_film, langue_original, status)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
       `;
       const now = new Date().toISOString().split("T")[0]; // format YYYY-MM-DD
 
@@ -1135,7 +1112,6 @@ app.post("/api/watched", (req, res) => {
           "USA", // Placeholder country
           "en", // Placeholder language
           "vu", // Placeholder status
-          1, // Default director (must exist)
         ],
         (err2) => {
           if (err2) {
