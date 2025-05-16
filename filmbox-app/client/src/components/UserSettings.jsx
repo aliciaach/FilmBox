@@ -4,7 +4,7 @@ import BlackImage from '../assets/BlackImage.png'
 import Header from '../components/Header';
 import { useNavigate } from 'react-router-dom';
 import '../styles/UserSettings.css';
-
+import { validEmail, validPassword, validName, validPhoneNumber } from './regex';
 
 /*
     https://www.youtube.com/watch?v=oYGhoHW7zqI
@@ -21,6 +21,15 @@ function UserSettings() {
   const [currentPassword, setCurrentPassword] = useState('');
   const navigate = useNavigate();
 
+  //Save all the validation erros in the same variable
+  const [validationErrors, setValidationErrors] = useState({
+    prenom: '',
+    nom: '',
+    courriel: '',
+    telephone: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -48,6 +57,7 @@ function UserSettings() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
       const response = await fetch('http://localhost:4000/changePassword', {
         method: 'POST',
@@ -56,6 +66,8 @@ function UserSettings() {
       });
       const data = await response.json();
       setMessage(data.success ? "Password updated" : "Error, couldn't update password");
+      setNewPassword('');
+      setConfirmNewPassword('');
     } catch (error) {
       console.error('Error updating password:', error);
       setMessage("An error occurred while updating the password.");
@@ -87,6 +99,44 @@ function UserSettings() {
 
   const handleSubmitSave = async (e) => {
     e.preventDefault();
+
+    const errors = { ...validationErrors };
+    let isValid = true;
+
+    if (!validName.test(tempoUser.prenom)) {
+      errors.prenom = "Invalid name: letters only";
+      isValid = false;
+    } else {
+      errors.prenom = '';
+    }
+
+    if (!validName.test(tempoUser.nom)) {
+      errors.nom = "Invalid name: letters only";
+      isValid = false;
+    } else {
+      errors.nom = '';
+    }
+
+    if (!validEmail.test(tempoUser.courriel)) {
+      errors.courriel = "Invalid email adress";
+      isValid = false;
+    } else {
+      errors.courriel = '';
+    }
+
+    if (!validPhoneNumber.test(tempoUser.telephone)) {
+      errors.telephone = "Phone number can only contain numbers";
+      isValid = false;
+    } else {
+      errors.telephone = '';
+    }
+
+    setValidationErrors(errors);
+
+    if (!isValid) {
+      setMessage("Corrige les erreurs du formulaire.");
+      return;
+    }
     try {
       const response = await fetch('http://localhost:4000/saveUserAccountChanges', {
         method: 'POST',
@@ -222,6 +272,7 @@ function UserSettings() {
             {/* Informations du user */}
             <div className="settings-container">
               <div class="row">
+
                 {/* First Name Input */}
                 <div className="input-section col-6">
                   <p style={{ fontSize: '22px', marginBottom: '0.2rem' }}>First Name</p>
@@ -233,8 +284,11 @@ function UserSettings() {
                     value={tempoUser.prenom || ""}
                     onChange={(e) => setTempoUser({ ...tempoUser, prenom: e.target.value })}
                   />
+                  {validationErrors.prenom && (
+                  <p className="text-danger mt-1">{validationErrors.prenom}</p>
+                )}
                 </div>
-
+                
                 {/* Last Name Input */}
                 <div className="input-section col-6">
                   <p style={{ fontSize: '22px', marginBottom: '0.2rem' }}>Last Name</p>
@@ -248,6 +302,9 @@ function UserSettings() {
                   />
                 </div>
               </div>
+              {validationErrors.nom && (
+                <p className="text-danger mt-1">{validationErrors.nom}</p>
+              )}
 
               {/* Email Input */}
               <div className="input-section">
@@ -260,6 +317,9 @@ function UserSettings() {
                   onChange={(e) => setTempoUser({ ...tempoUser, courriel: e.target.value })}
                 />
               </div>
+              {validationErrors.courriel && (
+                <p className="text-danger mt-1">{validationErrors.courriel}</p>
+              )}
 
               {/* Phone Number Input */}
               <div className="input-section">
@@ -272,6 +332,9 @@ function UserSettings() {
                   onChange={(e) => setTempoUser({ ...tempoUser, telephone: e.target.value })}
                 />
               </div>
+              {validationErrors.telephone && (
+                <p className="text-danger mt-1">{validationErrors.telephone}</p>
+              )}
 
               {/* Boutons Cancel et Save*/}
               <div className="row justify-content-center">
@@ -297,9 +360,11 @@ function UserSettings() {
 
 
 
-
+            {/* Container to update the passerword */}
             <div className="settings-container">
               <form onSubmit={handleSubmit} className="mb-3">
+
+
                 <div className="input-section">
                   <p style={{ fontSize: '22px', marginBottom: '0.2rem' }}>Current Password</p>
                   <input
@@ -323,6 +388,9 @@ function UserSettings() {
                     onChange={(e) => setNewPassword(e.target.value)}
                   />
                 </div>
+                {validationErrors.newPassword && (
+                  <p className="text-danger mt-1">{validationErrors.newPassword}</p>
+                )}
 
                 <div className="input-section">
                   <p style={{ fontSize: '22px', marginBottom: '0.2rem' }}>Confirm New Password</p>
