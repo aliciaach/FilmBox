@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import BlackImage from '../assets/BlackImage.png'
-import Header from '../components/Header'; 
+import Header from '../components/Header';
 import { useNavigate } from 'react-router-dom';
 import '../styles/UserSettings.css';
+import { validEmail, validPassword, validName, validPhoneNumber } from './regex';
 
 /*
     https://www.youtube.com/watch?v=oYGhoHW7zqI
@@ -15,9 +16,20 @@ function UserSettings() {
   const [user, setUser] = useState({});
   const [message, setMessage] = useState('');
   const [newPassword, setNewPassword] = useState('');
+  const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [tempoUser, setTempoUser] = useState({});
+  const [currentPassword, setCurrentPassword] = useState('');
   const navigate = useNavigate();
 
+  //Save all the validation erros in the same variable
+  const [validationErrors, setValidationErrors] = useState({
+    prenom: '',
+    nom: '',
+    courriel: '',
+    telephone: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -27,7 +39,7 @@ function UserSettings() {
           setUser(data.user);
           if (data.loggedIn) {
             setUser(data.user);
-            setTempoUser(data.user); 
+            setTempoUser(data.user);
           }
         } else {
           setMessage("SESSION INTROUVABLE");
@@ -40,19 +52,59 @@ function UserSettings() {
 
     fetchUserData();
   }, []);
-  
+
   const initials = ((user.prenom || '?')[0] + (user.nom || '?')[0]).toUpperCase();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const errors = { ...validationErrors };
+    let isValid = true;
+
+    // Check if the password respects the minimum requirement
+    if (!validPassword.test(newPassword)) {
+      errors.newPassword = "Not complexe enough";
+      isValid = false;
+    } else {
+      errors.newPassword = "";
+    }
+
+    // Confirm password match
+    if (newPassword !== confirmNewPassword) {
+      errors.confirmPassword = "Passwords do not match";
+      isValid = false;
+    } else {
+      errors.confirmPassword = "";
+    }
+
+    setValidationErrors(errors);
+
+    if (!isValid) {
+      setValidationErrors(errors); 
+      setMessage("Please fix the password errors before submitting.");
+      return;
+    }
+
+
     try {
       const response = await fetch('http://localhost:4000/changePassword', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: user.courriel, newPassword }),
+        body: JSON.stringify({ email: user.courriel, currentPassword, newPassword }),
       });
       const data = await response.json();
+
+      
+    if (!response.ok) {
+      console.log("Server responded with:", response.status, data.message); 
+      setMessage(data.message || "An unknown error occurred");
+      return;
+    }
+
       setMessage(data.success ? "Password updated" : "Error, couldn't update password");
+      setNewPassword('');
+      setConfirmNewPassword('');
+      setCurrentPassword('');
     } catch (error) {
       console.error('Error updating password:', error);
       setMessage("An error occurred while updating the password.");
@@ -69,8 +121,7 @@ function UserSettings() {
       });
       const data = await response.json();
 
-      if (data.success)
-      {
+      if (data.success) {
         await fetch('http://localhost:4000/end-session', { method: 'POST' });
         navigate('/');
       } else {
@@ -85,12 +136,50 @@ function UserSettings() {
 
   const handleSubmitSave = async (e) => {
     e.preventDefault();
+
+    const errors = { ...validationErrors };
+    let isValid = true;
+
+    if (!validName.test(tempoUser.prenom)) {
+      errors.prenom = "Invalid name: letters only";
+      isValid = false;
+    } else {
+      errors.prenom = '';
+    }
+
+    if (!validName.test(tempoUser.nom)) {
+      errors.nom = "Invalid name: letters only";
+      isValid = false;
+    } else {
+      errors.nom = '';
+    }
+
+    if (!validEmail.test(tempoUser.courriel)) {
+      errors.courriel = "Invalid email adress";
+      isValid = false;
+    } else {
+      errors.courriel = '';
+    }
+
+    if (!validPhoneNumber.test(tempoUser.telephone)) {
+      errors.telephone = "Phone number can only contain numbers";
+      isValid = false;
+    } else {
+      errors.telephone = '';
+    }
+
+    setValidationErrors(errors);
+
+    if (!isValid) {
+      setMessage("Corrige les erreurs du formulaire.");
+      return;
+    }
     try {
       const response = await fetch('http://localhost:4000/saveUserAccountChanges', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          id: tempoUser.id,              
+          id: tempoUser.id,
           prenom: tempoUser.prenom,
           nom: tempoUser.nom,
           courriel: tempoUser.courriel,
@@ -98,12 +187,11 @@ function UserSettings() {
         }),
       });
       const data = await response.json();
-      if (data.success)
-      {
+      if (data.success) {
         console.log("RESPONSE DATA:", data);
         setUser(tempoUser);
         setMessage("USER INFORMATIONS UDPATED!!");
-      } else {  
+      } else {
         setMessage(data.message || "Erreur lors de la mise à jour.");
       }
     } catch (error) {
@@ -117,111 +205,114 @@ function UserSettings() {
     setTempoUser(user);
     setMessage("Changes cancelled.");
   };
-  
+
 
   return (
 
     <>
-    <div style={{
+      <div style={{
         fontFamily: 'Fredoka, sans-serif',
         fontWeight: 300,
-            background: `linear-gradient(to bottom,
+        background: `linear-gradient(to bottom,
                   rgba(5, 14, 66, 1),
 
                   rgba(0, 0, 255, 0.5),
                   rgba(5, 0, 50, 1)),
                   url(${BlackImage})`,
-        
-                  backgroundSize: 'cover', //'auto'
-                  backgroundPosition: 'center',
-                  backgroundRepeat: 'no-repeat',
+
+        backgroundSize: 'cover', //'auto'
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
         minHeight: '100vh',
         color: '#fff'
       }}>
 
-    
+        <Header />
 
-      <div className="d-flex" style={{ minHeight: '100vh', position: 'relative' }} >
 
-      {/* Colonne gauche - Return Button */}
-      <div style={{
-          position: 'absolute',    
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'flex-start',
-          paddingTop: '10vh',   
-          paddingLeft:'10vh'
-        }}>
 
-        {/* Return Button */}
-        <div class="" >
-          <button
-            style={{
-              borderRadius: '50%',
-              width: '50px',
-              height: '50px',
-              backgroundColor: 'rgba(116, 101, 247, 0)',
-              color: '#fff',
-              border: '2px solid #FFFFFF',
-              fontSize: '1.5rem',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-            }}
-            onClick={() => window.history.back()}>
-          
-              &lt;
-          </button>
-        </div> 
-      </div>
+        <div className="d-flex" style={{ minHeight: '100vh', position: 'relative' }} >
 
-        {/* Colonne droite - CONTENU */}
-        <div className="flex-grow-1" style={{  maxWidth: '55%', margin: '0 auto' }}>
+          {/* Colonne gauche - Return Button */}
+          <div style={{
+            position: 'absolute',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'flex-start',
+            paddingTop: '10vh',
+            paddingLeft: '10vh'
+          }}>
 
-          {/* Titre */}
-          <h2 style={{ fontSize: '40px', fontFamily: "fredoka", fontWeight: 'bolder', marginTop: '10vh', marginBottom: '5vh' }}>
-            User Settings
-          </h2>
-
-          {/* TOP PART SECTION WITH USER'S NAME AND ALL*/}
-          <div class="mb-4 d-flex align-items-center gap-3" style={{ textAlign: 'start' }}>
-
-            {/* Icone profile avec les initiale */}
-            {initials && (
-              <div
+            {/* Return Button */}
+            <div class="" >
+              <button
                 style={{
-                width: '45px',
-                height: '45px',
-                borderRadius: '50%',
-                backgroundColor: '#fff',
-                color: 'black',
-                fontSize: '18px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginRight: '8px'
-              }}
-              >
-                {initials}
-              </div>
-            )}
+                  borderRadius: '50%',
+                  width: '50px',
+                  height: '50px',
+                  backgroundColor: 'rgba(116, 101, 247, 0)',
+                  color: '#fff',
+                  border: '2px solid #FFFFFF',
+                  fontSize: '1.5rem',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                }}
+                onClick={() => window.history.back()}>
 
-            {/* Nom Prenom */}
-            <h3 className="mb-0" style={{ fontSize: '28px', fontFamily: 'Fredoka, sans-serif', fontWeight: 'bolder' }}>
-              {user.prenom} {user.nom}
-            </h3>      
-
+                &lt;
+              </button>
+            </div>
           </div>
-          
-          {/* Ligne séparatrice */}
-          <div className="w-100 " style={{ height: '1px', backgroundColor: 'rgba(255, 255, 255, 0.5)'}}/>   
 
-          {/* Informations du user */}
-          <div className="settings-container">
+          {/* Colonne droite - CONTENU */}
+          <div className="flex-grow-1" style={{ maxWidth: '55%', margin: '0 auto' }}>
+
+            {/* Titre */}
+            <h2 style={{ fontSize: '40px', fontFamily: "fredoka", fontWeight: 'bolder', marginTop: '10vh', marginBottom: '5vh' }}>
+              User Settings
+            </h2>
+
+            {/* TOP PART SECTION WITH USER'S NAME AND ALL*/}
+            <div class="mb-4 d-flex align-items-center gap-3" style={{ textAlign: 'start' }}>
+
+              {/* Icone profile avec les initiale */}
+              {initials && (
+                <div
+                  style={{
+                    width: '45px',
+                    height: '45px',
+                    borderRadius: '50%',
+                    backgroundColor: '#fff',
+                    color: 'black',
+                    fontSize: '18px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginRight: '8px'
+                  }}
+                >
+                  {initials}
+                </div>
+              )}
+
+              {/* Nom Prenom */}
+              <h3 className="mb-0" style={{ fontSize: '28px', fontFamily: 'Fredoka, sans-serif', fontWeight: 'bolder' }}>
+                {user.prenom} {user.nom}
+              </h3>
+
+            </div>
+
+            {/* Ligne séparatrice */}
+            <div className="w-100 " style={{ height: '1px', backgroundColor: 'rgba(255, 255, 255, 0.5)' }} />
+
+            {/* Informations du user */}
+            <div className="settings-container">
               <div class="row">
+
                 {/* First Name Input */}
                 <div className="input-section col-6">
-                  <p style={{ fontSize: '22px', marginBottom: '0.2rem'}}>First Name</p>
+                  <p style={{ fontSize: '22px', marginBottom: '0.2rem' }}>First Name</p>
                   <input
                     className="inputFormSettings"
                     type="text"
@@ -230,6 +321,9 @@ function UserSettings() {
                     value={tempoUser.prenom || ""}
                     onChange={(e) => setTempoUser({ ...tempoUser, prenom: e.target.value })}
                   />
+                  {validationErrors.prenom && (
+                    <p className="text-danger mt-1">{validationErrors.prenom}</p>
+                  )}
                 </div>
 
                 {/* Last Name Input */}
@@ -245,7 +339,10 @@ function UserSettings() {
                   />
                 </div>
               </div>
-              
+              {validationErrors.nom && (
+                <p className="text-danger mt-1">{validationErrors.nom}</p>
+              )}
+
               {/* Email Input */}
               <div className="input-section">
                 <p style={{ fontSize: '22px', marginBottom: '0.2rem' }}>Email</p>
@@ -257,6 +354,9 @@ function UserSettings() {
                   onChange={(e) => setTempoUser({ ...tempoUser, courriel: e.target.value })}
                 />
               </div>
+              {validationErrors.courriel && (
+                <p className="text-danger mt-1">{validationErrors.courriel}</p>
+              )}
 
               {/* Phone Number Input */}
               <div className="input-section">
@@ -267,82 +367,111 @@ function UserSettings() {
                   placeholder={user.telephone || "514-321-1234"}
                   value={tempoUser.telephone || ""}
                   onChange={(e) => setTempoUser({ ...tempoUser, telephone: e.target.value })}
-
                 />
               </div>
+              {validationErrors.telephone && (
+                <p className="text-danger mt-1">{validationErrors.telephone}</p>
+              )}
 
-              {/* Password Input (read-only) */}
-              <div className="input-section">
-                <p style={{ fontSize: '22px', marginBottom: '0.2rem' }}>Password</p>
-                <input
-                  className="inputFormSettings"
-                  type="password"
-                  placeholder="***********"
-                  readOnly
-                />
+              {/* Boutons Cancel et Save*/}
+              <div className="row justify-content-center">
+
+                <div className="col-auto">
+                  <form onSubmit={handleSubmitCancel}>
+                    <button type="submit" className="btn me-2" style={{ color: "white" }}>
+                      Cancel
+                    </button>
+                  </form>
+                </div>
+
+                <div className="col-auto">
+                  <form onSubmit={handleSubmitSave}>
+                    <button type="submit" className="btnSaveCustom w-100" style={{ backgroundColor: "rgba(111, 79, 255, 0.3)", color: "white", }} >
+                      Save
+                    </button>
+                  </form>
+                </div>
               </div>
 
-              {/* Confirm New Password Input */}
-              <div className="mb-3">
-                <p style={{ fontSize: '22px', marginBottom: '0.2rem' }}>New Password</p>
-                <input
-                  className="inputFormSettings"
-                  type="password"
-
-                />
-              </div>
-          </div>
-            {/* Change Password Form 
-            <form onSubmit={handleSubmit} className="mb-3">
-              <input
-                type="password"
-                placeholder="New Password"
-                required
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                style={{
-                  padding: '10px',
-                  width: '50%',
-                  marginRight: '10px'
-                }}
-              />
-              <button type="submit" className="btn btn-primary">
-                Update Password
-              </button>
-            </form>*/}
-
-          {/* Boutons Cancel et Save*/}          
-          <div className="row justify-content-center">
-
-            <div className="col-auto">
-              <form onSubmit={handleSubmitCancel}>
-                <button type="submit" className="btn me-2" style={{ color: "white" }}>
-                  Cancel
-                </button>
-              </form>
             </div>
 
-            <div className="col-auto">
-              <form onSubmit={handleSubmitSave}>
-                <button type="submit" className="btnSaveCustom w-100" style={{ backgroundColor: "rgba(111, 79, 255, 0.3)", color: "white", }} >
-                  Save
-                </button>
+
+
+            {/* Container to update the passerword */}
+            <div className="settings-container">
+              <form onSubmit={handleSubmit} className="mb-3">
+
+
+                <div className="input-section">
+                  <p style={{ fontSize: '22px', marginBottom: '0.2rem' }}>Current Password</p>
+                  <input
+                    className="inputFormSettings"
+                    type="password"
+                    placeholder="Enter current password"
+                    required
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                  />
+                </div>
+
+                <div className="input-section">
+                  <p style={{ fontSize: '22px', marginBottom: '0.2rem' }}>New Password</p>
+                  <input
+                    className="inputFormSettings"
+                    type="password"
+                    placeholder="Enter new password"
+                    required
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                  />
+                </div>
+                {validationErrors.newPassword && (
+                  <p className="text-danger mt-1">{validationErrors.newPassword}</p>
+                )}
+
+                <div className="input-section">
+                  <p style={{ fontSize: '22px', marginBottom: '0.2rem' }}>Confirm New Password</p>
+                  <input
+                    className="inputFormSettings"
+                    type="password"
+                    placeholder="Confirm new password"
+                    required
+                    value={confirmNewPassword}
+                    onChange={(e) => setConfirmNewPassword(e.target.value)}
+                  />
+                </div>
+                {validationErrors.confirmPassword && (
+                  <p className="text-danger mt-1">{validationErrors.confirmPassword}</p>
+                )}
+
+                <div className="text-end" style={{ width: '100%' }}>
+                  <button type="submit" className="btnSaveCustom"
+                    style={{
+                      backgroundColor: "rgba(111, 79, 255, 0.3)",
+                      color: "white",
+                      width: "200px",
+                    }}
+                  >
+                    Update Password
+                  </button>
+                </div>
+
               </form>
             </div>
-          </div>
-
 
             {/* Bouton Delete Account */}
-            <form onSubmit={handleSubmitDelete}>
-              <button type="submit" className="btnDeleteCustom">
-                Delete Account
-              </button>
-            </form>
-            
-            <p style={{ fontSize: '10px'}}>Ce site est protégé par reCAPTCHA et la politique de confidentialité et les conditions d'utilisation de FilmBox s'appliquent.</p>
+            <div className="d-flex justify-content-center mt-4">
+              <form onSubmit={handleSubmitDelete}>
+                <button type="submit" className="btnDeleteCustom">
+                  Delete Account
+                </button>
+              </form>
+            </div>
+
+            <p style={{ fontSize: '10px' }}>Ce site est protégé par reCAPTCHA et la politique de confidentialité et les conditions d'utilisation de FilmBox s'appliquent.</p>
+          </div>
         </div>
       </div>
-    </div>
     </>
   );
 }
