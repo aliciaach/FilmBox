@@ -46,6 +46,12 @@ app.use(
     saveUninitialized: false,
   })
 );
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 
 app.get("/get-session", (req, res) => {
   if (req.session.user) {
@@ -296,7 +302,7 @@ app.get("/getUsers", async (req, res) => {
       return res.status(500).json({ message: "Erreur du serveur" });
     }
 
-app.get("/");
+    app.get("/");
     if (resultats.length === 0) {
       // Si aucun utilisateur n'a été trouvé avec cet ID, on renvoie une erreur 404
       return res.status(404).json({ message: "Utilisateur non trouvé" });
@@ -792,13 +798,16 @@ app.delete("/mongo/removeMovieFromList/:listId/:movieId", async (req, res) => {
     const list = db.collection("CustomLists");
 
     const result = await list.updateOne(
-      { _id:  new ObjectId(listId) },
+      { _id: new ObjectId(listId) },
       { $pull: { movies: { _id: new ObjectId(movieId) } } }
     );
     res.json({ message: "Movie removed from list" });
   } catch (error) {
-    console.error("Error removing movie: " + movieId + "from list: " + listId, error);
-    res.status(500).json({ message: "Server error"});
+    console.error(
+      "Error removing movie: " + movieId + "from list: " + listId,
+      error
+    );
+    res.status(500).json({ message: "Server error" });
   } finally {
     await client.close();
   }
@@ -881,14 +890,17 @@ app.get("/mongo/getPersonalizedList", async (req, res) => {
         //fetch the movies from the api directly in the backend, and send all the data movie straight to the frontend
         if (Array.isArray(list.movies)) {
           for (const movieId of list.movies) {
-
-            const tmdbResponse = await fetch(`https://api.themoviedb.org/3/movie/${movieId}`, {
-              method: "GET",
-              headers: {
-                accept: "application/json",
-                Authorization: "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+            const tmdbResponse = await fetch(
+              `https://api.themoviedb.org/3/movie/${movieId}`,
+              {
+                method: "GET",
+                headers: {
+                  accept: "application/json",
+                  Authorization:
+                    "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+                },
               }
-            });
+            );
             const movieData = await tmdbResponse.json();
             movieDetails.push(movieData);
           }
@@ -1246,8 +1258,6 @@ app.delete("/api/watched/:userId/:movieId", (req, res) => {
 const uri = "mongodb://localhost:27017";
 const client = new MongoClient(uri);
 const dbName = "FilmBox";
-
-app.use(cors());
 
 // API to fetch admins
 app.get("/adminsTab", async (req, res) => {
