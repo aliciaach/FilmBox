@@ -5,6 +5,7 @@ import Header from '../components/Header';
 import { useNavigate } from 'react-router-dom';
 import '../styles/UserSettings.css';
 
+
 /*
     https://www.youtube.com/watch?v=oYGhoHW7zqI
     Pour ajouter token eventuellement, cookies et securite : 
@@ -139,6 +140,8 @@ function UserSettings() {
         color: '#fff'
       }}>
 
+        <Header />
+
 
 
         <div className="d-flex" style={{ minHeight: '100vh', position: 'relative' }} >
@@ -269,6 +272,7 @@ function UserSettings() {
                   onChange={(e) => setTempoUser({ ...tempoUser, telephone: e.target.value })}
                 />
               </div>
+
               {/* Boutons Cancel et Save*/}
               <div className="row justify-content-center">
 
