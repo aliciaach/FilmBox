@@ -206,12 +206,13 @@ app.post("/saveUserAccountChanges", (req, res) => {
 
   const sql = `UPDATE utilisateur SET prenom = ?, nom = ?, courriel = ?, telephone = ? WHERE utilisateur_id = ?`;
 
+  console.log("Values received:", { id, prenom, nom, courriel, telephone });
   con.query(sql, [prenom, nom, courriel, telephone, id], (err, results) => {
     if (err) {
       console.error("Database error: ", err);
       return res.status(500).json({ message: "Internal server error" });
     }
-
+    console.log("typeof id:", typeof id); // Should be "number"
     if (results.affectedRows > 0) {
       console.log("USER INFO UPDATED!");
       return res
@@ -262,7 +263,7 @@ app.post("/ChangePassword", (req, res) => {
 
           const sql = "UPDATE utilisateur SET mot_de_passe = ? WHERE courriel = ?";
           
-          con.query(sql, [hashedPassword, email], (err, results) => {
+          con.query(sql, [hashedNewPassword, email], (err, results) => {
             if (err) {
               console.error("Database error: ", err);
               return res.status(500).json({ message: "Internal server error" });
