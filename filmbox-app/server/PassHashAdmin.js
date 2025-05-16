@@ -1,3 +1,4 @@
+////////////////////CODE FAITE PAR CHATGPT POUR CONVERTIR PLAIN TEXT EN HASH////////////////////////
 import { MongoClient } from "mongodb";
 import bcrypt from "bcrypt";
 
