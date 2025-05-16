@@ -134,7 +134,7 @@ const FilmInfo = () => {
         }),
       });
 
-      setSuccessMsg("✅ Rating added!");
+      setSuccessMsg("Rating added!!!!");
       setTimeout(() => setSuccessMsg(""), 3000); //permet d'Afficher le message pour 3 seconds
 
       const watchedRes = await fetch(`http://localhost:4000/api/watched/${userId}`);
