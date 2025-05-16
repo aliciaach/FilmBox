@@ -96,24 +96,41 @@ app.post("/login", (req, res) => {
       return res.status(500).json({ message: "Internal server error" });
     }
     if (results.length > 0) {
-      req.session.user = {
-        id: results[0].utilisateur_id, // Adjust column name if needed
-        prenom: results[0].prenom,
-        nom: results[0].nom,
-        courriel: results[0].courriel,
-        telephone: results[0].telephone,
-      };
+      const user = results[0];
+
+      bcrypt.compare(password, user.mot_de_passe, (err, isMatch) => {
+        if (err) {
+          console.error("Error comparing passwords: ", err);
+          return res.status(500).json({ message: "Internal server error" });
+        }
+
+        if (!isMatch) {
+          return res.status(401).json({
+            success: false,
+            message: "Access denied, wrong password",
+          });
+        }
+
+        req.session.user = {
+          id: user.utilisateur_id,
+          prenom: user.prenom,
+          nom: user.nom,
+          courriel: user.courriel,
+          telephone: user.telephone,
+        };
+
       console.log("USER FOUNDDDDDD" + results[0].courriel);
       return res.status(200).json({
         success: true,
         message: "Login Successful!",
         userId: results[0].utilisateur_id,
       });
+      });
     } else {
       console.log("USER NOT FOUND");
       return res.status(401).json({
         success: false,
-        message: "Access denied, wrong password or email",
+        message: "Not account associated to this email",
       });
     }
   });
