@@ -1,0 +1,77 @@
+/* Bloc central */
+.settings-container {
+    background: rgba(0, 0, 0, 0.4);
+    padding: 3rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    margin-top: 4rem;
+    margin-bottom: 4rem;
+  }
+  
+  /* Espacement entre les sections */
+  .input-section {
+    margin-bottom: 2rem;
+  }
+ 
+ /* input */   
+  .inputFormSettings {
+    border: solid #7465F7;
+    background-color: rgba(116, 101, 247, 0.1);
+    outline: none;
+    background-position: right 10px center;
+    background-repeat: no-repeat;
+    background-size: 20px;
+    color: white;
+    border-radius: 8px;
+    padding: 12px 18px;
+    width: 100%;
+  }
+  
+  .inputFormSettings:focus {
+    border: 2px solid rgba(116, 101, 247, 0.9);
+    box-shadow: 0 0 15px rgba(116, 101, 247, 0.5);
+  }
+
+  /* Nouveau bouton Save stylisé */
+  .btnSaveCustom {
+    background: linear-gradient(to right, #2b22a0, #735fd6);
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    font-size: 14px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+  
+  .btnSaveCustom:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 30px rgba(116, 101, 247, 0.5);
+    background: linear-gradient(to right, #5921ba, #be79ff);
+  }
+
+
+  .btnDeleteCustom {
+    background: transparent;
+    color: #c40000;
+    border: 1.8px solid #ad0000;
+    padding: 6px 15px;
+    font-size: 16px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    margin-bottom: 12px;
+  }
+  
+  .btnDeleteCustom:hover {
+    background-color: rgba(95, 0, 0, 0.455);
+    box-shadow: 0 0 17px rgba(255, 0, 0, 0.7);
+    color: white;
+    transform: scale(1.03);
+  }
+  
+  .btnDeleteCustom:focus {
+    outline: none;
+    background-color: rgba(255, 77, 77, 0.2);
+    box-shadow: 0 0 20px rgba(165, 0, 0, 0.8);
+  }
+  

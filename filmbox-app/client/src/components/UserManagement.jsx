@@ -27,46 +27,52 @@ function ManageUsers(){
         setUsers(data);  // Mettre à jour la liste des utilisateurs avec les nouvelles données
       })
       .catch((erreur) => setError(erreur.message));  // Gérer les erreurs
-  }, []);
+
+              // Récupérer l'admin connecté
+    fetch("http://localhost:4000/get-session", { credentials: 'include' }) //pour envoyer les cookies avec la requête
+    .then((response) => {
+      if (!response.ok) throw new Error("Erreur dans la récupération de la session");
+      return response.json();
+    })
+    .then((data) => {
+      if(data.loggedIn){
+        setAdmin(data.user);
+      }
+
+    })
+    .catch((erreur) => setError(erreur.message));  // Gérer les erreurs
+    }, []);
  
-  const clickObtenirInformationsUser = (userId) => {
+    const clickObtenirInformationsUser = (userId) => {
     const user = users.find(u => u.utilisateur_id === userId);
     setUserSelectionne(user);
  
-};    
-/*
-    // Récupérer l'admin connecté
-    fetch("http://localhost:4000/get-session", { credentials: 'include' }) //pour envoyer les cookies avec la requête
-      .then((response) => {
-        if (!response.ok) throw new Error("Erreur dans la récupération de la session");
-        return response.json();
-      })
-      .then((data) => {
-        if(data.loggedIn){
-          setAdmin(data.user);
-        }
- 
-      })
-      .catch((erreur) => setError(erreur.message));  // Gérer les erreurs
- 
- 
- 
+     
     //Changer compte à suspended //COMME CHANGE PASSWORD dans UserSettings
     const suspendAccount = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch('http://localhost:4000/suspendAccount', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: userSelectionne.utilisateur_id }),
-      });
-      const data = await response.json();
-      setMessage(data.success ? "User suspended" : "Error, couldn't suspend user");
-    } catch (error) {
-      console.error('Error suspending user:', error);
-      setMessage("An error occurred while  suspending the user.");
-    }
-  };
+      e.preventDefault();
+      try {
+        const response = await fetch('http://localhost:4000/suspendAccount', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: userSelectionne.utilisateur_id }),
+        });
+        const data = await response.json();
+        setMessage(data.success ? "User suspended" : "Error, couldn't suspend user");
+      } catch (error) {
+        console.error('Error suspending user:', error);
+        setMessage("An error occurred while  suspending the user.");
+      }
+    };
+
+
+};    
+/*
+
+ 
+ 
+
+
  */
  
  
@@ -141,13 +147,18 @@ return (
             data-bs-toggle="dropdown"
             aria-expanded="false"
           >
-            <img
-              src={photoProfil}
-              alt="icone_profil"
-              width="40px"
-              height="40px"
-              className="me-2 rounded-circle "
-            />
+          {/* Initiales de l'Admin */}
+          <div
+            className="me-2 rounded-circle bg-white text-dark d-flex align-items-center justify-content-center"
+            style={{
+              width: '40px',
+              height: '40px',
+              fontSize: '14px',
+              fontWeight: 'bold'
+            }}
+          >
+            {(admin?.prenom?.[0] || '?') + (admin?.nom?.[0] || '?')}
+          </div>
             <i className="bi bi-person-circle fs-5" />
             <span>Profil</span>
             <i className="bi bi-caret-down-fill small" />
@@ -176,9 +187,9 @@ return (
      
       {/* Header */}
       <div className="d-flex justify-content-between align-items-center p-4 mt-4">
-       {/* <h1> {admin ? `${admin.prenom} ${admin.nom} - Admin` : "Admin Name - Role Level"} </h1> {/* Je mets par défaut que le role c'est "admin" mais je vois pas d'Autre
+       <h1> {admin ? `${admin.prenom} ${admin.nom} - Admin` : "Admin Name - Role Level"} </h1> {/* Je mets par défaut que le role c'est "admin" mais je vois pas d'Autre
                                                                                                   choix dans la BDD que Admin, je fais quoiiii  AAAAAA */}
-        <h1> Admin Name - Role Level</h1>
+         {/*<h1> Admin Name - Role Level</h1>*/}
         <button className="btn btn-outline-light">Logout</button>
       </div>
  
@@ -281,9 +292,12 @@ return (
             <div className="section-grow" style={{ flexGrow: 2 }}>
               <div>
                   <div className="d-flex align-items-center gap-3 ms-2">
-                    <div className="ratio ratio-1x1" style={{ width: '60px' }}>
-                      <img src={photoProfil} className="rounded-circle img-fluid" style={{ objectFit: 'cover' }}/>
-                    </div>
+                  {/* Cercle avec les initiales du user selectionne*/}
+                  <div
+                    className="rounded-circle bg-white d-flex align-items-center justify-content-center text-dark"
+                    style={{ width: '60px', height: '60px', fontSize: '20px', fontWeight: 'bold' }} >
+                    {userSelectionne ? (userSelectionne.prenom?.[0] || '?') + (userSelectionne.nom?.[0] || '?') : 'JD'}
+                  </div>
                       <h2 className="mb-0">{userSelectionne ? `${userSelectionne.prenom} ${userSelectionne.nom}` : "John Doe"}</h2>
                   </div>
              

@@ -7,8 +7,7 @@ function Footer() {
       className="footer mt-auto py-4 bg-black text-light"
       style={{ 
         background: `linear-gradient(to bottom,
-                            rgb(6, 0, 63),
-                            rgb(0, 0, 0))`,
+                  rgba(5, 0, 50, 1), rgba(0, 0, 0, 1)) `,
         fontSize: "10px" 
       }}
     >

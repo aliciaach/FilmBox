@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Header from '../components/Header'; 
+import Header from '../components/Header';
 import "bootstrap/dist/css/bootstrap.min.css";
 import imageLogo from "../assets/logo_FilmBox.png";
 import BlackImage from '../assets/BlackImage.png';
-import '../App.css'; 
+import '../App.css';
 import { Container } from 'react-bootstrap';
 import WickedTrailer from '../assets/Video/WickedTrailer.mp4';
 import WickedImage from '../assets/wicked.jpg';
 import { useRef } from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
+import '../styles/PageFilm.css';
 
 const ListeFilms = () => {
   const [films, setFilms] = useState([]);
@@ -21,7 +22,7 @@ const ListeFilms = () => {
   const [upcomingMovies, setUpcomingMovies] = useState([]);
   const [actionMovies, setActionMovies] = useState([]);
 
-  
+
   //Filter states
   const [filters, setFilters] = useState({
     genre: '',
@@ -73,7 +74,7 @@ const ListeFilms = () => {
   ];
 
 
-  
+
   const durationOptions = [
     { value: '', label: 'Toutes les durées' },
     { value: 'court', label: 'Moins de 90 min' },
@@ -96,47 +97,47 @@ const ListeFilms = () => {
       .catch(erreur => setErreur(erreur.message));
 
 
-      //this one is for getting the top rated movies
+    //this one is for getting the top rated movies
     fetch("http://localhost:4000/api/topRatedMovies")
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Problème dans le chargement des top rated movies");
-      }
-      return response.json();
-    })
-    .then(donnees => setTopRatedMovies(donnees))
-    .catch(erreur => setErreur(erreur.message));
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Problème dans le chargement des top rated movies");
+        }
+        return response.json();
+      })
+      .then(donnees => setTopRatedMovies(donnees))
+      .catch(erreur => setErreur(erreur.message));
 
 
-     //this one is for getting upcoming movies 
-     fetch("http://localhost:4000/api/upcomingMovies")
-     .then((response) => {
-       if (!response.ok) {
-         throw new Error("Problème dans le chargement des upcoming movies");
-       }
-       return response.json();
-     })
-     .then(donnees => setUpcomingMovies(donnees))
-     .catch(erreur => setErreur(erreur.message));
+    //this one is for getting upcoming movies 
+    fetch("http://localhost:4000/api/upcomingMovies")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Problème dans le chargement des upcoming movies");
+        }
+        return response.json();
+      })
+      .then(donnees => setUpcomingMovies(donnees))
+      .catch(erreur => setErreur(erreur.message));
 
-     //this one is for getting actions movies 
-     fetch("http://localhost:4000/api/moviesByGenres?genre=28")
-     .then((response) => {
-       if (!response.ok) {
-         throw new Error("Problème dans le chargement des films d'actions");
-       }
-       return response.json();
-     })
-     .then(donnees => setActionMovies(donnees))
-     .catch(erreur => setErreur(erreur.message));
+    //this one is for getting actions movies 
+    fetch("http://localhost:4000/api/moviesByGenres?genre=28")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Problème dans le chargement des films d'actions");
+        }
+        return response.json();
+      })
+      .then(donnees => setActionMovies(donnees))
+      .catch(erreur => setErreur(erreur.message));
 
-    
+
   }, []);
 
   useEffect(() => {
     applyFilters();
   }, [filters, films]);
-  
+
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -148,13 +149,13 @@ const ListeFilms = () => {
 
   const applyFilters = () => {
     let result = [...films];
-    
+
     if (filters.genre) {
-      result = result.filter(film => 
+      result = result.filter(film =>
         film.genre_ids && film.genre_ids.includes(parseInt(filters.genre))
       );
     }
-    
+
     if (filters.decade) {
       const decadeStart = parseInt(filters.decade);
       const decadeEnd = decadeStart + 9;
@@ -164,22 +165,22 @@ const ListeFilms = () => {
         return year >= decadeStart && year <= decadeEnd;
       });
     }
-    
+
     if (filters.country) {
-      result = result.filter(film => 
+      result = result.filter(film =>
         film.original_language === filters.country.toLowerCase()
       );
     }
-    
+
     if (filters.language) {
-      result = result.filter(film => 
+      result = result.filter(film =>
         film.original_language === filters.language.toLowerCase()
       );
     }
-    
+
     if (filters.duration) {
       result = result.filter(film => {
-        
+
         if (!film.runtime) return false;
         if (filters.duration === 'court') return film.runtime < 90;
         if (filters.duration === 'moyen') return film.runtime >= 90 && film.runtime <= 120;
@@ -201,28 +202,59 @@ const ListeFilms = () => {
     setFilteredFilms(films);
   };
 
+  // https://www.youtube.com/watch?v=1kVZEhg3Q_c
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const containerRef = useRef();
+
+  const containerRefDiscovery = useRef();
+  const containerRefUpcoming = useRef();
+  const containerRefTopRated = useRef();
+  const containerRefAction = useRef();
+
+
+  // ancienne const (venant de la vidéo) 
+  // UTILISER COMME ÇA : handleScrollAncien (-160) et (160)
+  const handleScrollAncien = (scrollAmount) => {
+    const newScrollPosition = scrollPosition + scrollAmount;
+    setScrollPosition(newScrollPosition);
+    containerRef.current.scrollLeft = newScrollPosition;
+  };
+
+  // nouvelle const (aidée par chat)
+  const handleScroll = (direction, ref) => {
+    if (ref.current) {
+      const container = ref.current;
+      const scrollAmount = container.clientWidth; // largeur visible de la zone de scroll
+      const newScrollPosition = container.scrollLeft + direction * scrollAmount;
+
+      container.scrollLeft = newScrollPosition;
+      setScrollPosition(newScrollPosition);
+    }
+  };
+
   return (
-    <div className="min-vh-100" 
-        style={{
-               background: `linear-gradient(to bottom,
+    <div className="min-vh-100"
+      style={{
+        background: `linear-gradient(to bottom,
                     rgba(7, 0, 66, 1),
                     rgba(5, 0, 50, 1)),
                     url(${WickedImage})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    backgroundRepeat: 'no-repeat',
-          minHeight: '100vh',
-          color: '#fff',
-          fontFamily: "Fredoka",
-        }}>
-          
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        minHeight: '100vh',
+        color: '#fff',
+        fontFamily: "Fredoka",
+      }}>
+
       <div className="text-center mt-0">
-        <div style={{ 
-          position: 'relative', 
-          width: '100%', 
+        <div style={{
+          position: 'relative',
+          width: '100%',
           minHeight: '70vh',
-          overflow: 'hidden' }}>
-          
+          overflow: 'hidden'
+        }}>
+
           <video
             autoPlay
             muted
@@ -239,15 +271,15 @@ const ListeFilms = () => {
             }}
             ref={videoRef}
           >
-            
+
             <source src={WickedTrailer} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
-          
-            <Header />
-          
-          <div className="movie-info" 
-            style={{ 
+
+          <Header />
+
+          <div className="movie-info"
+            style={{
               position: 'absolute',
               bottom: '40px',
               left: '40px',
@@ -257,16 +289,16 @@ const ListeFilms = () => {
               paddingBottom: '40px',
             }}
           >
-            <p style={{fontSize: "30px"}}>Popular</p>
-            <p style={{fontSize: "150px", fontFamily: "Jomhuria, cursive", marginBottom: "-60px", marginTop: "-60px"}}>WICKED</p>
+            <p style={{ fontSize: "30px" }}>Popular</p>
+            <p style={{ fontSize: "150px", fontFamily: "Jomhuria, cursive", marginBottom: "-60px", marginTop: "-60px" }}>WICKED</p>
             <p>
-              Elphaba, a young woman with green skin, as she navigates life at Shiz University and forms an unlikely friendship with the popular Galinda. 
-              Their bond deepens as they encounter the Wizard of Oz, leading to a series of events that ultimately shape their destinies and transform  
+              Elphaba, a young woman with green skin, as she navigates life at Shiz University and forms an unlikely friendship with the popular Galinda.
+              Their bond deepens as they encounter the Wizard of Oz, leading to a series of events that ultimately shape their destinies and transform
               them into the Wicked Witch of the West and Glinda the Good.
             </p>
-            <button className="btn btn-light" style={{borderRadius: "0px", border: "0px", backgroundColor: "#0352fc", color: "white", fontFamily: "Fredoka"}}>ADD TO WATCHLIST</button>
+            <button className="btn btn-light" style={{ borderRadius: "0px", border: "0px", backgroundColor: "#0352fc", color: "white", fontFamily: "Fredoka" }}>ADD TO WATCHLIST</button>
           </div>
-          
+
           <div
             style={{
               position: 'absolute',
@@ -283,10 +315,10 @@ const ListeFilms = () => {
       </div>
 
       {/* Movie List Section */}
-      <div className="container-fluid text-center mt-0" style={{paddingTop: '50px'}}>
+      <div className="container-fluid text-center mt-0" style={{ paddingTop: '50px' }}>
         {/* Filtres déroulants */}
         <div className="mb-4 text-start">
-          <button 
+          <button
             className="btn btn-primary dropdown-toggle"
             type="button"
             onClick={() => setShowFilters(!showFilters)}
@@ -300,16 +332,16 @@ const ListeFilms = () => {
           </button>
           <div style={{ position: 'relative' }}>
             {showFilters && (
-              <div className="bg-dark p-3 mt-2" 
-                style={{ 
-                  width: '300px', 
+              <div className="bg-dark p-3 mt-2"
+                style={{
+                  width: '300px',
                   position: 'absolute',
                   left: '0',
                   zIndex: 10
                 }}>
                 <div className="mb-3">
                   <label className="form-label text-white">Genre</label>
-                  <select 
+                  <select
                     className="form-select bg-secondary text-white"
                     name="genre"
                     value={filters.genre}
@@ -322,10 +354,10 @@ const ListeFilms = () => {
                     ))}
                   </select>
                 </div>
-                
+
                 <div className="mb-3">
                   <label className="form-label text-white">Décennie</label>
-                  <select 
+                  <select
                     className="form-select bg-secondary text-white"
                     name="decade"
                     value={filters.decade}
@@ -338,10 +370,10 @@ const ListeFilms = () => {
                     ))}
                   </select>
                 </div>
-                
+
                 <div className="mb-3">
                   <label className="form-label text-white">Pays d'origine</label>
-                  <select 
+                  <select
                     className="form-select bg-secondary text-white"
                     name="country"
                     value={filters.country}
@@ -354,10 +386,10 @@ const ListeFilms = () => {
                     ))}
                   </select>
                 </div>
-                
+
                 <div className="mb-3">
                   <label className="form-label text-white">Langue originale</label>
-                  <select 
+                  <select
                     className="form-select bg-secondary text-white"
                     name="language"
                     value={filters.language}
@@ -370,10 +402,10 @@ const ListeFilms = () => {
                     ))}
                   </select>
                 </div>
-                
+
                 <div className="mb-3">
                   <label className="form-label text-white">Durée</label>
-                  <select 
+                  <select
                     className="form-select bg-secondary text-white"
                     name="duration"
                     value={filters.duration}
@@ -386,15 +418,15 @@ const ListeFilms = () => {
                     ))}
                   </select>
                 </div>
-                
+
                 <div className="d-flex justify-content-between">
-                  <button 
+                  <button
                     className="btn btn-outline-light"
                     onClick={resetFilters}
                   >
                     Reset
                   </button>
-                  <button 
+                  <button
                     className="btn btn-primary"
                     onClick={() => setShowFilters(false)}
                   >
@@ -405,126 +437,170 @@ const ListeFilms = () => {
             )}
           </div>
         </div>
-        
+
         {erreur ? (
           <p className="text-danger">{erreur}</p>
         ) : (
+
           <div>
 
-        <div style={{
-          fontSize: "30px",
-          textAlign: "left",
-          lineHeight: "1.2"
-        }}>
-          Start your next discovery here
-        </div>
-          <div className="horizontal-scroll">
-  {filteredFilms.map((film, index) => {
-    let cheminImage = film.poster_path 
-      ? `https://image.tmdb.org/t/p/w500/${film.poster_path}`
-      : BlackImage;
+            {/* Section Discovery */}
 
-    return (
-      <div key={film.id || index} className="movie-card">
-        <Link to={`/movies/${film.id}`}>
-          <img
-            src={cheminImage}
-            alt={film.title}
-            style={{ width: "150px", height: "225px", objectFit: "cover" }}
-            onError={(e) => { e.target.src = BlackImage; }}
-          />
-        </Link>
-      </div>
-    );
-  })}
-      </div>
+            <div className="titre-section">
+              Start your next discovery here
+            </div>
 
-      <div style={{
-        fontSize: "30px",
-        textAlign: "left",
-        lineHeight: "1.2"
-      }}>
-        Sneak a peek at the future – Coming soon...
-      </div>
-  <div className="horizontal-scroll">
-    {upcomingMovies.map((film, index) => {
-      let cheminImage = film.poster_path 
-        ? `https://image.tmdb.org/t/p/w500/${film.poster_path}`
-        : BlackImage;
+            <div style={{ display: "flex", alignItems: "center", position: "relative" }}>
 
-      return (
-        <div key={`second-${film.id || index}`} className="movie-card">
-          <Link to={`/movies/${film.id}`}>
-            <img
-              src={cheminImage}
-              alt={film.title}
-              style={{ width: "150px", height: "225px", objectFit: "cover" }}
-              onError={(e) => { e.target.src = BlackImage; }}
-            />
-          </Link>
-        </div>
-      );
-    })}
-  </div>
+              <button className="boutonScroll-gauche" onClick={() => handleScroll(-1, containerRefDiscovery)} > {/* Bouton gauche */}
+                &lt;
+              </button>
 
+              <div className="horizontal-scroll horizontal-scrollbar" ref={containerRefDiscovery} >
+                {filteredFilms.map((film, index) => {
+                  let cheminImage = film.poster_path
+                    ? `https://image.tmdb.org/t/p/w500/${film.poster_path}`
+                    : BlackImage;
 
-        <div style={{
-          fontSize: "30px",
-          textAlign: "left",
-          lineHeight: "1.2"
-        }}>
-          Top of the charts. Top of your list
-        </div>
-  <div className="horizontal-scroll">
-    {topRatedMovies.map((film, index) => {
-      let cheminImage = film.poster_path 
-        ? `https://image.tmdb.org/t/p/w500/${film.poster_path}`
-        : BlackImage;
+                  return (
+                    <div key={film.id || index} className="movie-card">
+                      <Link to={`/movies/${film.id}`}>
+                        <img
+                          src={cheminImage}
+                          alt={film.title}
+                          style={{ width: "150px", height: "225px", objectFit: "cover" }}
+                          onError={(e) => { e.target.src = BlackImage; }}
+                        />
+                      </Link>
+                    </div>
+                  );
+                })}
+              </div>
 
-      return (
-        <div key={`second-${film.id || index}`} className="movie-card">
-          <Link to={`/movies/${film.id}`}>
-            <img
-              src={cheminImage}
-              alt={film.title}
-              style={{ width: "150px", height: "225px", objectFit: "cover" }}
-              onError={(e) => { e.target.src = BlackImage; }}
-            />
-          </Link>
-        </div>
-      );
-    })}
-  </div>
+              <button className="boutonScroll-droite" onClick={() => handleScroll(1, containerRefDiscovery)} > {/* Bouton droite */}
+                ›
+              </button>
 
-        <div style={{
-          fontSize: "30px",
-          textAlign: "left",
-          lineHeight: "1.2"
-        }}>
-          Action Movies
-        </div>
-  <div className="horizontal-scroll">
-    {actionMovies.map((film, index) => {
-      let cheminImage = film.poster_path 
-        ? `https://image.tmdb.org/t/p/w500/${film.poster_path}`
-        : BlackImage;
+            </div>
+            {/* Section futur */}
+            <div className="titre-section">
+              Sneak a peek at the future – Coming soon...
+            </div>
 
-      return (
-        <div key={`second-${film.id || index}`} className="movie-card">
-          <Link to={`/movies/${film.id}`}>
-            <img
-              src={cheminImage}
-              alt={film.title}
-              style={{ width: "150px", height: "225px", objectFit: "cover" }}
-              onError={(e) => { e.target.src = BlackImage; }}
-            />
-          </Link>
-        </div>
-      );
-    })}
-  </div>
+            <div style={{ display: "flex", alignItems: "center", position: "relative" }}>
 
-</div>
+              <button className="boutonScroll-gauche" onClick={() => handleScroll(-1, containerRefUpcoming)} > {/* Bouton gauche */}
+                &lt;
+              </button>
+
+              <div className="horizontal-scroll horizontal-scrollbar" ref={containerRefUpcoming} >
+
+                {upcomingMovies.map((film, index) => {
+                  let cheminImage = film.poster_path
+                    ? `https://image.tmdb.org/t/p/w500/${film.poster_path}`
+                    : BlackImage;
+
+                  return (
+                    <div key={`second-${film.id || index}`} className="movie-card">
+                      <Link to={`/movies/${film.id}`}>
+                        <img
+                          src={cheminImage}
+                          alt={film.title}
+                          style={{ width: "150px", height: "225px", objectFit: "cover" }}
+                          onError={(e) => { e.target.src = BlackImage; }}
+                        />
+                      </Link>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <button className="boutonScroll-droite" onClick={() => handleScroll(1, containerRefUpcoming)} > {/* Bouton droite */}
+                ›
+              </button>
+
+            </div>
+
+            {/* Section Top list */}
+
+            <div className="titre-section">
+              Top of the charts. Top of your list
+            </div>
+
+            <div style={{ display: "flex", alignItems: "center", position: "relative" }}>
+
+              <button className="boutonScroll-gauche" onClick={() => handleScroll(-1, containerRefTopRated)} > {/* Bouton gauche */}
+                &lt;
+              </button>
+
+              <div className="horizontal-scroll horizontal-scrollbar" ref={containerRefTopRated} >
+
+                {topRatedMovies.map((film, index) => {
+                  let cheminImage = film.poster_path
+                    ? `https://image.tmdb.org/t/p/w500/${film.poster_path}`
+                    : BlackImage;
+
+                  return (
+                    <div key={`second-${film.id || index}`} className="movie-card">
+                      <Link to={`/movies/${film.id}`}>
+                        <img
+                          src={cheminImage}
+                          alt={film.title}
+                          style={{ width: "150px", height: "225px", objectFit: "cover" }}
+                          onError={(e) => { e.target.src = BlackImage; }}
+                        />
+                      </Link>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <button className="boutonScroll-droite" onClick={() => handleScroll(1, containerRefTopRated)} > {/* Bouton droite */}
+                ›
+              </button>
+
+            </div>
+
+            {/* Section Action Movies */}
+            <div className="titre-section" >
+              Action Movies
+            </div>
+
+            <div style={{ display: "flex", alignItems: "center", position: "relative" }}>
+
+              <button className="boutonScroll-gauche" onClick={() => handleScroll(-1, containerRefAction)} > {/* Bouton gauche */}
+                &lt;
+              </button>
+
+              <div className="horizontal-scroll horizontal-scrollbar" ref={containerRefAction} >
+
+                {actionMovies.map((film, index) => {
+                  let cheminImage = film.poster_path
+                    ? `https://image.tmdb.org/t/p/w500/${film.poster_path}`
+                    : BlackImage;
+
+                  return (
+                    <div key={`second-${film.id || index}`} className="movie-card">
+                      <Link to={`/movies/${film.id}`}>
+                        <img
+                          src={cheminImage}
+                          alt={film.title}
+                          style={{ width: "150px", height: "225px", objectFit: "cover" }}
+                          onError={(e) => { e.target.src = BlackImage; }}
+                        />
+                      </Link>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <button className="boutonScroll-droite" onClick={() => handleScroll(1, containerRefAction)} > {/* Bouton droite */}
+                ›
+              </button>
+
+            </div>
+
+          </div>
         )}
       </div>
 
@@ -532,9 +608,9 @@ const ListeFilms = () => {
       <div
         style={{
           height: "40px",
-          background: "linear-gradient(to bottom, rgba(7, 0, 66, 0), rgba(7, 0, 66, 1))",
+          background: "linear-gradient(to bottom,       rgba(5, 14, 66, 1), rgba(0, 0, 255, 0.5), rgba(5, 0, 50, 1)), ",
         }}
-        />
+      />
 
       {/* styles personnalisés pour l'effet de survol */}
       <style>{`
@@ -548,10 +624,13 @@ const ListeFilms = () => {
         }
 
         .horizontal-scroll {
-          display: flex;
-          overflow-x: auto;
-          gap: 16px;
-          padding: 10px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            display: flex;
+            gap: 16px;
+            width: 100%;
+            padding-left: 0;
+            padding-right: 0;
         }
       `}</style>
     </div>

@@ -22,7 +22,8 @@ function BodyAccueil() {
         background:
           "linear-gradient(180deg, rgb(5, 14, 66) 15%, rgb(5, 14, 66) 30%, rgb(0, 0, 0) 70%, rgb(5, 0, 50) 100%)",
         minHeight: "100vh",
-        width: "100vw",
+        width: "100%",
+        overflowX: "hidden",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -105,65 +106,75 @@ function BodyAccueil() {
             </div>
           </div>
         </div>
-        {/**Texte du bas */}
-        <div>
-          <div className="d-flex flex-column align-items-center text-center mt-4 text-white">
-            <div style={{ width: "100%", marginLeft: "150px" }}>
-              {/** grande affirmation */}
-              <div className="text-light mt-5 text-start w-100 ms-5">
-                <span className="fw-bold" style={{ fontSize: "7.8vh" }} /* 50px*/>
-                  Make every film you watch part of your story
-                </span>
+        
+      {/**Texte du bas */}
+      <div>
+        <div className="d-flex flex-column align-items-center text-center mt-4 text-white">
+          <div style={{ width: "100%", marginLeft: "150px" }}>
+            {/** grande affirmation */}
+            <div className="text-light mt-5 text-start w-100 ms-5 mb-5">
+              <span className="fw-bold" style={{ fontSize: "7.8vh" }} /* 50px*/>
+                Make every film you watch part of your story
+              </span>
+            </div>
+
+            {/**Gros paragraphes */}
+            <div className="row align-items-start w-100 mt-4 ">
+              {/* texte */}
+              <div className="col-md-8 text-md-start">
+                <p className="fs-4 lh-lg mb-5 mt-3" style={{ fontWeight: "400" }}>
+                  Sometimes, you watch a movie that connects so deeply within you that
+                  you can’t stop thinking about it. You need to talk about it,
+                  analyze it — you’re just not ready to say goodbye yet. Or sometimes,
+                  it’s so bad that you can’t help but express how terrible it was.
+                  That’s what FilmBox is for. Rate your movies, leave an impression,
+                  write down your thoughts, and express your emotions one last time
+                  before cutting the final scene for good.
+                </p>
+
+                <p className="fs-4 lh-lg mb-5" style={{ fontWeight: "400" }}>
+                  It’s also a way to revisit old movies you’ve watched and relive the
+                  emotions you experienced during them. Whether it’s nostalgia, awe,
+                  or frustration, it’s all part of your cinematic journey.
+                </p>
               </div>
-              {/**Gros paragraphes */}
-              <div className="row align-items-start w-100 mt-4 ">
-                {/* texte */}
-                <div className="col-md-8 text-md-start">
-                  <p className="fs-4 lh-lg mb-5 " style={{fontWeight :'400'}}>
-                    Sometimes, you watch a movie that connects so deeply within
-                    you that you can’t stop thinking about it. You need to talk
-                    about it, analyze it—you’re just not ready to say goodbye
-                    yet. Or sometimes, it’s so bad that you can’t help but
-                    express how terrible it was. That’s what FilmBox is for.
-                    Rate your movies, leave an impression, write down your
-                    thoughts, and express your emotions one last time before
-                    cutting the final scene for good. 
-                  </p>
 
-                  <p className="fs-4 lh-lg mb-5" style={{fontWeight :'400'}}>
-                    It’s also a way to revisit old movies you’ve watched and
-                    relive the emotions you experienced during them. Whether
-                    it’s nostalgia, awe, or frustration, it’s all part of your
-                    cinematic journey.
-                  </p>
-                  {/**Les quotes pour le site */}                 
-                  <div className="text-center text-light" style={{marginTop:'8vh'}}/*row*/>
-                    <p className="fw-bold fs-2">
-                      <b>
-                        For Every Movie That Moves You—Share Your Final Scene.
-                      </b>
-                    </p>
-                    <p className="fw-bold fs-2">
-                      It’s simple: just watch it, feel it, and rate it!
-                    </p>
-                  </div>
-                </div>
-                {/* Image a droite */}
-                <div className="col-md-4 d-flex justify-content-center align-self-start mt-4">
-                  <img
-                    src={img1}
-                    alt="Film Experience"
-                    className="img-fluid"
-                    style={{ height: "65vh", width:'auto', marginRight:'100px' }}
-                  />
-                </div>
-
+              {/* Image a droite */}
+              <div className="col-md-4 d-flex justify-content-center align-self-start mt-4">
+                <img
+                  src={img1}
+                  alt="Film Experience"
+                  className="img-fluid"
+                  style={{ height: "65vh", width: "auto", marginRight: "100px" }}
+                />
               </div>
             </div>
           </div>
+          
+          {/**Les quotes pour le site */}
+          <div className="text-center text-light mt-5">
+            <p className="fw-bold fs-2" style={{ whiteSpace: "nowrap" }}>
+              <b>For Every Movie That Moves You — Share Your Final Scene.</b>
+            </p>
+            <p className="fw-bold fs-2" style={{ marginBottom: "8vh" }}>
+              It’s simple: just watch it, feel it, and rate it!
+            </p>
+          </div>
+        </div>
+
+          {/** Ligne séparatrice */}
+          <div className="w-100 d-flex justify-content-center my-5">
+            <div style={{
+              width: '60%',
+              height: '1.5px',
+              background: 'linear-gradient(to right,rgba(101, 127, 212, 0.60), rgb(255, 255, 255),rgb(101, 126, 212, 0.60))',
+              opacity: 0.3,
+              borderRadius: '1px'
+            }} />
+          </div>
 
           {/**Les films a venir */}
-          <div className="mt-5 text-center text-light">
+          <div className="mt-5 text-center text-light" style={{paddingTop:"10vh"}}>
             <h1 className="mb-5 fw-bold">Coming Soon: Your Future Favorites</h1>
             {/**les images dans un tableau */}
             <div

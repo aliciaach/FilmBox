@@ -1,4 +1,5 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap/dist/css/bootstrap.min.css";
+import ReactDOM from "react-dom/client";
 import React from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import BodyAccueil from "./components/BodyAccueil";
@@ -30,6 +31,7 @@ function App() {
         <Route path="/AdminLogin" element={<AdminLogin />} />
         <Route path="/userManagement" element={<UserManagement />} />
         <Route path="/adminManagement" element={<AdminManagement />} />
+        <Route path="/userManagement" element={<UserManagement />} />
         <Route path="/AdminManagementPage" element={<AdminManagementPage />} />
         <Route path="/PageWatchlist" element={<PageWatchList />} />
         <Route path="/SearchResults/:searchQuery" element={<SearchResults/>} />
@@ -38,14 +40,10 @@ function App() {
       <Footer/>
     </div>
     </BrowserRouter>
-
-    //<UserSettings />
-    //<AdminLogin />
-    //<UserManagement />
-    //<Connexion/>
   );
 }
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
  
 export default App;
- 
- 
