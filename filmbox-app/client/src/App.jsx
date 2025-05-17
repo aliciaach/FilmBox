@@ -20,22 +20,23 @@ import BrowseMovies from './components/BrowseMoviePage';
 function App() {
   
   useEffect(() => {
+   const handleUnload = (event) => {
+    const rememberMe = localStorage.getItem("rememberMe");
 
+    const navType = performance.getEntriesByType("navigation")[0]?.type;
+    const isReload = navType === "reload" || navType === "navigate";
 
-    //https://developer.mozilla.org/fr/docs/Web/API/Navigator/sendBeacon and help of chatgpt for the event listeners
-     const handleBeforeClosingPage = () => {
-      
-      const rememberMe = localStorage.getItem("rememberMe"); //check if the user wants to be remembered
-      if (rememberMe !== "true") {
-        navigator.sendBeacon("http://localhost:4000/destroy-session"); //if no, we destroy the current session
-      }
-    };
+    if (rememberMe !== "true" && !isReload) {
+      navigator.sendBeacon("http://localhost:4000/destroy-session");
+    }
+  };
 
-    window.addEventListener("beforeunload", handleBeforeClosingPage);
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeClosingPage);
-    };
-  }, []);
+  window.addEventListener("beforeunload", handleUnload);
+
+  return () => {
+    window.removeEventListener("beforeunload", handleUnload);
+  };
+}, []);
   return (
     <BrowserRouter>
       <Routes>

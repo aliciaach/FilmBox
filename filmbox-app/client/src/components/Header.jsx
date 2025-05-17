@@ -4,7 +4,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import '../styles/Header.css';
 import { useState, useEffect } from "react";
 
-
 function Header() {
   const [searchInput, setSearchInput] = useState("");
   const [results, setResults] = useState([]);
@@ -12,6 +11,7 @@ function Header() {
   const [menuOpen, setMenuOpen] = useState(false); // Hamburger
   const [user, setUser] = useState(null);
   const [initials, setInitials] = useState("");
+  
   const handleLogout = async () => {
     try {
       const response = await fetch("http://localhost:4000/destroy-session", {
@@ -21,7 +21,7 @@ function Header() {
 
       if (response.ok) {
         navigate("/");
-          localStorage.removeItem("rememberMe");
+        localStorage.removeItem("rememberMe");
       } else {
         console.error("Error: Couldn't destroy session");
       }
@@ -35,7 +35,11 @@ function Header() {
 
     const fetchUserData = async () => {
       try {
-        const response = await fetch('http://localhost:4000/get-session');
+        const response = await fetch('http://localhost:4000/get-session', {
+          method: "GET",
+          credentials: "include"
+        });
+        
         const data = await response.json();
         if (data.loggedIn) {
           setUser(data.user);
@@ -43,6 +47,7 @@ function Header() {
           setInitials(userInitials.toUpperCase());
         } else {
           setMessage("SESSION INTROUVABLE");
+          navigate("/");
         }
       } catch (error) {
         console.error('Error', error);

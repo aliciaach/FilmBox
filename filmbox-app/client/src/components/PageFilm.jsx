@@ -11,6 +11,7 @@ import WickedImage from '../assets/wicked.jpg';
 import { useRef } from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 import '../styles/PageFilm.css';
+import { useNavigate } from "react-router-dom";
 
 const ListeFilms = () => {
   const [films, setFilms] = useState([]);
@@ -19,7 +20,7 @@ const ListeFilms = () => {
   const [topRatedMovies, setTopRatedMovies] = useState([]);
   const [upcomingMovies, setUpcomingMovies] = useState([]);
   const [actionMovies, setActionMovies] = useState([]);
-
+  const navigate = useNavigate();
 
  
   useEffect(() => {

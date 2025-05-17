@@ -44,15 +44,19 @@ app.use(
     secret: "mySecretKey",
     resave: false,
     saveUninitialized: false,
+    rolling: true,
     cookie: {
-      maxAge: 15 * 60 * 1000 // 15 minutes
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      maxAge: null,
     }
   })
 );
 app.use(
   cors({
     origin: "http://localhost:5173",
-    credentials: true,
+    credentials: true
   })
 );
 
@@ -106,34 +110,47 @@ app.post("/login", (req, res) => {
       return res.status(500).json({ message: "Internal server error" });
     }
 
-    if (results.length > 0) {
-      const user = results[0];
+    if (results.length === 0) {
+      console.log("USER NOT FOUND");
+      return res.status(401).json({
+        success: false,
+        message: "No account associated with this email",
+      });
+    }
 
-      bcrypt.compare(password, user.mot_de_passe, (err, isMatch) => {
+    const user = results[0];
+
+    bcrypt.compare(password, user.mot_de_passe, (err, isMatch) => {
+      if (err) {
+        console.error("Error comparing passwords: ", err);
+        return res.status(500).json({ message: "Internal server error" });
+      }
+
+      if (!isMatch) {
+        return res.status(401).json({
+          success: false,
+          message: "Access denied, wrong password",
+        });
+      }
+
+      req.session.user = {
+        id: user.utilisateur_id,
+        prenom: user.prenom,
+        nom: user.nom,
+        courriel: user.courriel,
+        telephone: user.telephone,
+      };
+
+      if (rememberMe) {
+        req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000; 
+      } else {
+        req.session.cookie.maxAge = 15 * 1000;
+      }
+
+      req.session.save((err) => {
         if (err) {
-          console.error("Error comparing passwords: ", err);
-          return res.status(500).json({ message: "Internal server error" });
-        }
-
-        if (!isMatch) {
-          return res.status(401).json({
-            success: false,
-            message: "Access denied, wrong password",
-          });
-        }
-
-        req.session.user = {
-          id: user.utilisateur_id,
-          prenom: user.prenom,
-          nom: user.nom,
-          courriel: user.courriel,
-          telephone: user.telephone,
-        };
-
-        if (rememberMe) {
-          req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000; // 30 days
-        } else {
-          req.session.cookie.expires = false; // dies when browser closes
+          console.error("Error saving session:", err);
+          return res.status(500).json({ message: "Session not saved" });
         }
 
         console.log("USER FOUNDDDDDD" + results[0].courriel);
@@ -143,15 +160,11 @@ app.post("/login", (req, res) => {
           userId: results[0].utilisateur_id,
         });
       });
-    } else {
-      console.log("USER NOT FOUND");
-      return res.status(401).json({
-        success: false,
-        message: "Not account associated to this email",
-      });
-    }
+    });
   });
 });
+
+
 
 app.post("/LoginRegister", (req, res) => {
   const { email, password, firstName, lastName, phoneNumber } = req.body;
@@ -613,7 +626,7 @@ app.get("/api/getMoviesResults/:searchQuery", async (req, res) => {
 // Need to fix this part, the issue with charging all the pages
 app.get("/discoverMoviesFiltered", async (req, res) => {
   console.log("WE ARE GETTTING HEREEEEEEEEEEEEE");
-  const params = new URLSearchParams(); 
+  const params = new URLSearchParams();
   const page = req.query.page || 1;
   params.append("page", page);
   const { genre, language, decade, movieDuration, originCountry } = req.query;

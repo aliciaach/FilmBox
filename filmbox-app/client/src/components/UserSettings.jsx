@@ -35,7 +35,7 @@ function UserSettings() {
     const fetchUserData = async () => {
       try {
         const response = await fetch('http://localhost:4000/get-session', {
-          credentials: 'include', 
+          credentials: 'include',
         });
         const data = await response.json();
         if (data.loggedIn) {
