@@ -1,6 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import ReactDOM from "react-dom/client";
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import BodyAccueil from "./components/BodyAccueil";
 import Connexion from "./components/Connexion";
@@ -8,8 +8,7 @@ import Inscription from "./components/Inscription";
 import ListeFilms from "./components/PageFilm";
 import FilmInfo from "./components/FilmInfo";
 import UserSettings from "./components/UserSettings";
-import AdminLogin from "./components/AdminLogin";
-import AdminManagement from "./components/adminManagement";
+import AdminLogin from "./components/adminLogin";
 import AdminManagementPage from "./components/AdminManagementPage";
 import UserManagement from "./components/UserManagement";
 import PageWatchList from "./components/PageWatchList";
@@ -18,6 +17,25 @@ import SearchResults from './components/SearchResults';
 import BrowseMovies from './components/BrowseMoviePage';
 
 function App() {
+  
+  useEffect(() => {
+   const handleUnload = (event) => {
+    const rememberMe = localStorage.getItem("rememberMe");
+
+    const navType = performance.getEntriesByType("navigation")[0]?.type;
+    const isReload = navType === "reload" || navType === "navigate";
+
+    if (rememberMe !== "true" && !isReload) {
+      navigator.sendBeacon("http://localhost:4000/destroy-session");
+    }
+  };
+
+  window.addEventListener("beforeunload", handleUnload);
+
+  return () => {
+    window.removeEventListener("beforeunload", handleUnload);
+  };
+}, []);
   return (
     <BrowserRouter>
       <Routes>
@@ -27,21 +45,19 @@ function App() {
         <Route path="/listeFilms" element={<ListeFilms />} />
         <Route path="/movies/:filmId" element={<FilmInfo />} />
         <Route path="/userSettings" element={<UserSettings />} />
-        <Route path="/AdminLogin" element={<AdminLogin />} />
-        <Route path="/userManagement" element={<UserManagement />} />
-        <Route path="/adminManagement" element={<AdminManagement />} />
-        <Route path="/userManagement" element={<UserManagement />} />
+        <Route path="/adminLogin" element={<AdminLogin />} />
+        <Route path="/UserManagement" element={<UserManagement />} />
         <Route path="/AdminManagementPage" element={<AdminManagementPage />} />
         <Route path="/PageWatchlist" element={<PageWatchList />} />
-        <Route path="/SearchResults/:searchQuery" element={<SearchResults/>} />
-        <Route path="/BrowseMovies" element={<BrowseMovies/>} />
+        <Route path="/SearchResults/:searchQuery" element={<SearchResults />} />
+        <Route path="/BrowseMovies" element={<BrowseMovies />} />
       </Routes>
-      <Footer/>
+      <Footer />
     </BrowserRouter>
   );
 }
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(<App />);
- 
+
 export default App;

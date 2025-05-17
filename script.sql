@@ -28,6 +28,7 @@ CREATE UNIQUE INDEX film_watchlist__idx ON
     ASC );
 
 ALTER TABLE film_watchlist ADD CONSTRAINT film_watchlist_pk PRIMARY KEY ( film_id );
+ALTER TABLE note ADD UNIQUE unique_film_user (films_film_id, utilisateur_utilisateur_id);
 
 CREATE TABLE films (
     film_id                NUMBER(255) NOT NULL,

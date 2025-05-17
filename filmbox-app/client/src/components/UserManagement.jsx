@@ -1,36 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import logoFilmBox from "../assets/logoFilmBox.png";
-import arobase from "../assets/icone_arobase.png";
-import photoProfil from "../assets/photo_profil.jpg";
-import titanicImage from "../assets/Titanic.png";
+import { Link, useNavigate } from "react-router-dom";
 import fondNoir from "../assets/BlackImage.png";
 import "../styles/UserManagement.css";
-import { useNavigate } from "react-router-dom";
+import { Dropdown } from "react-bootstrap";
+import imageProfil from "../assets/photo_profil.jpg";
 
 function ManageUsers() {
   const [users, setUsers] = useState([]); // État pour stocker la liste des utilisateurs
-  const [admin, setAdmin] = useState([]); // État pour stocker l'admin connecté
+  const [admin, setAdmin] = useState(null); // État pour stocker l'admin connecté
   const [error, setError] = useState(null); // État pour gérer les erreurs
   const [userSelectionne, setUserSelectionne] = useState(null); // Détails de l'utilisateur sélectionné
+  const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Récupérer la liste des utilisateurs
-    fetch("http://localhost:4000/getUsers") //requête GET pour récupérer les utilisateurs depuis l'URL
-      .then((response) => {
-        //permet de traiter la reponse quand elle arrive
-        if (!response.ok)
-          throw new Error("Erreur dans la récupération des utilisateurs"); //vérifie si la réponse HTTP est valide (statut 200 à 299).
-        return response.json(); //convertir la reponse en JSON si elle est valide
-      })
-      .then((data) => {
-        //récupères la liste des utilisateurs renvoyée par le serveur sous forme de JSON
-        setUsers(data); // Mettre à jour la liste des utilisateurs avec les nouvelles données
-      })
-      .catch((erreur) => setError(erreur.message)); // Gérer les erreurs
-
     // Récupérer l'admin connecté
-    fetch("http://localhost:4000/get-session", { credentials: "include" }) //pour envoyer les cookies avec la requête
+    fetch("http://localhost:4000/get-admin-session", { credentials: "include" }) //pour envoyer les cookies avec la requête
       .then((response) => {
         if (!response.ok)
           throw new Error("Erreur dans la récupération de la session");
@@ -38,42 +23,66 @@ function ManageUsers() {
       })
       .then((data) => {
         if (data.loggedIn) {
-          setAdmin(data.user);
+          setAdmin(data.admin);
+        } else {
+          navigate("/adminLogin");
         }
       })
       .catch((erreur) => setError(erreur.message)); // Gérer les erreurs
+  }, [navigate]);
+
+  useEffect(() => {
+    fetch("http://localhost:4000/getUsers", { credentials: "include" })
+      .then(res => {
+        if (!res.ok) throw new Error("Error fetching users");
+        return res.json();
+      })
+      .then(data => setUsers(data))
+      .catch(err => setError(err.message));
   }, []);
+
+  /* Récupérer la liste des utilisateurs
+  fetch("http://localhost:4000/getUsers") //requête GET pour récupérer les utilisateurs depuis l'URL
+    .then((response) => {
+      //permet de traiter la reponse quand elle arrive
+      if (!response.ok)
+        throw new Error("Error while fetching users"); //vérifie si la réponse HTTP est valide (statut 200 à 299).
+      return response.json(); //convertir la reponse en JSON si elle est valide
+    })
+    .then((data) => {
+      //récupères la liste des utilisateurs renvoyée par le serveur sous forme de JSON
+      setUsers(data); // Mettre à jour la liste des utilisateurs avec les nouvelles données
+    })
+    .catch((erreur) => setError(erreur.message)); // Gérer les erreurs*/
+
+  //Changer compte à suspended //COMME CHANGE PASSWORD dans UserSettings
+  const suspendAccount = async (e) => {
+    e.preventDefault();
+    if (!userSelectionne) {
+      setMessage("No user selected");
+      return;
+    }
+    try {
+      const response = await fetch("http://localhost:4000/suspendAccount", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: userSelectionne.utilisateur_id }),
+      });
+      const data = await response.json();
+      setMessage(
+        data.success ? "User suspended" : "Error, couldn't suspend user"
+      );
+    } catch (error) {
+      console.error("Error suspending user:", error);
+      setMessage("An error occurred while  suspending the user.");
+    }
+  };
 
   const clickObtenirInformationsUser = (userId) => {
     const user = users.find((u) => u.utilisateur_id === userId);
     setUserSelectionne(user);
-
-    //Changer compte à suspended //COMME CHANGE PASSWORD dans UserSettings
-    const suspendAccount = async (e) => {
-      e.preventDefault();
-      try {
-        const response = await fetch("http://localhost:4000/suspendAccount", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId: userSelectionne.utilisateur_id }),
-        });
-        const data = await response.json();
-        setMessage(
-          data.success ? "User suspended" : "Error, couldn't suspend user"
-        );
-      } catch (error) {
-        console.error("Error suspending user:", error);
-        setMessage("An error occurred while  suspending the user.");
-      }
-    };
+    setMessage("");
   };
-  /*
-
- 
- 
-
-
- */
 
   return (
     <div
@@ -82,19 +91,16 @@ function ManageUsers() {
         boxSizing: "border-box", //
         fontFamily: "Istok Web, sans-serif",
         fontSize: "large",
-
         minHeight: "100vh", // Page + haute   => minHeight: '120vh', ///////
         paddingTop: "5vh", //
         paddingBottom: "15vh", //
         width: "100%",
-
         background: `linear-gradient(to bottom,
                 rgba(26, 0, 255, 0.4) 0%,
                 rgba(5, 14, 68, 0.38) 13%,
                 rgba(5, 0, 50, 0) 100%,
                 rgba(0, 0, 255, 0.4)) 100%,    
                 url(${fondNoir})`,
-
         backgroundSize: "cover", //'auto'
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
@@ -123,18 +129,23 @@ function ManageUsers() {
         {/* liens pages */}
         <div className="d-flex justify-content-center flex-grow-1">
           <div className="d-flex gap-5">
-            <Link
-              to="/adminManagementPage"
+            {/* Condition to switch to admin management page */}
+            <span
+              onClick={() => {
+                if (admin?.role === "moderator") {
+                  navigate("/adminManagementPage");
+                } else {
+                  alert("Only moderators can access this page. Please speak with a supervisor for any urgent matter.");
+                }
+              }}
               className="text-white text-decoration-none fw-light"
+              style={{ cursor: "pointer" }}
             >
-              ADMINS MANAGEMENT
-            </Link>
-            <Link
-              to="/userManagement"
-              className="text-white text-decoration-none fw-light"
-            >
-              USERS MANAGEMENT
-            </Link>
+              ADMIN MANAGEMENT
+            </span>
+            <Link to="/userManagement" className="text-white text-decoration-none fw-light">USER MANAGEMENT</Link>
+
+            
           </div>
         </div>
 
@@ -179,15 +190,23 @@ function ManageUsers() {
       {/* Header */}
       <div className="d-flex justify-content-between align-items-center p-4 mt-4">
         <h1>
-          {" "}
-          {admin
-            ? `${admin.prenom} ${admin.nom} - Admin`
-            : "Admin Name - Role Level"}{" "}
-        </h1>{" "}
+          {admin?.prenom ? `${admin.prenom} ${admin.nom} - Admin` : "Admin - Session Not Found"}
+        </h1>
         {/* Je mets par défaut que le role c'est "admin" mais je vois pas d'Autre
                                                                                                   choix dans la BDD que Admin, je fais quoiiii  AAAAAA */}
         {/*<h1> Admin Name - Role Level</h1>*/}
-        <button className="btn btn-outline-light">Logout</button>
+        <button
+          className="btn btn-outline-light"
+          onClick={async () => {
+            await fetch("http://localhost:4000/destroy-session", {
+              method: "POST",
+              credentials: "include"
+            });
+            navigate("/");
+          }}
+        >
+          Logout
+        </button>
       </div>
 
       <div className="container-fluid page-container">
@@ -308,7 +327,7 @@ function ManageUsers() {
                   >
                     {userSelectionne
                       ? (userSelectionne.prenom?.[0] || "?") +
-                        (userSelectionne.nom?.[0] || "?")
+                      (userSelectionne.nom?.[0] || "?")
                       : "JD"}
                   </div>
                   <h2 className="mb-0">
@@ -485,7 +504,7 @@ function ManageUsers() {
             <div className="section-grow d-flex justify-content-center align-items-center">
               {/* Bouton Suspend Account
               <form onSubmit={suspendAccount} className="text-center">*/}
-              <form className="text-center">
+              <form onSubmit={suspendAccount} className="text-center">
                 <button
                   className=" btnCustomRouge "
                   style={{ fontSize: "30px" }}

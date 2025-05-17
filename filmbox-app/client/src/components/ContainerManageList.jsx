@@ -7,13 +7,28 @@ const ContainerManageList = ({ list, onClose, onUpdate }) => {
             await fetch(`http://localhost:4000/mongo/removeMovieFromList/${listId}/${movieId}`, {
                 method: "DELETE",
             });
-
+            
             onUpdate();
 
         } catch (error) {
             console.error("Error:", error);
         }
     };
+
+    const handleDeleteList =  async (listId) => {
+        try {
+            await fetch(`http://localhost:4000/mongo/deletePersonalizedList/${listId}`, {
+                method: "DELETE",
+            });
+
+            onClose();
+            onUpdate();
+        } catch (error)
+        {
+            console.error("Error deleting list: ", error);
+        }
+    };
+
     return (
         <div
             className="position-fixed top-50 start-50 translate-middle bg-dark text-white p-4 rounded"
@@ -24,7 +39,9 @@ const ContainerManageList = ({ list, onClose, onUpdate }) => {
                 maxWidth: '90%',
             }}
         >
+
             <h3>Managing: {list.name}</h3>
+            <button className="btn btn-secondary mt-3" onClick={() => handleDeleteList(list._id)}>Delete list</button>
             <div className="d-flex justify-content-between align-items-center mt-5 mb-4">
                 <h2 className="fw-bold mt-0">{list.name}</h2>
             </div>
