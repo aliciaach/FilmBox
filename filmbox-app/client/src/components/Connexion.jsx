@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import logoFilmBox from '../assets/logoFilmBox.png';
 import arobase from '../assets/icone_arobase.png';
@@ -14,19 +14,42 @@ function Connexion(){
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
+    const [rememberMeBox, setRememberMeBox] = useState(false);
+
+    useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const response = await fetch('http://localhost:4000/get-session', {
+          method: 'GET',
+          credentials: 'include'
+        });
+
+        const data = await response.json();
+
+        if (data.loggedIn) {
+          navigate('/listeFilms');
+        }
+      } catch (error) {
+        console.error('Error checking session:', error);
+      }
+    };
+
+    checkSession();
+  }, []);
+
 
     const handleSubmit = async (e) => {
       e.preventDefault();
 
-      const userLogin = { email, password };
+      const userLogin = { email, password, rememberMe: rememberMeBox };
       
-      //AJOUTER MESSAGE D'ERREURRR !!!
       try {
           const response = await fetch('http://localhost:4000/login', {
               method: 'POST',
               headers: {
                   'Content-Type': 'application/json'
               },
+              credentials: 'include',
               body: JSON.stringify(userLogin)
           });
           
@@ -109,7 +132,13 @@ return(
 
         {/* Checkbox "Remember me" */}
         <div  style={{display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px'}}>
-          <input type="checkbox" id="remember" style={{accentColor: '#7465F7', cursor: 'pointer' }} />
+          <input 
+            type="checkbox" 
+            id="remember" 
+            style={{accentColor: '#7465F7', cursor: 'pointer' }}
+            checked={rememberMeBox}
+            onChange={(e) => setRememberMeBox(e.target.checked)} 
+          />
           <label htmlFor="remember"> Remember me</label>
         </div>
 
