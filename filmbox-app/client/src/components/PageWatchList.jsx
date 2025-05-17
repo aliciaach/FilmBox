@@ -115,31 +115,18 @@ function PageWatchList() {
   }, [userId]);
  
   const renderMovieRow = (movies, scrollRef = null) => (
-    <div
-    ref={scrollRef} /* AJOUT */
-      style={{
-        display: "flex",
-        overflowX: "auto",
-        scrollSnapType: "x mandatory",
-        gap: "1rem",
-        paddingBottom: "1rem",
-        scrollBehavior: "smooth"
-      }}
-      className="movie-slider"
-    >
+    <div ref={scrollRef} /* AJOUT */ className="movie-slider scroll-films horizontal-scrollbar" >
+
       {movies.map((movie) => (
-        <div key={movie.id} style={{ minWidth: 200, flex: "0 0 auto", scrollSnapAlign: "start" }}>
+        <div key={movie.id} className="movie-wrapper">
           <div
-            className="card bg-transparent border-0 h-100"
-            style={{ cursor: "pointer", transition: "transform 0.3s" }}
-            onClick={() => navigate(`/movies/${movie.id}`)}
-            onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
-            onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            className="card bg-transparent border-0 h-100 affiche-film" 
+            onClick={() => navigate(`/movies/${movie.id}`)} 
           >
             <img
               src={movie.poster_path ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}` : "https://via.placeholder.com/500x750?text=No+Poster"}
               alt={movie.title}
-              className="card-img-top"
+              className="card-img-top poster-image"
               style={{ height: 300, width: 200, objectFit: "cover", borderRadius: 0 }}
               onError={(e) => { e.target.src = "https://via.placeholder.com/500x750?text=No+Poster"; }}
             />
@@ -158,6 +145,7 @@ function PageWatchList() {
           </div>
         </div>
       ))}
+
     </div>
   );
  
@@ -193,20 +181,9 @@ const backgroundStyle = {
  
         <Header />
  
-        <div style={{
-          backgroundColor: "#050032",
-          width: "100%",
-          marginLeft: 0,
-          marginRight: 0,
-          color: "white",
-          textAlign: "center",
-          padding: "40px 20px",
-        }}>
+        <div className="intro-section">
           <h1>Seen it? Rate it!</h1>
-          <p style={{
-            maxWidth: "500px",
-            margin: "0 auto"
-          }}>
+          <p>
             Don’t forget to leave your opinion on the movies you watch.
             Every story deserves a final word. Will it be 5 stars or 0? The ending is yours to decide!
           </p>
@@ -216,7 +193,7 @@ const backgroundStyle = {
                     
           {/* WATCHLIST */}
           <div className="text-white sectionBox" >
-            <h2 className="text-white" style={{ marginBottom: "10px" }}>My Watchlist</h2>
+            <h2 >My Watchlist</h2>
             <SectionDivider />
 
             {watchlist.length > 0 ? (
@@ -240,7 +217,7 @@ const backgroundStyle = {
           {/* WATCHED */}
 
           <div className="text-white sectionBox">
-            <h2 className="text-white" style={{ marginBottom: "10px" }}>My Watched Movies</h2>
+            <h2 >My Watched Movies</h2>
             <SectionDivider />
 
             {watched.length > 0 ? (
@@ -263,7 +240,7 @@ const backgroundStyle = {
 
           {/* HIGHEST RATED MOVIES */} 
           <div className="text-white sectionBox">
-            <h2 className="text-white" style={{ marginBottom: "10px" }}>My Highest Rated Movies(3-5 ⭐)</h2>
+            <h2 >My Highest Rated Movies(3-5 ⭐)</h2>
             <SectionDivider />
 
             {highestRated.length > 0 ? (
@@ -286,7 +263,7 @@ const backgroundStyle = {
 
           {/* LOW RATED MOVIES */}  
            <div className="text-white sectionBox">
-            <h2 className="text-white" style={{ marginBottom: "10px" }}>My Lowest Rated Movies (0-2 ⭐)</h2>
+            <h2 >My Lowest Rated Movies (0-2 ⭐)</h2>
             <SectionDivider />
 
             {lowestRated.length > 0 ? (
@@ -314,13 +291,7 @@ const backgroundStyle = {
             <div className="sectionBox" key={list._id}>
               <div className="d-flex justify-content-between align-items-center mt-5 mb-4">
                 <h2 className="fw-bold mt-0">{list.name}</h2>
-                <button className="btn btn-primary" style={{
-                  backgroundColor: "transparent",
-                  backgroundRepeat: "no-repeat",
-                  border: "none",
-                  cursor: "pointer",
-                  overflow: "hidden"
-                }} onClick={() => handleGestionList(list)} >Manage List</button>
+                <button className="btn btn-primary manage-list-button" onClick={() => handleGestionList(list)} >Manage List</button>
               </div>
               <SectionDivider />
               {list.movies && list.movies.length > 0 ? renderMovieRow(list.movies) : <p>No movies in this list yet.</p>}
@@ -331,38 +302,8 @@ const backgroundStyle = {
             <ContainerManageList list={selectedList} onClose={handleCloseContainer} onUpdate={refreshLists} />
           )}
  
-          <style>{`
-          .movie-card:hover {
-            border: 2px solid #4a6bff !important;
-            transform: translateY(-5px) !important;
-            box-shadow: 0 10px 20px rgba(74, 107, 255, 0.3) !important;
-          }
-          .movie-card:hover img {
-            opacity: 0.9;
-          }
-        `}</style>
         </div>
- 
-        {/*Cette partie est entierement creer par CHATGPT pour le style du scrollbar */}
-        <style>{`
-        .movie-slider::-webkit-scrollbar {
-          height: 8px;
-        }
- 
-        .movie-slider::-webkit-scrollbar-track {
-          background: #1c1c3c;
-          border-radius: 4px;
-        }
- 
-        .movie-slider::-webkit-scrollbar-thumb {
-          background: #555;
-          border-radius: 4px;
-        }
- 
-        .movie-slider::-webkit-scrollbar-thumb:hover {
-          background: #777;
-        }
-     `}</style>
+
       </div>
     </>
   );
