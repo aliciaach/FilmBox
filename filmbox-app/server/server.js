@@ -142,7 +142,7 @@ app.post("/login", (req, res) => {
       if (rememberMe) {
         req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000;
       } else {
-        req.session.cookie.maxAge = 120 * 1000;
+        req.session.cookie.maxAge = 30 * 60 * 60 * 1000;
       }
 
       req.session.save((err) => {
