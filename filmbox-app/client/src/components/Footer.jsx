@@ -17,13 +17,19 @@ function Footer() {
           <div className="col-md-4 text-center  ">
             <h6>Suivez-nous</h6>
             <ul className="list-unstyled text-center">
+              {/*
               <li>
                 <a href="#" className="text-light text-decoration-none">
                   Youtube
                 </a>
               </li>
+              */}
               <li>
+                {/*
                 <a href="#" className="text-light text-decoration-none">
+                  Instagram
+                </a>*/}
+                <a href="https://www.instagram.com/__filmbox__/" target="_blank" rel="noopener noreferrer" className="text-light text-decoration-none">
                   Instagram
                 </a>
               </li>
