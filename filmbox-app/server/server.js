@@ -44,6 +44,13 @@ app.use(
     secret: "mySecretKey",
     resave: false,
     saveUninitialized: false,
+    rolling: true,
+    cookie: {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      maxAge: null,
+    },
   })
 );
 app.use(
@@ -59,12 +66,11 @@ app.get("/get-session", (req, res) => {
     res.json({ loggedIn: true, user: req.session.user });
   } else {
     console.log("No Session Found");
-    res.send("No session data found");
     res.json({ loggedIn: false });
   }
 });
 
-app.get("/destroy-session", (req, res) => {
+app.post("/destroy-session", (req, res) => {
   req.session.destroy((err) => {
     if (err) {
       console.error("Error destroying session:", err);
@@ -93,7 +99,7 @@ app.use(
   Login page + confirmation of information
 */
 app.post("/login", (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, rememberMe } = req.body;
   const sql = "SELECT * FROM utilisateur WHERE courriel = ?";
 
   con.query(sql, [email], (err, results) => {
@@ -102,29 +108,48 @@ app.post("/login", (req, res) => {
       return res.status(500).json({ message: "Internal server error" });
     }
 
-    if (results.length > 0) {
-      const user = results[0];
+    if (results.length === 0) {
+      console.log("USER NOT FOUND");
+      return res.status(401).json({
+        success: false,
+        message: "No account associated with this email",
+      });
+    }
 
-      bcrypt.compare(password, user.mot_de_passe, (err, isMatch) => {
+    const user = results[0];
+
+    bcrypt.compare(password, user.mot_de_passe, (err, isMatch) => {
+      if (err) {
+        console.error("Error comparing passwords: ", err);
+        return res.status(500).json({ message: "Internal server error" });
+      }
+
+      if (!isMatch) {
+        return res.status(401).json({
+          success: false,
+          message: "Access denied, wrong password",
+        });
+      }
+
+      req.session.user = {
+        utilisateur_id: user.utilisateur_id,
+        prenom: user.prenom,
+        nom: user.nom,
+        courriel: user.courriel,
+        telephone: user.telephone,
+      };
+
+      if (rememberMe) {
+        req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000;
+      } else {
+        req.session.cookie.maxAge = 120 * 1000;
+      }
+
+      req.session.save((err) => {
         if (err) {
-          console.error("Error comparing passwords: ", err);
-          return res.status(500).json({ message: "Internal server error" });
+          console.error("Error saving session:", err);
+          return res.status(500).json({ message: "Session not saved" });
         }
-
-        if (!isMatch) {
-          return res.status(401).json({
-            success: false,
-            message: "Access denied, wrong password",
-          });
-        }
-
-        req.session.user = {
-          id: user.utilisateur_id,
-          prenom: user.prenom,
-          nom: user.nom,
-          courriel: user.courriel,
-          telephone: user.telephone,
-        };
 
         console.log("USER FOUNDDDDDD" + results[0].courriel);
         return res.status(200).json({
@@ -133,13 +158,7 @@ app.post("/login", (req, res) => {
           userId: results[0].utilisateur_id,
         });
       });
-    } else {
-      console.log("USER NOT FOUND");
-      return res.status(401).json({
-        success: false,
-        message: "Not account associated to this email",
-      });
-    }
+    });
   });
 });
 
@@ -189,6 +208,15 @@ app.post("/LoginRegister", (req, res) => {
           return res.status(500).json({ message: "Internal server error" });
         }
         if (results.affectedRows && results.affectedRows > 0) {
+          //We create a new session for the user
+          req.session.user = {
+            id: results.insertId, // ID auto-généré
+            prenom: firstName,
+            nom: lastName,
+            courriel: email,
+            telephone: phoneNumber,
+          };
+
           console.log("New User created ");
           return res.status(200).json({
             success: true,
@@ -367,7 +395,7 @@ app.get("/getUsers", async (req, res) => {
 });
 
 /*
-      Inspiré de changePassword- Modifier état compte à suspended             -------------------------------------------------------------------------------------------------------------------
+      Inspiré de changePassword- Modifier état compte à suspended    -------------------------------------------------------------------------------------------------------------------
    
   */
 app.post("/suspendAccount", (req, res) => {
@@ -523,7 +551,7 @@ app.get("/api/genres", async (req, res) => {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${process.env.TMDB_TOKEN}`,
+          Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0`,
         },
       }
     );
@@ -593,10 +621,12 @@ app.get("/api/getMoviesResults/:searchQuery", async (req, res) => {
 // Need to fix this part, the issue with charging all the pages
 app.get("/discoverMoviesFiltered", async (req, res) => {
   console.log("WE ARE GETTTING HEREEEEEEEEEEEEE");
+  const params = new URLSearchParams();
+  const page = req.query.page || 1;
+  params.append("page", page);
   const { genre, language, decade, movieDuration, originCountry } = req.query;
 
   const originalUrl = "https://api.themoviedb.org/3/discover/movie";
-  const params = new URLSearchParams();
 
   //Help of chatgpt just to figure ou the way to do the url, so what do put for the genre, so like with_genres, or with_original_languages
   if (genre) {
@@ -716,7 +746,10 @@ app.get("/discoverMoviesFiltered", async (req, res) => {
       filteredMovies.push(fullMovieData);
     }
 
-    res.json(filteredMovies);
+    res.json({
+      results: filteredMovies,
+      total_pages: data.total_pages,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Failed to fetch movies" });
@@ -947,6 +980,33 @@ app.get("/mongo/getPersonalizedList", async (req, res) => {
   } catch (error) {
     console.error("Error during list fetch:", error);
     return res.status(500).json({ message: "Server Error" });
+  } finally {
+    await client.close();
+  }
+});
+
+/* =============================== FULLY DELETE A PERSONALIZED LIST ================================ */
+app.delete("/mongo/deletePersonalizedList/:listId", async (req, res) => {
+  const persoListId = req.params.listId;
+
+  const uri = process.env.DB_URI;
+  const client = new MongoClient(uri);
+
+  try {
+    await client.connect();
+    const db = client.db("FilmBox");
+    const lists = db.collection("CustomLists");
+
+    const result = await lists.deleteOne({ _id: new ObjectId(persoListId) });
+
+    if (result.deletedCount === 1) {
+      res.json({ message: "List succesfully deleted" });
+    } else {
+      res.status(400).json({ message: "No list with this id found" });
+    }
+  } catch (error) {
+    console.error("Couldnt delete list: ", error);
+    res.status(500).json({ message: "Server error" });
   } finally {
     await client.close();
   }
@@ -1275,6 +1335,89 @@ app.delete("/api/watched/:userId/:movieId", (req, res) => {
       return res.status(500).json({ message: "Error removing watched status" });
     }
     res.json({ success: true });
+  });
+});
+
+//////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////FAVORITITE/////////////////////////////////////////
+
+// Add to favorites
+app.post("/api/favorites", (req, res) => {
+  const { userId, movieId } = req.body;
+
+  if (!userId || !movieId) {
+    return res.status(400).json({ message: "Missing userId or movieId" });
+  }
+
+  const sql = `
+    INSERT IGNORE INTO films_favoris (film_id, utilisateur_utilisateur_id)
+    VALUES (?, ?)
+  `;
+
+  con.query(sql, [movieId, userId], (err) => {
+    if (err) {
+      console.error("Failed to add favorite:", err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+
+    res
+      .status(201)
+      .json({ success: true, message: "Movie added to favorites!" });
+  });
+});
+// Get all favorites for a user
+app.get("/api/favorites/:userId", async (req, res) => {
+  const userId = req.params.userId;
+  const sql = `
+    SELECT film_id FROM films_favoris
+    WHERE utilisateur_utilisateur_id = ?
+  `;
+
+  con.query(sql, [userId], async (err, results) => {
+    if (err) {
+      console.error("Database error:", err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+
+    try {
+      const movies = await Promise.all(
+        results.map(async (row) => {
+          const response = await fetch(
+            `https://api.themoviedb.org/3/movie/${row.film_id}`,
+            {
+              headers: {
+                accept: "application/json",
+                Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0`,
+              },
+            }
+          );
+          return response.json();
+        })
+      );
+
+      res.json(movies);
+    } catch (fetchError) {
+      console.error("Failed to fetch movie data:", fetchError);
+      res.status(500).json({ message: "Failed to fetch movie data" });
+    }
+  });
+});
+
+app.delete("/api/favorites/:userId/:movieId", (req, res) => {
+  const { userId, movieId } = req.params;
+
+  const sql = `
+    DELETE FROM films_favoris
+    WHERE utilisateur_utilisateur_id = ? AND film_id = ?
+  `;
+
+  con.query(sql, [userId, movieId], (err, results) => {
+    if (err) {
+      console.error("Database error:", err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+
+    res.status(200).json({ message: "Favorite removed successfully" });
   });
 });
 

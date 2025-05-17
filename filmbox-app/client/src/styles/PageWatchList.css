@@ -11,13 +11,6 @@ h1, h2, h3 {
 }
 
 
-.sectionBox {
-  border-radius: 0px;
-  padding: 20px;
-  margin-bottom: 40px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  background-color: transparent; 
-}
 
 /* Animation au hover */
 .movie-cardW {

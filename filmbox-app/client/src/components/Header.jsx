@@ -4,7 +4,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import '../styles/Header.css';
 import { useState, useEffect } from "react";
 
-
 function Header() {
   const [searchInput, setSearchInput] = useState("");
   const [results, setResults] = useState([]);
@@ -12,12 +11,34 @@ function Header() {
   const [menuOpen, setMenuOpen] = useState(false); // Hamburger
   const [user, setUser] = useState(null);
   const [initials, setInitials] = useState("");
+  
+  const handleLogout = async () => {
+    try {
+      const response = await fetch("http://localhost:4000/destroy-session", {
+        method: "POST",
+        credentials: "include",
+      });
 
+      if (response.ok) {
+        navigate("/");
+        localStorage.removeItem("rememberMe");
+      } else {
+        console.error("Error: Couldn't destroy session");
+      }
+    } catch (error) {
+      console.error("Logout error", error);
+    }
+  }
 
   useEffect(() => {
+
     const fetchUserData = async () => {
       try {
-        const response = await fetch('http://localhost:4000/get-session');
+        const response = await fetch('http://localhost:4000/get-session', {
+          method: "GET",
+          credentials: "include"
+        });
+        
         const data = await response.json();
         if (data.loggedIn) {
           setUser(data.user);
@@ -25,6 +46,7 @@ function Header() {
           setInitials(userInitials.toUpperCase());
         } else {
           setMessage("SESSION INTROUVABLE");
+          navigate("/");
         }
       } catch (error) {
         console.error('Error', error);
@@ -188,8 +210,6 @@ function Header() {
 
           {/* Source pour comment faire animation search bar:  https://github.com/devression/animated-search-bar/blob/main/style.css */}
 
-
-
           {/* séparateur */}
           <div
             className="border-start border-white opacity-50 mx-3 hide-on-mobile"
@@ -243,9 +263,9 @@ function Header() {
                 <hr className="dropdown-divider" />
               </li>
               <li>
-                <Link className="dropdown-item" to="/">
+                <button className="dropdown-item" onClick={handleLogout}>
                   Log out
-                </Link>
+                </button>
               </li>
             </ul>
           </div>
@@ -258,7 +278,9 @@ function Header() {
             <Link to="/PageWatchList" onClick={() => setMenuOpen(false)}>MY MOVIES</Link>
             <Link to="/BrowseMovies" onClick={() => setMenuOpen(false)}>BROWSE MOVIES</Link>
             <Link to="/userSettings" onClick={() => setMenuOpen(false)}>MY PROFILE</Link>
-            <Link to="/" onClick={() => setMenuOpen(false)}>LOG OUT</Link>
+            <button onClick={() => { handleLogout(); setMenuOpen(false); }} className="dropdown-item">
+              LOG OUT
+            </button>
           </div>
         )}
 
