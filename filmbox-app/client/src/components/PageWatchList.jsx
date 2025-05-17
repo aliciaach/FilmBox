@@ -19,10 +19,30 @@ function PageWatchList() {
   const [personalizedLists, setPersonalizedLists] = useState([]);
   const [selectedList, setSelectedList] = useState(null);
   const navigate = useNavigate();
+  const [user, setUser] = useState({});
  
-  const userId = localStorage.getItem("userId"); //Faudra changer ça !!!
- 
- /* POUR DÉFILER */
+  useEffect(() => {
+      const fetchUserSession = async () => {
+        try {
+          const response = await fetch("http://localhost:4000/get-session", {
+            credentials: "include",
+          });
+          const data = await response.json();
+          if (data.loggedIn) {
+            setUser(data.user);
+          } else {
+            setErreur("Session non trouvée");
+          }
+        } catch (err) {
+          console.error("Erreur session:", err);
+          setErreur("Erreur de session");
+        } 
+      };
+  
+      fetchUserSession();
+    }, []);
+
+  /* POUR DÉFILER */
   const [scrollPosition, setScrollPosition] = useState(0);
   const containerRef = useRef();
 
@@ -54,9 +74,9 @@ function PageWatchList() {
   const refreshLists = async () => {
     try {
       const [watchlistRes, watchedRes, personalizedRes] = await Promise.all([
-        fetch(`http://localhost:4000/api/watchlist/${userId}`),
-        fetch(`http://localhost:4000/api/watched/${userId}`),
-        fetch(`http://localhost:4000/mongo/getPersonalizedList?userId=${userId}`)
+        fetch(`http://localhost:4000/api/watchlist/${user.utilisateur_id}`),
+        fetch(`http://localhost:4000/api/watched/${user.utilisateur_id}`),
+        fetch(`http://localhost:4000/mongo/getPersonalizedList?userId=${user.utilisateur_id}`)
       ]);
  
       if (!watchlistRes.ok || !watchedRes.ok) throw new Error("Failed to fetch watchlist or watched movies");
@@ -112,7 +132,7 @@ function PageWatchList() {
  
   useEffect(() => {
     refreshLists();
-  }, [userId]);
+  }, [user]);
  
   const renderMovieRow = (movies, scrollRef = null) => (
     <div
