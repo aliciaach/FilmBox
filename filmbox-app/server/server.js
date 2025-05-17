@@ -411,10 +411,15 @@ app.get("/getUsers", async (req, res) => {
 app.post("/suspendAccount", (req, res) => {
   console.log("Trying to suspend account");
   const { userId } = req.body;
+  if (!userId) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Missing userId in request" });
+  }
   const sql =
-    "UPDATE utilisateur SET accountState = 'suspended' WHERE utilisateur_id = ?";
+    "UPDATE utilisateur SET accountState = ? WHERE utilisateur_id = ?";
 
-  con.query(sql, [userId], (err, results) => {
+  con.query(sql, ["suspended", userId], (err, results) => {
     if (err) {
       console.error("Database error: ", err);
       return res.status(500).json({ message: "Internal server error" });
@@ -428,7 +433,7 @@ app.post("/suspendAccount", (req, res) => {
       console.log("Error, couldnt suspended account");
       return res
         .status(404)
-        .json({ succes: false, message: "Error, couldnt create user..." });
+        .json({ success: false, message: "Error, couldnt create user..." });
     }
   });
 });
@@ -1075,6 +1080,9 @@ app.post("/adminLogin", async (req, res) => {
     await client.close();
   }
 });
+
+///////////////////////////////////////// SUSPEND USER //////////////////////////////////////
+
 /////////////////////////////////////////GET USER STATISIQUES////////////////////////////////
 app.get("/getStatistiques/:userId", (req, res) => {
   const userId = req.params.userId;
