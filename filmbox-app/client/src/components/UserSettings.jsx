@@ -34,7 +34,9 @@ function UserSettings() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch('http://localhost:4000/get-session');
+        const response = await fetch('http://localhost:4000/get-session', {
+          credentials: 'include', 
+        });
         const data = await response.json();
         if (data.loggedIn) {
           setUser(data.user);
