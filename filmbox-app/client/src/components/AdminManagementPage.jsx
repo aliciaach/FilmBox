@@ -11,6 +11,7 @@ import {
   DropdownDivider,
   DropdownMenu,
 } from "react-bootstrap";
+import "../styles/AdminManagement";
 
 function AdminManagement() {
   const [sortConfig, setSortConfig] = useState();
@@ -276,32 +277,9 @@ function AdminManagement() {
   };
 
   return (
-    <div
-      className="bg-dark text-white min-vh-100"
-      style={{
-        background: `linear-gradient(to bottom,
-        rgba(26, 0, 255, 0.4) 0%,
-        rgba(5, 14, 68, 0.38) 13%,
-        rgba(5, 0, 50, 0) 100%,
-        rgba(0, 0, 255, 0.4)) 100%,    
-        url(${fondNoir})`,
-        backgroundRepeat: "no-repeat",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        minHeight: "100vh",
-        color: "white",
-      }}
-    >
+    <div className="bg-dark text-white min-vh-100 admin-management-container">
       {/* barre de navigation */}
-      <nav
-        className="d-flex align-items-center px-4"
-        style={{
-          //   background: "linear-gradient(to right, #02002E, #030046)",
-          color: "white",
-          height: "60px",
-          fontWeight: "500",
-        }}
-      >
+      <nav className="d-flex align-items-center px-4 nav-admin">
         {/* Logo */}
         <div className="d-flex align-items-center me-4">
           <span className="fw-bold text-white fs-4">FILM</span>
@@ -379,22 +357,12 @@ function AdminManagement() {
         <div className="input-group mb-3">
           <input
             type="text"
-            className="form-control bg-transparent text-white  border-0 border-bottom rounded-0 "
+            className="form-control bg-transparent text-white  border-0 border-bottom rounded-0 search-input"
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
-            style={{
-              borderColor: "white",
-              color: "white",
-              boxShadow: "none",
-              outline: "none",
-            }}
           />
           <button
-            className="input-group-text bg-transparent border-0 border-bottom me-0"
-            style={{
-              padding: "0 8px",
-              cursor: "pointer",
-            }}
+            className="input-group-text bg-transparent border-0 border-bottom me-0 btn-search"
             onClick={() => handleSearch(searchValue)}
           >
             <img src={search} alt="Search" width="20" height="20" />
@@ -414,78 +382,41 @@ function AdminManagement() {
               <tr>
                 <th
                   onClick={() => handleSort("username")}
-                  style={{
-                    cursor: "pointer",
-                    backgroundColor: "transparent",
-                    borderBottom: "1px solid rgba(255,255,255,0.2)",
-                  }}
-                  className="text-white"
+                  className="text-white clickable-header"
                 >
                   Username {sortArrow("username")}
                 </th>
                 <th
                   onClick={() => handleSort("name")}
-                  style={{
-                    cursor: "pointer",
-                    backgroundColor: "transparent",
-                    borderBottom: "1px solid rgba(255,255,255,0.2)",
-                  }}
-                  className="text-white"
+                  className="text-white clickable-header"
                 >
                   Name {sortArrow("name")}
                 </th>
                 <th
                   onClick={() => handleSort("email")}
-                  style={{
-                    cursor: "pointer",
-                    backgroundColor: "transparent",
-                    borderBottom: "1px solid rgba(255,255,255,0.2)",
-                  }}
-                  className="text-white"
+                  className="text-white clickable-header"
                 >
                   Email {sortArrow("email")}
                 </th>
                 <th
                   onClick={() => handleSort("phone")}
-                  style={{
-                    cursor: "pointer",
-                    backgroundColor: "transparent",
-                    borderBottom: "1px solid rgba(255,255,255,0.2)",
-                  }}
-                  className="text-white"
+                  className="text-white clickable-header"
                 >
                   Phone {sortArrow("phone")}
                 </th>
                 <th
                   onClick={() => handleSort("lastlogin")}
-                  style={{
-                    cursor: "pointer",
-                    backgroundColor: "transparent",
-                    borderBottom: "1px solid rgba(255,255,255,0.2)",
-                  }}
-                  className="text-white"
+                  className="text-white clickable-header"
                 >
                   Last Login {sortArrow("lastlogin")}
                 </th>
                 <th
                   onClick={() => handleSort("role")}
-                  style={{
-                    cursor: "pointer",
-                    backgroundColor: "transparent",
-                    borderBottom: "1px solid rgba(255,255,255,0.2)",
-                  }}
-                  className="text-white"
+                  className="text-white clickable-header"
                 >
                   Role {sortArrow("role")}
                 </th>
-                <th
-                  style={{
-                    cursor: "pointer",
-                    backgroundColor: "transparent",
-                    borderBottom: "1px solid rgba(255,255,255,0.2)",
-                  }}
-                  className="text-white"
-                ></th>
+                <th className="text-white clickable-header"></th>
               </tr>
             </thead>
             <tbody>
@@ -581,41 +512,33 @@ function AdminManagement() {
               )}
               {/* Prenom */}
               <input
-                className={`form-control mb-2 text-white rounded-3 border-0 ${
+                className={`modal-input form-control mb-2 text-white rounded-3 border-0 ${
                   formErrors.name ? "is-invalid" : ""
                 }`}
                 name="name"
                 placeholder="Name"
                 value={dataForm.name}
                 onChange={handleChange}
-                style={{
-                  backgroundColor: `rgba(149, 137, 255, 0.78)`,
-                  color: "white",
-                }}
               />
               {formErrors.name && (
                 <div className="text-danger">{formErrors.name}</div>
               )}
               {/* Nom famille */}
               <input
-                className={`form-control mb-2 text-white rounded-3 border-0 ${
+                className={`modal-input form-control mb-2 text-white rounded-3 border-0 ${
                   formErrors.lastName ? "is-invalid" : ""
                 }`}
                 name="lastName"
                 placeholder="Last Name"
                 value={dataForm.lastName}
                 onChange={handleChange}
-                style={{
-                  backgroundColor: `rgba(149, 137, 255, 0.78)`,
-                  color: "white",
-                }}
               />
               {formErrors.lastName && (
                 <div className="text-danger">{formErrors.lastName}</div>
               )}
               {/* Email */}
               <input
-                className={`form-control mb-2 text-white rounded-3 border-0 ${
+                className={`modal-input form-control mb-2 text-white rounded-3 border-0 ${
                   formErrors.email ? "is-invalid" : ""
                 }`}
                 type="email"
@@ -623,43 +546,31 @@ function AdminManagement() {
                 placeholder="Email"
                 value={dataForm.email}
                 onChange={handleChange}
-                style={{
-                  backgroundColor: `rgba(149, 137, 255, 0.78)`,
-                  color: "white",
-                }}
               />
               {formErrors.email && (
                 <div className="text-danger">{formErrors.email}</div>
               )}
               {/* # telephone */}
               <input
-                className={`form-control mb-2 text-white rounded-3 border-0 ${
+                className={`modal-input form-control mb-2 text-white rounded-3 border-0 ${
                   formErrors.phoneNumber ? "is-invalid" : ""
                 }`}
                 name="phoneNumber"
                 placeholder="Phone Number"
                 value={dataForm.phoneNumber}
                 onChange={handleChange}
-                style={{
-                  backgroundColor: `rgba(149, 137, 255, 0.78)`,
-                  color: "white",
-                }}
               />
               {formErrors.phoneNumber && (
                 <div className="text-danger">{formErrors.phoneNumber}</div>
               )}
               {/* Role */}
               <select
-                className={`form-select mb-2 text-white rounded-3 border-0 ${
+                className={`modal-input form-select mb-2 text-white rounded-3 border-0 ${
                   formErrors.role ? "is-invalid" : ""
                 }`}
                 name="role"
                 value={dataForm.role}
                 onChange={handleChange}
-                style={{
-                  backgroundColor: `rgba(149, 137, 255, 0.78)`,
-                  color: "white",
-                }}
               >
                 <option value="Admin">Admin</option>
                 <option value="Moderator">Moderator</option>
@@ -670,17 +581,13 @@ function AdminManagement() {
               {/* Mot de Passe */}
               <input
                 type="password"
-                className={`form-control mb-2 text-white rounded-3 border-0 ${
+                className={`modal-input form-control mb-2 text-white rounded-3 border-0 ${
                   formErrors.password ? "is-invalid" : ""
                 }`}
                 name="password"
                 placeholder="Password"
                 value={dataForm.password}
                 onChange={handleChange}
-                style={{
-                  backgroundColor: `rgba(149, 137, 255, 0.78)`,
-                  color: "white",
-                }}
               />
               {formErrors.password && (
                 <div className="text-danger">{formErrors.password}</div>
@@ -716,7 +623,7 @@ function AdminManagement() {
                   <label className="form-label">First Name</label>
                   <input
                     type="text"
-                    className="form-control bg-transparent text-white"
+                    className="form-control input-creer-admin"
                     placeholder="John"
                     value={adminChoisi ? adminChoisi.name : ""}
                     onChange={(e) =>
@@ -725,7 +632,6 @@ function AdminManagement() {
                         name: e.target.value,
                       }))
                     }
-                    style={{ borderColor: "rgba(116,101,247,0.6)" }}
                   />
                 </div>
 
@@ -734,7 +640,7 @@ function AdminManagement() {
                   <label className="form-label">Last Name</label>
                   <input
                     type="text"
-                    className="form-control bg-transparent text-white"
+                    className="form-control input-creer-admin"
                     placeholder="Doe"
                     value={adminChoisi ? adminChoisi.lastName : ""}
                     onChange={(e) =>
@@ -743,7 +649,6 @@ function AdminManagement() {
                         lastName: e.target.value,
                       }))
                     }
-                    style={{ borderColor: "rgba(116,101,247,0.6)" }}
                   />
                 </div>
               </div>
@@ -753,7 +658,7 @@ function AdminManagement() {
                 <label className="form-label">Email</label>
                 <input
                   type="email"
-                  className="form-control bg-transparent text-white"
+                  className="form-control input-creer-admin"
                   placeholder="example@gmail.com"
                   value={adminChoisi ? adminChoisi.email : ""}
                   onChange={(e) =>
@@ -762,7 +667,6 @@ function AdminManagement() {
                       email: e.target.value,
                     }))
                   }
-                  style={{ borderColor: "rgba(116,101,247,0.6)" }}
                 />
               </div>
 
@@ -771,7 +675,7 @@ function AdminManagement() {
                 <label className="form-label">Phone Number</label>
                 <input
                   type="tel"
-                  className="form-control bg-transparent text-white"
+                  className="form-control  input-creer-admin"
                   placeholder="514-123-1234"
                   value={adminChoisi ? adminChoisi.phoneNumber : ""}
                   onChange={(e) =>
@@ -780,7 +684,6 @@ function AdminManagement() {
                       phoneNumber: e.target.value,
                     }))
                   }
-                  style={{ borderColor: "rgba(116,101,247,0.6)" }}
                 />
               </div>
 
@@ -801,8 +704,7 @@ function AdminManagement() {
                         : ""
                     }
                     readOnly
-                    className="form-control bg-transparent text-white text-center"
-                    style={{ borderColor: "rgba(116,101,247,0.6)" }}
+                    className="form-control  text-center input-creer-admin"
                   />
                 </div>
 
@@ -817,8 +719,7 @@ function AdminManagement() {
                         : ""
                     }
                     readOnly
-                    className="form-control bg-transparent text-white text-center"
-                    style={{ borderColor: "rgba(116,101,247,0.6)" }}
+                    className="form-control text-center input-creer-admin"
                   />
                 </div>
 
@@ -833,8 +734,7 @@ function AdminManagement() {
                         : ""
                     }
                     readOnly
-                    className="form-control bg-transparent text-white text-center"
-                    style={{ borderColor: "rgba(116,101,247,0.6)" }}
+                    className="form-control  text-center input-creer-admin"
                   />
                 </div>
                 {/* Role */}
@@ -846,7 +746,7 @@ function AdminManagement() {
                     Role
                   </label>
                   <select
-                    className="form-select bg-transparent text-white"
+                    className="form-select input-creer-admin"
                     value={adminChoisi ? adminChoisi.role : ""}
                     onChange={(e) =>
                       setAdminChoisi((prevAdmin) => ({
@@ -854,7 +754,6 @@ function AdminManagement() {
                         role: e.target.value,
                       }))
                     }
-                    style={{ borderColor: "rgba(116,101,247,0.6)" }}
                   >
                     <option className="text-dark">Choose...</option>
                     <option className="text-dark">Admin</option>
@@ -875,12 +774,8 @@ function AdminManagement() {
                 </button>
                 <button
                   type="submit"
-                  className="btn text-white rounded-2 w-25"
+                  className="btn text-white rounded-2 w-25 btn-save-admin"
                   onClick={handleUpdateSave}
-                  style={{
-                    background: "rgba(111,79,255,0.3)",
-                    borderColor: "rgb(111,79,255)",
-                  }}
                 >
                   Save
                 </button>
