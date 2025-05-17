@@ -25,7 +25,7 @@ h1, h2, h3 {
 }
 
 .movie-card:hover .movie-card-content {
-  transform: none; /* Annule toute transformation interne */
+  transform: none; 
 }
 
 .movie-card:hover img {
