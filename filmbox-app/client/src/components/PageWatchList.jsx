@@ -194,6 +194,7 @@ function PageWatchList() {
             <h2 className="text-white" style={{ marginBottom: "10px" }}>My Watchlist</h2>
             <SectionDivider />
             {watchlist.length > 0 ? renderMovieRow(watchlist) : <p>Your watchlist is empty.</p>}
+          
           </div>
 
           <div style={sectionBoxStyle}>
