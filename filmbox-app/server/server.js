@@ -1075,7 +1075,37 @@ app.post("/adminLogin", async (req, res) => {
     await client.close();
   }
 });
+/////////////////////////////////////////GET USER STATISIQUES////////////////////////////////
+app.get("/getStatistiques", (req, res) => {
+  const userId = req.body;
 
+  if (!userId)
+  {
+    return res
+      .status(400)
+      .json({message: "Error: Missing user id!"});
+  }
+
+   const sql = `
+    SELECT
+      COUNT(*) AS watchedCount,
+      SUM(CASE WHEN valeur_note IS NOT NULL THEN 1 ELSE 0 END) AS ratingCount,
+      SUM(CASE WHEN commentaire IS NOT NULL THEN 1 ELSE 0 END) AS commentCount
+    FROM note
+    WHERE utilisateur_utilisateur_id = ?
+  `;
+
+   con.query(sql, [userId], (err, results) => {
+    if (err) {
+      console.error("Error fetching stats:", err);
+      return res
+        .status(500)
+        .json({ message: "Database error", error: err });
+    }
+    res.json(results[0]);
+  });
+
+});
 /////////////////////////////////////////WATCHLIST///////////////////////////////////////////
 
 // Add to Watchlist
