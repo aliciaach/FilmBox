@@ -20,7 +20,6 @@ import BrowseMovies from './components/BrowseMoviePage';
 function App() {
   return (
     <BrowserRouter>
-    <div>
       <Routes>
         <Route path="/" element={<BodyAccueil />} />
         <Route path="/connexion" element={<Connexion />} />
@@ -38,7 +37,6 @@ function App() {
         <Route path="/BrowseMovies" element={<BrowseMovies/>} />
       </Routes>
       <Footer/>
-    </div>
     </BrowserRouter>
   );
 }
