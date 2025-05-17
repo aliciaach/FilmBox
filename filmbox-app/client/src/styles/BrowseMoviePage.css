@@ -44,21 +44,40 @@
 
   border: 1px solid #4a6bff;
   border-radius: 8px;
-  padding: 8px 12px;
+  padding: 10px 40px 10px 15px;
   font-size: 16px;
   transition: all 0.3s ease;
+  font-family: 'Fredoka', sans-serif;
+
+  /* Aide de chat pour la fleche */
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 140 140'%3E%3Cpolygon points='0,0 140,0 70,70' fill='%234a6bff'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 10px;
 }
 
+  /* aide de Chat pour les navigateurs */
+.filtreGroup select,
+.filtreGroup option {
+  -webkit-appearance: none;  /* Chrome */
+  -moz-appearance: none;     /* Firefox */
+  appearance: none;          /* Remove native style */
+}
+
+
 .filtreGroup select:hover {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  outline: none !important;
   cursor: pointer;
 }
 
 .filtreGroup option {
-  color: #000000;
+  background-color: #0a0a30;    
+  color: white;
   font-weight: 400;
   font-size: 14px;
   margin-bottom: 6px;
+    outline: none !important;
 }
 
 @media screen and (max-width: 768px) {

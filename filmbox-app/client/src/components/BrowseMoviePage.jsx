@@ -7,7 +7,6 @@ import ReactPaginate from 'react-paginate';
 import '../styles/BrowseMoviePage.css';
 import HeaderSpace from '../Functions/HeaderSpace.jsx';
 
-
 function BrowseMovies() {
     const { searchQuery } = useParams();
     const [currentPage, setCurrentPage] = useState(0);
