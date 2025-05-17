@@ -1,0 +1,68 @@
+
+.filtreTitre{
+    margin-left: 3px;
+}
+
+
+
+
+
+
+
+
+
+.filtreContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px 30px;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 20px;
+  border-radius: 12px;
+  margin-top: 30px;
+  margin-bottom: 40px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.filtreGroup {
+  display: flex;
+  flex-direction: column;
+  min-width: 150px;
+  flex: 1;
+}
+
+.filtreGroup label {
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 20px;
+  margin-bottom: 6px;
+}
+
+.filtreGroup select {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+
+  border: 1px solid #4a6bff;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.filtreGroup select:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+}
+
+.filtreGroup option {
+  color: #000000;
+  font-weight: 400;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+@media screen and (max-width: 768px) {
+  .filtreGroup {
+    min-width: 100%;
+  }
+}
