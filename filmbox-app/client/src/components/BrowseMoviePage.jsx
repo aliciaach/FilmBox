@@ -5,6 +5,7 @@ import Header from '../components/Header';
 import BlackImage from '../assets/BlackImage.png';
 import ReactPaginate from 'react-paginate';
 import '../styles/BrowseMoviePage.css';
+import HeaderSpace from '../Functions/HeaderSpace.jsx';
 
 
 function BrowseMovies() {
@@ -72,6 +73,7 @@ function BrowseMovies() {
                 fontFamily: 'Fredoka',
                 minHeight: "100vh",
             }}>
+                <HeaderSpace/>
                 <Header />
 
                 <h1 style={{marginTop : '60px'}}>Page for the movie categories and all</h1>
