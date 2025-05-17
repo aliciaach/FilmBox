@@ -167,7 +167,7 @@ function BrowseMovies() {
                                     : BlackImage;
 
                                 return (
-                                    <div key={film.id || index} className="col-lg-2 col-md-3 col-sm-6 mb-4"
+                                    <div key={film.id || index} className="movie-col mb-4"
                                         style={{ paddingBottom: '25px' }}>
                                         <div className="card border-0 shadow movie-card"
                                             style={{
@@ -208,7 +208,36 @@ function BrowseMovies() {
                     .movie-card:hover img {
                         opacity: 0.9;
                     }
-                `}</style>
+                    .movie-col {
+                        width: 20%;
+                        padding: 10px;
+                    }
+
+                    
+                    @media (max-width: 1200px) {
+                        .movie-col {
+                            width: 25%; /* 4 per row */
+                        }
+                    }
+
+                    @media (max-width: 992px) {
+                        .movie-col {
+                            width: 33.33%; /* 3 per row */
+                        }
+                    }
+
+                    @media (max-width: 768px) {
+                        .movie-col {
+                            width: 50%; /* 2 per row */
+                        }
+                    }
+
+                    @media (max-width: 576px) {
+                        .movie-col {
+                            width: 100%; /* 1 per row */
+                        }
+                    }
+                `}</style> {/*Code to addapt the number of movie per row depending on the ui with @media was done with chatgpt's help*/}
                 </div>
             </div>
         </>
