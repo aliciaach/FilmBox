@@ -73,6 +73,10 @@
   margin-right: 5px;
 }
 
+.boutonScroll-droite {
+  margin-left: 5px;
+}
+
 .horizontal-scrollbar::-webkit-scrollbar {
   height: 10px;
 }
