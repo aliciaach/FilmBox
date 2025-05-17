@@ -9,6 +9,8 @@ function Header() {
   const [searchInput, setSearchInput] = useState("");
   const [results, setResults] = useState([]);
   const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false); // Hamburger
+
 
   useEffect(() => {
     if (searchInput === "") {
@@ -50,6 +52,11 @@ function Header() {
             fontWeight: "500",
           }}
         >
+          {/* Hamburger */}
+          <div className="hamburger-icon me-3" onClick={() => setMenuOpen(!menuOpen)}>
+            <i className="fas fa-bars"></i>
+          </div>
+
           {/* Logo */}
           <div className="d-flex align-items-center me-4">
             <span className="fw-bold text-white fs-4">FILM</span>
@@ -58,7 +65,7 @@ function Header() {
 
           {/* séparateur */}
           <div
-            className="border-start border-white opacity-50 mx-3"
+            className="border-start border-white opacity-50 mx-3 hide-on-mobile"
             style={{ height: "30px" }}
           />
 
@@ -164,7 +171,7 @@ function Header() {
 
           {/* séparateur */}
           <div
-            className="border-start border-white opacity-50 mx-3"
+            className="border-start border-white opacity-50 mx-3 hide-on-mobile"
             style={{ height: "30px" }}
           />
 
@@ -208,6 +215,18 @@ function Header() {
             </ul>
           </div>
         </nav>
+        
+        {/* Hamburger */}
+        {menuOpen && (
+          <div className="mobile-menu">
+            <Link to="/listeFilms" onClick={() => setMenuOpen(false)}>HOME</Link>
+            <Link to="/PageWatchList" onClick={() => setMenuOpen(false)}>MY MOVIES</Link>
+            <Link to="/BrowseMovies" onClick={() => setMenuOpen(false)}>BROWSE MOVIES</Link>
+            <Link to="/userSettings" onClick={() => setMenuOpen(false)}>MY PROFILE</Link>
+            <Link to="/" onClick={() => setMenuOpen(false)}>LOG OUT</Link>
+          </div>
+        )}
+
       </header >
     </>
   );
