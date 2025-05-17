@@ -1,37 +1,37 @@
 body {
-  font-family: 'Urbanist', sans-serif; 
+  font-family: 'Urbanist', sans-serif;
   background-color: #050032;
   color: white;
   font-size: 14px;
   font-weight: 500;
 }
-
+ 
 h1, h2, h3 {
   font-weight: 700;
 }
-
-
-
+ 
+ 
+ 
 /* Animation au hover */
 .movie-card {
   transition: all 0.3s ease;
   padding: 5px;
 }
-
+ 
 .movie-card:hover {
   transform: scale(1.05);
   border-color: #4a6bff;
   box-shadow: 0 10px 20px rgba(74, 107, 255, 0.3);
 }
-
+ 
 .movie-card:hover .movie-card-content {
-  transform: none; /* Annule toute transformation interne */
+  transform: none;
 }
-
+ 
 .movie-card:hover img {
   opacity: 0.9;
 }
-
+ 
 .horizontal-scroll {
   display: flex;
   overflow-x: auto;
@@ -41,16 +41,16 @@ h1, h2, h3 {
   padding-left: 0;
   padding-right: 0;
 }
-
+ 
 .movie-card {
   flex: 0 0 auto;
   scroll-snap-align: start;
   min-width: 160px; /* ou 150px si tu préfères */
 }
-
-
-
-
+ 
+ 
+ 
+ 
 .boutonScroll-gauche,
 .boutonScroll-droite {
   border: 1px solid rgba(255, 255, 255, 0.3);
@@ -64,12 +64,12 @@ h1, h2, h3 {
    z-index: 10;
   background-color: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
-
+ 
   -webkit-backdrop-filter: blur(10px);
-
+ 
   /*background: linear-gradient(to right, rgba(0, 0, 0, 0.6), transparent);*/
 }
-
+ 
 .boutonScroll-gauche {
   margin-left: 10px;
   margin-right: 5px;
@@ -77,34 +77,34 @@ h1, h2, h3 {
 .boutonScroll-droite {
   margin-left: 5px;
 }
-
+ 
 .horizontal-scrollbar::-webkit-scrollbar {
   height: 10px;
 }
-
+ 
 .horizontal-scrollbar::-webkit-scrollbar-track {
   background: rgba(130, 126, 255, 0.2);
   /*rgba(255, 255, 255, 0.1);*/
   /* fond (long) */
   border-radius: 10px;
 }
-
+ 
 .horizontal-scrollbar::-webkit-scrollbar-thumb {
   /*background: rgba(111, 84, 255, 0.6); /* le petit truc  PAS DE DÉGRADÉ*/
   border-radius: 20px;
   border: 1px solid rgba(42, 3, 151, 0.796);
   /* border du petit truc */
-
+ 
   /*background: linear-gradient(to right,  rgba(36, 0, 136, 0.796), rgba(0, 76, 255, 0.796),  rgba(36, 0, 136, 0.796)); BLEU*/
   background: linear-gradient(to right, rgba(58, 38, 148, 0.796), rgba(111, 84, 255, 0.796), rgba(58, 38, 148, 0.796));
   /* MAUVE*/
 }
-
+ 
 .horizontal-scrollbar::-webkit-scrollbar-thumb:hover {
   /*background: rgba(154, 134, 255, 0.9); /* quand tu passes la souris sur le petit truc */
   background: linear-gradient(to right, rgba(107, 67, 252, 0.9), rgba(149, 128, 255, 0.9), rgba(107, 67, 252, 0.9));
 }
-
+ 
 /* ChatGPT m'a aidé pour la scrollbar sur Firefox */
 .horizontal-scrollbar {
   scrollbar-width: thin;

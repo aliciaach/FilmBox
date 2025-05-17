@@ -84,6 +84,7 @@ function LoginRegister() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
+                credentials: 'include', 
                 body: JSON.stringify(newUser)
             });
 
@@ -92,6 +93,9 @@ function LoginRegister() {
             if (response.ok && data.success)
             {
                 console.log("User succesfully created!");
+                navigate("/listeFilms");
+            } else {
+                setMessage(data.message || "something went wrong");
             }
 
         } catch (error) {
