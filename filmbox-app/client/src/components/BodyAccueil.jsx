@@ -51,13 +51,11 @@ function BodyAccueil() {
               className="nav-link active text-white text-"
               style={{ fontSize: "20px" }}
             >
-               <button className="btn custom-btn text-light fw-light fs-4 mt-2">
-                 CONNEXION
-                </button>
-              
+              <button className="btn custom-btn text-light fw-light fs-4 mt-2">
+                CONNEXION
+              </button>
             </Link>
           </nav>
-
 
           {/* Logo */}
           <img
@@ -73,7 +71,12 @@ function BodyAccueil() {
                 {/* Premier texte */}
                 <h1
                   className="text-white mb-0 text-start me-1"
-                   style={{ fontFamily:"Jomhuria", minWidth: "250px", fontSize: "90px", letterSpacing: "1px" }}
+                  style={{
+                    fontFamily: "Jomhuria",
+                    minWidth: "250px",
+                    fontSize: "90px",
+                    letterSpacing: "1px",
+                  }}
                 >
                   COLLECT MEMORIES
                 </h1>
@@ -90,7 +93,12 @@ function BodyAccueil() {
                 />
                 <h1
                   className="text-white mb-0 ms-5"
-                  style={{ fontFamily:"Jomhuria", minWidth: "250px", fontSize: "90px", letterSpacing: "1px" }}
+                  style={{
+                    fontFamily: "Jomhuria",
+                    minWidth: "250px",
+                    fontSize: "90px",
+                    letterSpacing: "1px",
+                  }}
                 >
                   ONE MOVIE AT A TIME
                 </h1>
@@ -106,80 +114,104 @@ function BodyAccueil() {
             </div>
           </div>
         </div>
-        
-      {/**Texte du bas */}
-      <div>
-        <div className="d-flex flex-column align-items-center text-center mt-4 text-white">
-          <div style={{ width: "100%", marginLeft: "150px" }}>
-            {/** grande affirmation */}
-            <div className="text-light mt-5 text-start w-100 ms-5 mb-5">
-              <span className="fw-bold" style={{ fontSize: "7.8vh" }} /* 50px*/>
-                Make every film you watch part of your story
-              </span>
-            </div>
 
-            {/**Gros paragraphes */}
-            <div className="row align-items-start w-100 mt-4 ">
-              {/* texte */}
-              <div className="col-md-8 text-md-start">
-                <p className="fs-4 lh-lg mb-5 mt-3" style={{ fontWeight: "400" }}>
-                  Sometimes, you watch a movie that connects so deeply within you that
-                  you can’t stop thinking about it. You need to talk about it,
-                  analyze it — you’re just not ready to say goodbye yet. Or sometimes,
-                  it’s so bad that you can’t help but express how terrible it was.
-                  That’s what FilmBox is for. Rate your movies, leave an impression,
-                  write down your thoughts, and express your emotions one last time
-                  before cutting the final scene for good.
-                </p>
-
-                <p className="fs-4 lh-lg mb-5" style={{ fontWeight: "400" }}>
-                  It’s also a way to revisit old movies you’ve watched and relive the
-                  emotions you experienced during them. Whether it’s nostalgia, awe,
-                  or frustration, it’s all part of your cinematic journey.
-                </p>
+        {/**Texte du bas */}
+        <div>
+          <div className="d-flex flex-column align-items-center text-center mt-4 text-white">
+            <div style={{ width: "100%", marginLeft: "150px" }}>
+              {/** grande affirmation */}
+              <div className="text-light mt-5 text-start w-100 ms-5 mb-5">
+                <span
+                  className="fw-bold"
+                  style={{ fontSize: "7.8vh" }} /* 50px*/
+                >
+                  Make every film you watch part of your story
+                </span>
               </div>
 
-              {/* Image a droite */}
-              <div className="col-md-4 d-flex justify-content-center align-self-start mt-4">
-                <img
-                  src={img1}
-                  alt="Film Experience"
-                  className="img-fluid"
-                  style={{ height: "65vh", width: "auto", marginRight: "100px" }}
-                />
+              {/**Gros paragraphes */}
+              <div className="row align-items-start w-100 mt-4 ">
+                {/* texte */}
+                <div className="col-md-8 text-md-start">
+                  <p
+                    className="fs-4 lh-lg mb-5 mt-3"
+                    style={{ fontWeight: "400" }}
+                  >
+                    Sometimes, you watch a movie that connects so deeply within
+                    you that you can’t stop thinking about it. You need to talk
+                    about it, analyze it — you’re just not ready to say goodbye
+                    yet. Or sometimes, it’s so bad that you can’t help but
+                    express how terrible it was. That’s what FilmBox is for.
+                    Rate your movies, leave an impression, write down your
+                    thoughts, and express your emotions one last time before
+                    cutting the final scene for good.
+                  </p>
+
+                  <p className="fs-4 lh-lg mb-5" style={{ fontWeight: "400" }}>
+                    It’s also a way to revisit old movies you’ve watched and
+                    relive the emotions you experienced during them. Whether
+                    it’s nostalgia, awe, or frustration, it’s all part of your
+                    cinematic journey.
+                  </p>
+                </div>
+
+                {/* Image a droite */}
+                <div className="col-md-4 d-flex justify-content-center align-self-start mt-4">
+                  <img
+                    src={img1}
+                    alt="Film Experience"
+                    className="img-fluid"
+                    style={{
+                      height: "65vh",
+                      width: "auto",
+                      marginRight: "100px",
+                    }}
+                  />
+                </div>
               </div>
             </div>
+
+            {/**Les quotes pour le site */}
+            <div className="text-center text-light mt-5">
+              <p className="fw-bold fs-2" style={{ whiteSpace: "nowrap" }}>
+                <b>For Every Movie That Moves You — Share Your Final Scene.</b>
+              </p>
+              <p className="fw-bold fs-2" style={{ marginBottom: "8vh" }}>
+                It’s simple: just watch it, feel it, and rate it!
+              </p>
+            </div>
           </div>
-          
-          {/**Les quotes pour le site */}
-          <div className="text-center text-light mt-5">
-            <p className="fw-bold fs-2" style={{ whiteSpace: "nowrap" }}>
-              <b>For Every Movie That Moves You — Share Your Final Scene.</b>
-            </p>
-            <p className="fw-bold fs-2" style={{ marginBottom: "8vh" }}>
-              It’s simple: just watch it, feel it, and rate it!
-            </p>
-          </div>
-        </div>
 
           {/** Ligne séparatrice */}
           <div className="w-100 d-flex justify-content-center my-5">
-            <div style={{
-              width: '60%',
-              height: '1.5px',
-              background: 'linear-gradient(to right,rgba(101, 127, 212, 0.60), rgb(255, 255, 255),rgb(101, 126, 212, 0.60))',
-              opacity: 0.3,
-              borderRadius: '1px'
-            }} />
+            <div
+              style={{
+                width: "60%",
+                height: "1.5px",
+                background:
+                  "linear-gradient(to right,rgba(101, 127, 212, 0.60), rgb(255, 255, 255),rgb(101, 126, 212, 0.60))",
+                opacity: 0.3,
+                borderRadius: "1px",
+              }}
+            />
           </div>
 
           {/**Les films a venir */}
-          <div className="mt-5 text-center text-light" style={{paddingTop:"10vh"}}>
+          <div
+            className="mt-5 text-center text-light"
+            style={{ paddingTop: "10vh" }}
+          >
             <h1 className="mb-5 fw-bold">Coming Soon: Your Future Favorites</h1>
             {/**les images dans un tableau */}
             <div
               className="d-flex justify-content-between align-items-start"
-              style={{ paddingTop: "40px", paddingBottom: "40px", marginLeft:"auto", marginRight:"auto", maxWidth: "1200px" }}
+              style={{
+                paddingTop: "40px",
+                paddingBottom: "40px",
+                marginLeft: "auto",
+                marginRight: "auto",
+                maxWidth: "1200px",
+              }}
             >
               {imagesVenir.map((src, index) => (
                 <div
@@ -202,7 +234,13 @@ function BodyAccueil() {
             {/**les images dans un tableau */}
             <div
               className="d-flex justify-content-between align-items-start"
-              style={{ paddingTop: "40px", paddingBottom: "40px", marginLeft:"auto", marginRight:"auto", maxWidth: "1200px" }}
+              style={{
+                paddingTop: "40px",
+                paddingBottom: "40px",
+                marginLeft: "auto",
+                marginRight: "auto",
+                maxWidth: "1200px",
+              }}
             >
               {oscars.map((src, index) => (
                 <div
@@ -220,7 +258,10 @@ function BodyAccueil() {
             </div>
           </div>
           {/**Les questions */}
-          <div className="mt-5 text-center text-light" style={{marginBottom:'15vh'}}>
+          <div
+            className="mt-5 text-center text-light"
+            style={{ marginBottom: "15vh" }}
+          >
             {" "}
             {/** FAQ */}
             <h2 className="fw-bold mb-5">Frequently asked questions</h2>
@@ -237,12 +278,12 @@ function BodyAccueil() {
                 {
                   question: "How much does a FilmBox subscription cost?",
                   answer:
-                    "FilmBox offers both free and premium plans. Pricing details are available on our website.",
+                    "Filmbox does not have a subscription. It is a free website for everyone.",
                 },
                 {
                   question: "Are my lists and comments public or private?",
                   answer:
-                    "You can set your lists and comments to be either public or private in your settings.",
+                    "All lists and comments are private and only for the user to see.",
                 },
                 {
                   question:
@@ -254,7 +295,7 @@ function BodyAccueil() {
                   question:
                     "Is there a limit to the number of movies I can save?",
                   answer:
-                    "There is no limit on saved movies for premium users. Free users have a limit of 100 movies.",
+                    "There is no limit on the number of movies saved, or the comments written.",
                 },
               ].map((faq, index) => (
                 <div key={index} className="faq-item mb-3">
@@ -268,7 +309,9 @@ function BodyAccueil() {
                       cursor: "pointer",
                     }}
                     onClick={() => {
-                      const answer = document.getElementById(`faq-answer-${index}`);
+                      const answer = document.getElementById(
+                        `faq-answer-${index}`
+                      );
                       const icon = document.getElementById(`faq-icon-${index}`);
 
                       answer.classList.toggle("d-none");
@@ -296,7 +339,7 @@ function BodyAccueil() {
                     className="faq-answer d-none p-3 "
                     style={{
                       backgroundColor: "transparent", //"rgb(20,26,48)",
-                      color:"rgb(151, 150, 150)",
+                      color: "rgb(151, 150, 150)",
                       fontSize: "16px",
                       fontFamily: "'Nunito', sans-serif", //Montserrat / Quicksand
                       fontStyle: "italic",
