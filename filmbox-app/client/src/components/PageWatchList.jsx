@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import imageLogo from "../assets/logo_FilmBox.png";
+import BlackImage from '../assets/BlackImage.png'
 import Header from '../components/Header';
 import { Dropdown, DropdownButton } from "react-bootstrap";
 import ContainerManageList from './ContainerManageList';
@@ -202,20 +203,35 @@ const renderMovieRow = (movies, scrollRef) => (
         }
     };
 
-  const backgroundStyle = {
-    background: "linear-gradient(to bottom, #070042, #050032)",
-    color: "#fff",
-    padding: "20px",
-    minHeight: "100vh",
-  };
+const backgroundStyle = {
+  background: `linear-gradient(to bottom,
+    rgba(5, 0, 40, 1),
+    rgba(20, 10, 80, 0.9),
+    rgba(5, 0, 50, 1)), 
+    url(${BlackImage})`,
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+  backgroundRepeat: 'no-repeat',
+  color: "#fff",
+  padding: "20px",
+  minHeight: "100vh",
+  fontFamily: "Fredoka, sans-serif"
+};
 
-  const sectionBoxStyle = {
-    //backgroundColor: "#121a49",
-    borderRadius: "0px",
-    padding: "20px",
-    marginBottom: "40px",
-    boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
-  };
+
+
+
+
+const sectionBoxStyle = {
+  backgroundColor: "rgba(255, 255, 255, 0.04)", 
+  backdropFilter: "blur(6px)", 
+  borderRadius: "20px",
+  padding: "30px",
+  marginBottom: "50px",
+  boxShadow: "0 8px 24px rgba(0, 0, 0, 0.5)", 
+  border: "1px solid rgba(255, 255, 255, 0.1)", 
+};
+
 
   if (loading || error) {
     return (
