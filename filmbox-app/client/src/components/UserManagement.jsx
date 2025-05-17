@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import logoFilmBox from "../assets/logoFilmBox.png";
-import arobase from "../assets/icone_arobase.png";
-import photoProfil from "../assets/photo_profil.jpg";
-import titanicImage from "../assets/Titanic.png";
 import fondNoir from "../assets/BlackImage.png";
 import "../styles/UserManagement.css";
 import { useNavigate } from "react-router-dom";
+import { Dropdown } from "react-bootstrap";
+import imageProfil from "../assets/photo_profil.jpg";
 
 function ManageUsers() {
   const [users, setUsers] = useState([]); // État pour stocker la liste des utilisateurs
   const [admin, setAdmin] = useState([]); // État pour stocker l'admin connecté
   const [error, setError] = useState(null); // État pour gérer les erreurs
   const [userSelectionne, setUserSelectionne] = useState(null); // Détails de l'utilisateur sélectionné
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     // Récupérer la liste des utilisateurs
@@ -20,7 +19,7 @@ function ManageUsers() {
       .then((response) => {
         //permet de traiter la reponse quand elle arrive
         if (!response.ok)
-          throw new Error("Erreur dans la récupération des utilisateurs"); //vérifie si la réponse HTTP est valide (statut 200 à 299).
+          throw new Error("Error while fetching users"); //vérifie si la réponse HTTP est valide (statut 200 à 299).
         return response.json(); //convertir la reponse en JSON si elle est valide
       })
       .then((data) => {
@@ -44,36 +43,34 @@ function ManageUsers() {
       .catch((erreur) => setError(erreur.message)); // Gérer les erreurs
   }, []);
 
+  //Changer compte à suspended //COMME CHANGE PASSWORD dans UserSettings
+  const suspendAccount = async (e) => {
+    e.preventDefault();
+    if (!userSelectionne) {
+      setMessage("No user selected");
+      return;
+    }
+    try {
+      const response = await fetch("http://localhost:4000/suspendAccount", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: userSelectionne.utilisateur_id }),
+      });
+      const data = await response.json();
+      setMessage(
+        data.success ? "User suspended" : "Error, couldn't suspend user"
+      );
+    } catch (error) {
+      console.error("Error suspending user:", error);
+      setMessage("An error occurred while  suspending the user.");
+    }
+  };
+
   const clickObtenirInformationsUser = (userId) => {
     const user = users.find((u) => u.utilisateur_id === userId);
     setUserSelectionne(user);
-
-    //Changer compte à suspended //COMME CHANGE PASSWORD dans UserSettings
-    const suspendAccount = async (e) => {
-      e.preventDefault();
-      try {
-        const response = await fetch("http://localhost:4000/suspendAccount", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId: userSelectionne.utilisateur_id }),
-        });
-        const data = await response.json();
-        setMessage(
-          data.success ? "User suspended" : "Error, couldn't suspend user"
-        );
-      } catch (error) {
-        console.error("Error suspending user:", error);
-        setMessage("An error occurred while  suspending the user.");
-      }
-    };
+    setMessage("");
   };
-  /*
-
- 
- 
-
-
- */
 
   return (
     <div
@@ -82,19 +79,16 @@ function ManageUsers() {
         boxSizing: "border-box", //
         fontFamily: "Istok Web, sans-serif",
         fontSize: "large",
-
         minHeight: "100vh", // Page + haute   => minHeight: '120vh', ///////
         paddingTop: "5vh", //
         paddingBottom: "15vh", //
         width: "100%",
-
         background: `linear-gradient(to bottom,
                 rgba(26, 0, 255, 0.4) 0%,
                 rgba(5, 14, 68, 0.38) 13%,
                 rgba(5, 0, 50, 0) 100%,
                 rgba(0, 0, 255, 0.4)) 100%,    
                 url(${fondNoir})`,
-
         backgroundSize: "cover", //'auto'
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
@@ -123,18 +117,8 @@ function ManageUsers() {
         {/* liens pages */}
         <div className="d-flex justify-content-center flex-grow-1">
           <div className="d-flex gap-5">
-            <Link
-              to="/adminManagementPage"
-              className="text-white text-decoration-none fw-light"
-            >
-              ADMINS MANAGEMENT
-            </Link>
-            <Link
-              to="/userManagement"
-              className="text-white text-decoration-none fw-light"
-            >
-              USERS MANAGEMENT
-            </Link>
+            <Link to="/adminManagementPage" className="text-white text-decoration-none fw-light">ADMINS MANAGEMENT</Link>
+            <Link to="/userManagement" className="text-white text-decoration-none fw-light">USERS MANAGEMENT</Link>
           </div>
         </div>
 
@@ -308,7 +292,7 @@ function ManageUsers() {
                   >
                     {userSelectionne
                       ? (userSelectionne.prenom?.[0] || "?") +
-                        (userSelectionne.nom?.[0] || "?")
+                      (userSelectionne.nom?.[0] || "?")
                       : "JD"}
                   </div>
                   <h2 className="mb-0">
@@ -485,7 +469,7 @@ function ManageUsers() {
             <div className="section-grow d-flex justify-content-center align-items-center">
               {/* Bouton Suspend Account
               <form onSubmit={suspendAccount} className="text-center">*/}
-              <form className="text-center">
+              <form onSubmit={suspendAccount} className="text-center">
                 <button
                   className=" btnCustomRouge "
                   style={{ fontSize: "30px" }}

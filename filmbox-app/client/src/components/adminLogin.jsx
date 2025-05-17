@@ -30,7 +30,7 @@ function AdminLogin() {
 
       if (response.ok) {
         console.log("WE ARE HEREE THOOOO");
-        navigate('/userManagement');
+        navigate('/UserManagement');
       } else {
         setError(data.message || 'Erreur de connexion admin');
       }
