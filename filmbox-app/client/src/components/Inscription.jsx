@@ -9,7 +9,7 @@ import SeigneurAnneauxImage from '../assets/seigneurDesAnneaux.png'; /////////
 import '../styles/Inscription.css';
 import { Link } from 'react-router-dom';
 import { validEmail, validPassword, validName, validPhoneNumber } from './regex.js';
-
+import { useNavigate } from 'react-router-dom';
 
 function LoginRegister() {
     const [email, setEmail] = useState('');
@@ -25,6 +25,7 @@ function LoginRegister() {
     const [firstNameError, setFirstNameError] = useState(false);
     const [lastNameError, setLastNameError] = useState(false);
     const [matchingPwdError, setMatchingPwdError] = useState(false);
+    const navigate = useNavigate();
 
     const validate = () => {
         //Clear errors 
@@ -87,6 +88,12 @@ function LoginRegister() {
             });
 
             const data = await response.json();
+
+            if (response.ok && data.success)
+            {
+                console.log("User succesfully created!");
+            }
+
         } catch (error) {
             console.error('Error:', error);
         }

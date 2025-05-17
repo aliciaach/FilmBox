@@ -189,6 +189,16 @@ app.post("/LoginRegister", (req, res) => {
           return res.status(500).json({ message: "Internal server error" });
         }
         if (results.affectedRows && results.affectedRows > 0) {
+
+          //We create a new session for the user 
+          req.session.user = {
+            id: results.insertId, // ID auto-généré
+            prenom: firstName,
+            nom: lastName,
+            courriel: email,
+            telephone: phoneNumber,
+          };
+
           console.log("New User created ");
           return res.status(200).json({
             success: true,

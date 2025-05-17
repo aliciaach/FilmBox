@@ -1,8 +1,7 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import imageLogo from "../assets/logo_FilmBox.png";
-import BlackImage from '../assets/BlackImage.png'
 import Header from '../components/Header';
 import { Dropdown, DropdownButton } from "react-bootstrap";
 import ContainerManageList from './ContainerManageList';
@@ -93,7 +92,7 @@ function PageWatchList() {
   useEffect(() => {
     refreshLists();
   }, [userId]);
-/*
+
   const renderMovieRow = (movies) => (
     <div
       style={{
@@ -138,100 +137,22 @@ function PageWatchList() {
         </div>
       ))}
     </div>
-  );*/
+  );
 
-const renderMovieRow = (movies, scrollRef) => (
-  <div style={{ display: "flex", alignItems: "center", position: "relative" }}>
-    <button className="boutonScroll-gauche" onClick={() => handleScroll(-1, scrollRef)}>
-      ‹
-    </button>
+  const backgroundStyle = {
+    background: "linear-gradient(to bottom, #070042, #050032)",
+    color: "#fff",
+    padding: "20px",
+    minHeight: "100vh",
+  };
 
-    <div ref={scrollRef} className="horizontal-scroll horizontal-scrollbar">
-      {movies.map((movie, index) => (
-        <div key={movie.id || index} className="movie-card">
-                      <div
-            className="card bg-transparent border-0 h-100 movie-card-content" // Ajout d'une classe
-            style={{ cursor: "pointer" }} // Retrait de la transition inline
-            onClick={() => navigate(`/movies/${movie.id}`)}
-          >
-
-            
-            <img
-              src={movie.poster_path ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}` : "https://via.placeholder.com/500x750?text=No+Poster"}
-              alt={movie.title}
-              style={{ width: "150px", height: "225px", objectFit: "cover" }}
-              onError={(e) => { e.target.src = "https://via.placeholder.com/500x750?text=No+Poster"; }}
-            />
-            <div className="card-body px-0">
-              <h6 className="card-title text-white text-decoration-none" style={{ fontSize: "1rem", maxWidth: "200px" }}>{movie.title}</h6>
-              <p className="card-text text-white text-decoration-none">
-                {movie.release_date ? new Date(movie.release_date).getFullYear() : "N/A"}
-                {movie.vote_average && (
-                  <span className="float-end">⭐ {movie.vote_average.toFixed(1)}</span>
-                )}
-              </p>
-              {movie.valeur_note && (
-                <div className="text-warning small">Your rating: {movie.valeur_note} ⭐</div>
-              )}
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-
-    <button className="boutonScroll-droite" onClick={() => handleScroll(1, scrollRef)}>
-      ›
-    </button>
-  </div>
-);
-
-    const watchlistRef = useRef();
-    const watchedRef = useRef();
-    const highestRatedRef = useRef();
-    const lowestRatedRef = useRef();
-    const personalizedRefs = useRef([]);
-    personalizedRefs.current = personalizedLists.map(
-    (_, i) => personalizedRefs.current[i] ?? React.createRef()
-    );
-
-    const handleScroll = (direction, ref) => {
-        if (ref.current) {
-            const container = ref.current;
-            const scrollAmount = container.clientWidth;
-            const newScrollPosition = container.scrollLeft + direction * scrollAmount;
-            container.scrollLeft = newScrollPosition;
-        }
-    };
-
-const backgroundStyle = {
-  background: `linear-gradient(to bottom,
-    rgba(5, 0, 40, 1),
-    rgba(20, 10, 80, 0.9),
-    rgba(5, 0, 50, 1)), 
-    url(${BlackImage})`,
-  backgroundSize: 'cover',
-  backgroundPosition: 'center',
-  backgroundRepeat: 'no-repeat',
-  color: "#fff",
-  padding: "20px",
-  minHeight: "100vh",
-  fontFamily: "Fredoka, sans-serif"
-};
-
-
-
-
-
-const sectionBoxStyle = {
-  backgroundColor: "rgba(255, 255, 255, 0.04)", 
-  backdropFilter: "blur(6px)", 
-  borderRadius: "20px",
-  padding: "30px",
-  marginBottom: "50px",
-  boxShadow: "0 8px 24px rgba(0, 0, 0, 0.5)", 
-  border: "1px solid rgba(255, 255, 255, 0.1)", 
-};
-
+  const sectionBoxStyle = {
+    //backgroundColor: "#121a49",
+    borderRadius: "0px",
+    padding: "20px",
+    marginBottom: "40px",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+  };
 
   if (loading || error) {
     return (
@@ -240,9 +161,6 @@ const sectionBoxStyle = {
       </div>
     );
   }
-
-
-
 
   return (
     <>
@@ -275,33 +193,33 @@ const sectionBoxStyle = {
           <div className="text-white" style={sectionBoxStyle} >
             <h2 className="text-white" style={{ marginBottom: "10px" }}>My Watchlist</h2>
             <SectionDivider />
-            {watchlist.length > 0 ? renderMovieRow(watchlist, watchlistRef) : <p>Your watchlist is empty.</p>}
+            {watchlist.length > 0 ? renderMovieRow(watchlist) : <p>Your watchlist is empty.</p>}
           
           </div>
 
           <div style={sectionBoxStyle}>
             <h2 className="text-white text-decoration-none mb-4">My Watched Movies</h2>
             <SectionDivider />
-            {watched.length > 0 ? renderMovieRow(watched, watchedRef) : <p>No movies marked as watched yet.</p>}
+            {watched.length > 0 ? renderMovieRow(watched) : <p>No movies marked as watched yet.</p>}
           </div>
 
           <div style={sectionBoxStyle}>
             <h2 className="text-white text-decoration-none mb-4">My Highest Rated Movies(3-5 ⭐)</h2>
             <SectionDivider />
-            {highestRated.length > 0 ? renderMovieRow(highestRated, highestRatedRef) : <p>No high rated movies yet.</p>}
+            {highestRated.length > 0 ? renderMovieRow(highestRated) : <p>No high rated movies yet.</p>}
           </div>
 
           <div style={sectionBoxStyle}>
             <h2 className="text-white text-decoration-none mb-4">My Lowest Rated Movies (0-2 ⭐)</h2>
             <SectionDivider />
-            {lowestRated.length > 0 ? renderMovieRow(lowestRated, lowestRatedRef) : <p>No low rated movies yet.</p>}
+            {lowestRated.length > 0 ? renderMovieRow(lowestRated) : <p>No low rated movies yet.</p>}
           </div>
 
 
           {/* Render personalized lists only if there are any movies */}
 
 
-          {personalizedLists.length > 0 && personalizedLists.map((list, index) => (
+          {personalizedLists.length > 0 && personalizedLists.map((list) => (
             <div key={list._id} style={sectionBoxStyle}>
               <div className="d-flex justify-content-between align-items-center mt-5 mb-4">
                 <h2 className="fw-bold mt-0">{list.name}</h2>
@@ -314,7 +232,7 @@ const sectionBoxStyle = {
                 }} onClick={() => handleGestionList(list)} >Manage List</button>
               </div>
               <SectionDivider />
-              {list.movies && list.movies.length > 0 ? renderMovieRow(list.movies, personalizedRefs.current[index]) : <p>No movies in this list yet.</p>}
+              {list.movies && list.movies.length > 0 ? renderMovieRow(list.movies) : <p>No movies in this list yet.</p>}
             </div>
           ))}
 
