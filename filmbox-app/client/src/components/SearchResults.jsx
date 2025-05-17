@@ -151,12 +151,10 @@ function SearchResults() {
             color: white;
             border-color: white;
         }
-            .movie-col {
-                width: 20%;
-                padding: 10px;
-            }
-
-
+        .movie-col {
+            width: 20%;
+            padding: 10px;
+        }
         `}</style>
             </div>
         </>
