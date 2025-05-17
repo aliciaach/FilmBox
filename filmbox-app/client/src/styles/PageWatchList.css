@@ -11,28 +11,35 @@ h1, h2, h3 {
 }
 
 
+.sectionBox {
+  border-radius: 0px;
+  padding: 20px;
+  margin-bottom: 40px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  background-color: transparent; 
+}
 
 /* Animation au hover */
-.movie-card {
+.movie-cardW {
   transition: all 0.3s ease;
   padding: 5px;
 }
 
-.movie-card:hover {
+.movie-cardW:hover {
   transform: scale(1.05);
   border-color: #4a6bff;
   box-shadow: 0 10px 20px rgba(74, 107, 255, 0.3);
 }
 
-.movie-card:hover .movie-card-content {
+.movie-cardW:hover .movie-card-content {
   transform: none; 
 }
 
-.movie-card:hover img {
+.movie-cardW:hover img {
   opacity: 0.9;
 }
 
-.horizontal-scroll {
+.horizontal-scrollW {
   display: flex;
   overflow-x: auto;
   scroll-behavior: smooth;
@@ -42,7 +49,7 @@ h1, h2, h3 {
   padding-right: 0;
 }
 
-.movie-card {
+.movie-cardW {
   flex: 0 0 auto;
   scroll-snap-align: start;
   min-width: 160px; /* ou 150px si tu préfères */
@@ -51,8 +58,8 @@ h1, h2, h3 {
 
 
 
-.boutonScroll-gauche,
-.boutonScroll-droite {
+.boutonScroll-gaucheW,
+.boutonScroll-droiteW {
   border: 1px solid rgba(255, 255, 255, 0.3);
   color: white;
   padding: 8px 16px;
@@ -70,13 +77,19 @@ h1, h2, h3 {
   /*background: linear-gradient(to right, rgba(0, 0, 0, 0.6), transparent);*/
 }
 
-.boutonScroll-gauche {
+.boutonScroll-gaucheW {
   margin-left: 10px;
   margin-right: 5px;
 }
-.boutonScroll-droite {
+.boutonScroll-droiteW {
   margin-left: 5px;
 }
+
+
+
+
+
+
 
 .horizontal-scrollbar::-webkit-scrollbar {
   height: 10px;
