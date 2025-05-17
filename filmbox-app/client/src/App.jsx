@@ -18,17 +18,22 @@ import SearchResults from './components/SearchResults';
 import BrowseMovies from './components/BrowseMoviePage';
 
 function App() {
+  
   useEffect(() => {
-     const handleBeforeUnload = () => {
-      const rememberMe = localStorage.getItem("rememberMe");
+
+
+    //https://developer.mozilla.org/fr/docs/Web/API/Navigator/sendBeacon and help of chatgpt for the event listeners
+     const handleBeforeClosingPage = () => {
+      
+      const rememberMe = localStorage.getItem("rememberMe"); //check if the user wants to be remembered
       if (rememberMe !== "true") {
-        navigator.sendBeacon("http://localhost:4000/destroy-session");
+        navigator.sendBeacon("http://localhost:4000/destroy-session"); //if no, we destroy the current session
       }
     };
 
-    window.addEventListener("beforeunload", handleBeforeUnload);
+    window.addEventListener("beforeunload", handleBeforeClosingPage);
     return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
+      window.removeEventListener("beforeunload", handleBeforeClosingPage);
     };
   }, []);
   return (

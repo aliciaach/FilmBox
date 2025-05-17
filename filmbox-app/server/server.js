@@ -62,7 +62,6 @@ app.get("/get-session", (req, res) => {
     res.json({ loggedIn: true, user: req.session.user });
   } else {
     console.log("No Session Found");
-    res.send("No session data found");
     res.json({ loggedIn: false });
   }
 });
@@ -972,6 +971,35 @@ app.get("/mongo/getPersonalizedList", async (req, res) => {
     await client.close();
   }
 });
+
+/* =============================== FULLY DELETE A PERSONALIZED LIST ================================ */
+app.delete("/mongo/deletePersonalizedList/:listId", async (req, res) => {
+  const persoListId = req.params.listId;
+
+  const uri = process.env.DB_URI;
+  const client = new MongoClient(uri);
+
+  try {
+    await client.connect();
+    const db = client.db("FilmBox");
+    const lists = db.collection("CustomLists");
+
+    const result = await lists.deleteOne({_id: new ObjectId(persoListId)});
+
+    if(result.deletedCount === 1) {
+      res.json({ message: "List succesfully deleted"});
+    } else {
+      res.status(400).json({message: "No list with this id found"});
+    }
+  } catch (error) {
+    console.error("Couldnt delete list: ", error);
+    res.status(500).json({ message: "Server error" });
+  } finally {
+    await client.close();
+  }
+});
+
+
 
 /* ============================= NOSQL RELATED TO MANAGEMENT =========================== */
 
