@@ -123,6 +123,7 @@ const FilmInfo = () => {
         setMarkedWatched(true);
       }
 
+      //We remove to movie from watchlist since the user has now watched the movie
       if (isInWatchlist) {
         await fetch(`http://localhost:4000/api/watchlist/${userId}/${numericFilmId}`, {
           method: "DELETE",

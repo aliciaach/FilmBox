@@ -11,7 +11,7 @@ This is the source for the whole tutorial to do the pagination thing :
 https://www.contentful.com/blog/react-pagination/
 The specific code is on this github : https://github.com/contentful/react-pagination/blob/main/src/components/ReactPaginateLib.js
 */
-function SearchResults() {
+function CategorieResults() {
     const { searchQuery } = useParams();
     const [results, setResults] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
@@ -161,4 +161,4 @@ function SearchResults() {
     );
 }
 
-export default SearchResults;
+export default CategorieResults;

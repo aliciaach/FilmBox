@@ -4,13 +4,58 @@ import { Link, useNavigate } from 'react-router-dom';
 import '../styles/Header.css';
 import { useState, useEffect } from "react";
 
-
 function Header() {
   const [searchInput, setSearchInput] = useState("");
   const [results, setResults] = useState([]);
   const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false); // Hamburger
+  const [user, setUser] = useState(null);
+  const [initials, setInitials] = useState("");
+  
+  const handleLogout = async () => {
+    try {
+      const response = await fetch("http://localhost:4000/destroy-session", {
+        method: "POST",
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        navigate("/");
+        localStorage.removeItem("rememberMe");
+      } else {
+        console.error("Error: Couldn't destroy session");
+      }
+    } catch (error) {
+      console.error("Logout error", error);
+    }
+  }
 
   useEffect(() => {
+
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch('http://localhost:4000/get-session', {
+          method: "GET",
+          credentials: "include"
+        });
+        
+        const data = await response.json();
+        if (data.loggedIn) {
+          setUser(data.user);
+          const userInitials = (data.user.prenom?.[0] || '?') + (data.user.nom?.[0] || '?');
+          setInitials(userInitials.toUpperCase());
+        } else {
+          setMessage("SESSION INTROUVABLE");
+          navigate("/");
+        }
+      } catch (error) {
+        console.error('Error', error);
+        setMessage("Error");
+      }
+    };
+
+    fetchUserData();
+
     if (searchInput === "") {
       setResults([]);
       return;
@@ -50,6 +95,11 @@ function Header() {
             fontWeight: "500",
           }}
         >
+          {/* Hamburger */}
+          <div className="hamburger-icon me-3" onClick={() => setMenuOpen(!menuOpen)}>
+            <i className="fas fa-bars"></i>
+          </div>
+
           {/* Logo */}
           <div className="d-flex align-items-center me-4">
             <span className="fw-bold text-white fs-4">FILM</span>
@@ -58,7 +108,7 @@ function Header() {
 
           {/* séparateur */}
           <div
-            className="border-start border-white opacity-50 mx-3"
+            className="border-start border-white opacity-50 mx-3 hide-on-mobile"
             style={{ height: "30px" }}
           />
 
@@ -160,11 +210,9 @@ function Header() {
 
           {/* Source pour comment faire animation search bar:  https://github.com/devression/animated-search-bar/blob/main/style.css */}
 
-
-
           {/* séparateur */}
           <div
-            className="border-start border-white opacity-50 mx-3"
+            className="border-start border-white opacity-50 mx-3 hide-on-mobile"
             style={{ height: "30px" }}
           />
 
@@ -177,13 +225,27 @@ function Header() {
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
-              <img
-                src={imageProfil}
-                alt="icone_profil"
-                width="40px"
-                height="40px"
-                className="me-2 rounded-circle "
-              />
+              {/* Icone profile avec les initiale */}
+              {initials && (
+                <div
+                  style={{
+                    width: '45px',
+                    height: '45px',
+                    borderRadius: '50%',
+                    background: 'rgb(3, 0, 40)',
+                    color: '#fff',
+                    fontWeight: '300',
+                    fontSize: '16px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginRight: '8px',
+                  }}
+                >
+                  {initials}
+                </div>
+              )}
+
               <i className="bi bi-person-circle fs-5" />
               <span>Profil</span>
               <i className="bi bi-caret-down-fill small" />
@@ -201,13 +263,27 @@ function Header() {
                 <hr className="dropdown-divider" />
               </li>
               <li>
-                <Link className="dropdown-item" to="/">
+                <button className="dropdown-item" onClick={handleLogout}>
                   Log out
-                </Link>
+                </button>
               </li>
             </ul>
           </div>
         </nav>
+
+        {/* Hamburger */}
+        {menuOpen && (
+          <div className="mobile-menu">
+            <Link to="/listeFilms" onClick={() => setMenuOpen(false)}>HOME</Link>
+            <Link to="/PageWatchList" onClick={() => setMenuOpen(false)}>MY MOVIES</Link>
+            <Link to="/BrowseMovies" onClick={() => setMenuOpen(false)}>BROWSE MOVIES</Link>
+            <Link to="/userSettings" onClick={() => setMenuOpen(false)}>MY PROFILE</Link>
+            <button onClick={() => { handleLogout(); setMenuOpen(false); }} className="dropdown-item">
+              LOG OUT
+            </button>
+          </div>
+        )}
+
       </header >
     </>
   );

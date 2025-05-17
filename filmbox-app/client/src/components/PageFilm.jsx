@@ -11,77 +11,18 @@ import WickedImage from '../assets/wicked.jpg';
 import { useRef } from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 import '../styles/PageFilm.css';
+import { useNavigate } from "react-router-dom";
 
 const ListeFilms = () => {
   const [films, setFilms] = useState([]);
-  const [filteredFilms, setFilteredFilms] = useState([]);
   const [erreur, setErreur] = useState(null);
-  const [showFilters, setShowFilters] = useState(false);
   const videoRef = useRef();
   const [topRatedMovies, setTopRatedMovies] = useState([]);
   const [upcomingMovies, setUpcomingMovies] = useState([]);
   const [actionMovies, setActionMovies] = useState([]);
+  const navigate = useNavigate();
 
-
-  //Filter states
-  const [filters, setFilters] = useState({
-    genre: '',
-    decade: '',
-    country: '',
-    language: '',
-    duration: ''
-  });
-
-  //les options de filtre (front end)
-  const genreOptions = [
-    { value: '', label: 'Tous les genres' },
-    { value: '28', label: 'Action' },
-    { value: '12', label: 'Adventure' },
-    { value: '16', label: 'Animation' },
-    { value: '35', label: 'Comedy' },
-    { value: '80', label: 'Crime' },
-    { value: '18', label: 'Drama' },
-    { value: '27', label: 'Horror' },
-    { value: '878', label: 'Science Fiction' },
-    { value: '53', label: 'Thriller' }
-  ];
-
-  const decadeOptions = [
-    { value: '', label: 'Toutes les décennies' },
-    { value: '2020', label: 'Années 2020' },
-    { value: '2010', label: 'Années 2010' },
-    { value: '2000', label: 'Années 2000' },
-    { value: '1990', label: 'Années 1990' },
-    { value: '1980', label: 'Années 1980' }
-  ];
-
-  const countryOptions = [
-    { value: '', label: 'Tous les pays' },
-    { value: 'US', label: 'États-Unis' },
-    { value: 'GB', label: 'Royaume-Uni' },
-    { value: 'FR', label: 'France' },
-    { value: 'JP', label: 'Japon' },
-    { value: 'KR', label: 'Corée du Sud' }
-  ];
-
-  const languageOptions = [
-    { value: '', label: 'Toutes les langues' },
-    { value: 'en', label: 'Anglais' },
-    { value: 'fr', label: 'Français' },
-    { value: 'ja', label: 'Japonais' },
-    { value: 'es', label: 'Espagnol' },
-    { value: 'ko', label: 'Coréen' }
-  ];
-
-
-
-  const durationOptions = [
-    { value: '', label: 'Toutes les durées' },
-    { value: 'court', label: 'Moins de 90 min' },
-    { value: 'moyen', label: '90-120 min' },
-    { value: 'long', label: 'Plus de 120 min' }
-  ];
-
+ 
   useEffect(() => {
     fetch("http://localhost:4000/api/movies")
       .then((response) => {
@@ -92,7 +33,6 @@ const ListeFilms = () => {
       })
       .then(donnees => {
         setFilms(donnees);
-        setFilteredFilms(donnees);
       })
       .catch(erreur => setErreur(erreur.message));
 
@@ -133,74 +73,6 @@ const ListeFilms = () => {
 
 
   }, []);
-
-  useEffect(() => {
-    applyFilters();
-  }, [filters, films]);
-
-
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const applyFilters = () => {
-    let result = [...films];
-
-    if (filters.genre) {
-      result = result.filter(film =>
-        film.genre_ids && film.genre_ids.includes(parseInt(filters.genre))
-      );
-    }
-
-    if (filters.decade) {
-      const decadeStart = parseInt(filters.decade);
-      const decadeEnd = decadeStart + 9;
-      result = result.filter(film => {
-        if (!film.release_date) return false;
-        const year = parseInt(film.release_date.split('-')[0]);
-        return year >= decadeStart && year <= decadeEnd;
-      });
-    }
-
-    if (filters.country) {
-      result = result.filter(film =>
-        film.original_language === filters.country.toLowerCase()
-      );
-    }
-
-    if (filters.language) {
-      result = result.filter(film =>
-        film.original_language === filters.language.toLowerCase()
-      );
-    }
-
-    if (filters.duration) {
-      result = result.filter(film => {
-
-        if (!film.runtime) return false;
-        if (filters.duration === 'court') return film.runtime < 90;
-        if (filters.duration === 'moyen') return film.runtime >= 90 && film.runtime <= 120;
-        if (filters.duration === 'long') return film.runtime > 120;
-        return true;
-      });
-    }
-    setFilteredFilms(result);
-  };
-
-  const resetFilters = () => {
-    setFilters({
-      genre: '',
-      decade: '',
-      country: '',
-      language: '',
-      duration: ''
-    });
-    setFilteredFilms(films);
-  };
 
   // https://www.youtube.com/watch?v=1kVZEhg3Q_c
   const [scrollPosition, setScrollPosition] = useState(0);
@@ -316,127 +188,6 @@ const ListeFilms = () => {
 
       {/* Movie List Section */}
       <div className="container-fluid text-center mt-0" style={{ paddingTop: '50px' }}>
-        {/* Filtres déroulants */}
-        <div className="mb-4 text-start">
-          <button
-            className="btn btn-primary dropdown-toggle"
-            type="button"
-            onClick={() => setShowFilters(!showFilters)}
-            aria-expanded="false"
-            style={{
-              background: "transparent",
-              border: "0px"
-            }}
-          >
-            Filtrer les films
-          </button>
-          <div style={{ position: 'relative' }}>
-            {showFilters && (
-              <div className="bg-dark p-3 mt-2"
-                style={{
-                  width: '300px',
-                  position: 'absolute',
-                  left: '0',
-                  zIndex: 10
-                }}>
-                <div className="mb-3">
-                  <label className="form-label text-white">Genre</label>
-                  <select
-                    className="form-select bg-secondary text-white"
-                    name="genre"
-                    value={filters.genre}
-                    onChange={handleFilterChange}
-                  >
-                    {genreOptions.map(option => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="mb-3">
-                  <label className="form-label text-white">Décennie</label>
-                  <select
-                    className="form-select bg-secondary text-white"
-                    name="decade"
-                    value={filters.decade}
-                    onChange={handleFilterChange}
-                  >
-                    {decadeOptions.map(option => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="mb-3">
-                  <label className="form-label text-white">Pays d'origine</label>
-                  <select
-                    className="form-select bg-secondary text-white"
-                    name="country"
-                    value={filters.country}
-                    onChange={handleFilterChange}
-                  >
-                    {countryOptions.map(option => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="mb-3">
-                  <label className="form-label text-white">Langue originale</label>
-                  <select
-                    className="form-select bg-secondary text-white"
-                    name="language"
-                    value={filters.language}
-                    onChange={handleFilterChange}
-                  >
-                    {languageOptions.map(option => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="mb-3">
-                  <label className="form-label text-white">Durée</label>
-                  <select
-                    className="form-select bg-secondary text-white"
-                    name="duration"
-                    value={filters.duration}
-                    onChange={handleFilterChange}
-                  >
-                    {durationOptions.map(option => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="d-flex justify-content-between">
-                  <button
-                    className="btn btn-outline-light"
-                    onClick={resetFilters}
-                  >
-                    Reset
-                  </button>
-                  <button
-                    className="btn btn-primary"
-                    onClick={() => setShowFilters(false)}
-                  >
-                    Appliquer les filtres
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
 
         {erreur ? (
           <p className="text-danger">{erreur}</p>
@@ -445,7 +196,6 @@ const ListeFilms = () => {
           <div>
 
             {/* Section Discovery */}
-
             <div className="titre-section">
               Start your next discovery here
             </div>
@@ -457,7 +207,7 @@ const ListeFilms = () => {
               </button>
 
               <div className="horizontal-scroll horizontal-scrollbar" ref={containerRefDiscovery} >
-                {filteredFilms.map((film, index) => {
+                {films.map((film, index) => {
                   let cheminImage = film.poster_path
                     ? `https://image.tmdb.org/t/p/w500/${film.poster_path}`
                     : BlackImage;

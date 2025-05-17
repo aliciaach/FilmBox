@@ -24,22 +24,7 @@ function Footer() {
               </li>
               <li>
                 <a href="#" className="text-light text-decoration-none">
-                  Facebook
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-light text-decoration-none">
-                  Twitter
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-light text-decoration-none">
                   Instagram
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-light text-decoration-none">
-                  Tiktok
                 </a>
               </li>
             </ul>

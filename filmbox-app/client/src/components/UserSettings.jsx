@@ -5,6 +5,7 @@ import Header from '../components/Header';
 import { useNavigate } from 'react-router-dom';
 import '../styles/UserSettings.css';
 import { validEmail, validPassword, validName, validPhoneNumber } from './regex';
+import HeaderSpace from '../Functions/HeaderSpace';
 
 /*
     https://www.youtube.com/watch?v=oYGhoHW7zqI
@@ -33,7 +34,9 @@ function UserSettings() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch('http://localhost:4000/get-session');
+        const response = await fetch('http://localhost:4000/get-session', {
+          credentials: 'include',
+        });
         const data = await response.json();
         if (data.loggedIn) {
           setUser(data.user);
@@ -80,7 +83,7 @@ function UserSettings() {
     setValidationErrors(errors);
 
     if (!isValid) {
-      setValidationErrors(errors); 
+      setValidationErrors(errors);
       setMessage("Please fix the password errors before submitting.");
       return;
     }
@@ -94,12 +97,12 @@ function UserSettings() {
       });
       const data = await response.json();
 
-      
-    if (!response.ok) {
-      console.log("Server responded with:", response.status, data.message); 
-      setMessage(data.message || "An unknown error occurred");
-      return;
-    }
+
+      if (!response.ok) {
+        console.log("Server responded with:", response.status, data.message);
+        setMessage(data.message || "An unknown error occurred");
+        return;
+      }
 
       setMessage(data.success ? "Password updated" : "Error, couldn't update password");
       setNewPassword('');
@@ -227,6 +230,7 @@ function UserSettings() {
         color: '#fff'
       }}>
 
+        <HeaderSpace />
         <Header />
 
 
@@ -283,13 +287,14 @@ function UserSettings() {
                     width: '45px',
                     height: '45px',
                     borderRadius: '50%',
-                    backgroundColor: '#fff',
-                    color: 'black',
-                    fontSize: '18px',
+                    background: 'rgb(3, 0, 40)',
+                    color: '#fff',
+                    fontWeight: '300',
+                    fontSize: '16px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    marginRight: '8px'
+                    marginRight: '8px',
                   }}
                 >
                   {initials}

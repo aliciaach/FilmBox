@@ -27,7 +27,7 @@ const con = mysql.createConnection({
   host: "localhost",
   user: "scott",
   password: "oracle",
-  database: "prototype",
+  database: "filmbox",
 });
 
 con.connect(function (err) {
@@ -44,6 +44,19 @@ app.use(
     secret: "mySecretKey",
     resave: false,
     saveUninitialized: false,
+    rolling: true,
+    cookie: {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      maxAge: null,
+    },
+  })
+);
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
   })
 );
 
@@ -53,12 +66,11 @@ app.get("/get-session", (req, res) => {
     res.json({ loggedIn: true, user: req.session.user });
   } else {
     console.log("No Session Found");
-    res.send("No session data found");
     res.json({ loggedIn: false });
   }
 });
 
-app.get("/destroy-session", (req, res) => {
+app.post("/destroy-session", (req, res) => {
   req.session.destroy((err) => {
     if (err) {
       console.error("Error destroying session:", err);
@@ -87,7 +99,7 @@ app.use(
   Login page + confirmation of information
 */
 app.post("/login", (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, rememberMe } = req.body;
   const sql = "SELECT * FROM utilisateur WHERE courriel = ?";
 
   con.query(sql, [email], (err, results) => {
@@ -96,29 +108,48 @@ app.post("/login", (req, res) => {
       return res.status(500).json({ message: "Internal server error" });
     }
 
-    if (results.length > 0) {
-      const user = results[0];
+    if (results.length === 0) {
+      console.log("USER NOT FOUND");
+      return res.status(401).json({
+        success: false,
+        message: "No account associated with this email",
+      });
+    }
 
-      bcrypt.compare(password, user.mot_de_passe, (err, isMatch) => {
+    const user = results[0];
+
+    bcrypt.compare(password, user.mot_de_passe, (err, isMatch) => {
+      if (err) {
+        console.error("Error comparing passwords: ", err);
+        return res.status(500).json({ message: "Internal server error" });
+      }
+
+      if (!isMatch) {
+        return res.status(401).json({
+          success: false,
+          message: "Access denied, wrong password",
+        });
+      }
+
+      req.session.user = {
+        utilisateur_id: user.utilisateur_id,
+        prenom: user.prenom,
+        nom: user.nom,
+        courriel: user.courriel,
+        telephone: user.telephone,
+      };
+
+      if (rememberMe) {
+        req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000;
+      } else {
+        req.session.cookie.maxAge = 120 * 1000;
+      }
+
+      req.session.save((err) => {
         if (err) {
-          console.error("Error comparing passwords: ", err);
-          return res.status(500).json({ message: "Internal server error" });
+          console.error("Error saving session:", err);
+          return res.status(500).json({ message: "Session not saved" });
         }
-
-        if (!isMatch) {
-          return res.status(401).json({
-            success: false,
-            message: "Access denied, wrong password",
-          });
-        }
-
-        req.session.user = {
-          id: user.utilisateur_id,
-          prenom: user.prenom,
-          nom: user.nom,
-          courriel: user.courriel,
-          telephone: user.telephone,
-        };
 
         console.log("USER FOUNDDDDDD" + results[0].courriel);
         return res.status(200).json({
@@ -127,13 +158,7 @@ app.post("/login", (req, res) => {
           userId: results[0].utilisateur_id,
         });
       });
-    } else {
-      console.log("USER NOT FOUND");
-      return res.status(401).json({
-        success: false,
-        message: "Not account associated to this email",
-      });
-    }
+    });
   });
 });
 
@@ -183,6 +208,15 @@ app.post("/LoginRegister", (req, res) => {
           return res.status(500).json({ message: "Internal server error" });
         }
         if (results.affectedRows && results.affectedRows > 0) {
+          //We create a new session for the user
+          req.session.user = {
+            id: results.insertId, // ID auto-généré
+            prenom: firstName,
+            nom: lastName,
+            courriel: email,
+            telephone: phoneNumber,
+          };
+
           console.log("New User created ");
           return res.status(200).json({
             success: true,
@@ -587,10 +621,12 @@ app.get("/api/getMoviesResults/:searchQuery", async (req, res) => {
 // Need to fix this part, the issue with charging all the pages
 app.get("/discoverMoviesFiltered", async (req, res) => {
   console.log("WE ARE GETTTING HEREEEEEEEEEEEEE");
+  const params = new URLSearchParams();
+  const page = req.query.page || 1;
+  params.append("page", page);
   const { genre, language, decade, movieDuration, originCountry } = req.query;
 
   const originalUrl = "https://api.themoviedb.org/3/discover/movie";
-  const params = new URLSearchParams();
 
   //Help of chatgpt just to figure ou the way to do the url, so what do put for the genre, so like with_genres, or with_original_languages
   if (genre) {
@@ -710,7 +746,10 @@ app.get("/discoverMoviesFiltered", async (req, res) => {
       filteredMovies.push(fullMovieData);
     }
 
-    res.json(filteredMovies);
+    res.json({
+      results: filteredMovies,
+      total_pages: data.total_pages,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Failed to fetch movies" });
@@ -941,6 +980,33 @@ app.get("/mongo/getPersonalizedList", async (req, res) => {
   } catch (error) {
     console.error("Error during list fetch:", error);
     return res.status(500).json({ message: "Server Error" });
+  } finally {
+    await client.close();
+  }
+});
+
+/* =============================== FULLY DELETE A PERSONALIZED LIST ================================ */
+app.delete("/mongo/deletePersonalizedList/:listId", async (req, res) => {
+  const persoListId = req.params.listId;
+
+  const uri = process.env.DB_URI;
+  const client = new MongoClient(uri);
+
+  try {
+    await client.connect();
+    const db = client.db("FilmBox");
+    const lists = db.collection("CustomLists");
+
+    const result = await lists.deleteOne({ _id: new ObjectId(persoListId) });
+
+    if (result.deletedCount === 1) {
+      res.json({ message: "List succesfully deleted" });
+    } else {
+      res.status(400).json({ message: "No list with this id found" });
+    }
+  } catch (error) {
+    console.error("Couldnt delete list: ", error);
+    res.status(500).json({ message: "Server error" });
   } finally {
     await client.close();
   }
@@ -1362,8 +1428,6 @@ app.delete("/api/favorites/:userId/:movieId", (req, res) => {
 const uri = "mongodb://localhost:27017";
 const client = new MongoClient(uri);
 const dbName = "FilmBox";
-
-app.use(cors());
 
 // API to fetch admins
 app.get("/adminsTab", async (req, res) => {
