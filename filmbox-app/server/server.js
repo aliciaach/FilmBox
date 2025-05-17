@@ -902,6 +902,11 @@ app.post("/mongo/addToPersonalizedList", async (req, res) => {
 /* =============================== ADD A NEW PERSONALIZED LIST ================================ */
 app.post("/mongo/createPersonalizedList", async (req, res) => {
   const { userId, listName } = req.body;
+  console.log("🟡 Trying to create a list:", { userId, listName });
+
+  if (!userId || !listName) {
+    return res.status(400).json({ message: "Missing userId or listName" });
+  }
 
   const uri = process.env.DB_URI;
   const client = new MongoClient(uri);
@@ -912,21 +917,27 @@ app.post("/mongo/createPersonalizedList", async (req, res) => {
     const lists = db.collection("CustomLists");
 
     const newListDocument = {
-      user_id: userId,
+      user_id: String(userId),
       name: listName,
       movies: [],
     };
 
     const postResult = await lists.insertOne(newListDocument);
-
-    res.json({ message: "list created" });
+    if (postResult.insertedId) {
+      console.log(`List "${listName}" created for user ${userId}`);
+      return res.status(201).json({ success: true, listId: postResult.insertedId });
+    } else {
+      console.error("Insert failed");
+      return res.status(500).json({ message: "Failed to insert list" });
+    }
   } catch (error) {
     console.error("Error creating list:", error);
-    res.status(500).json({ message: "Server error" });
+    return res.status(500).json({ message: "Server error" });
   } finally {
     await client.close();
   }
 });
+
 /* =============================== GET ALL THE PERSONALIZED LIST ================================ */
 app.get("/mongo/getPersonalizedList", async (req, res) => {
   const { userId } = req.query;
@@ -939,7 +950,7 @@ app.get("/mongo/getPersonalizedList", async (req, res) => {
     const db = client.db("FilmBox");
     const lists = db.collection("CustomLists");
 
-    const usersList = await lists.find({ user_id: userId }).toArray(); //Va chercher toutes les listes correspondant à l'id de l'utilisateur
+    const usersList = await lists.find({ user_id: String(userId) }).toArray(); //Va chercher toutes les listes correspondant à l'id de l'utilisateur
     if (usersList.length === 0) {
       return res
         .status(401)
