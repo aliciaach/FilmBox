@@ -1,58 +1,141 @@
 body {
-  font-family: 'Urbanist', sans-serif;
+  font-family: 'Urbanist', sans-serif; 
   background-color: #050032;
   color: white;
   font-size: 14px;
   font-weight: 500;
 }
- 
+
 h1, h2, h3 {
   font-weight: 700;
 }
- 
- 
- 
-/* Animation au hover */
-.movie-card {
+
+/* Sections */ 
+
+.sectionBox {
+  background: rgba(255, 255, 255, 0.03); /* Légèrement lumineuse */
+  border: 1px solid rgba(255, 255, 255, 0.05); /* Contour léger */
+  border-radius: 20px;
+  padding: 25px;
+  margin-bottom: 40px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4); /* Plus profond */
+  backdrop-filter: blur(6px); /* effet "verre" subtil */
+  -webkit-backdrop-filter: blur(6px);
+  overflow-y: hidden;
+  transition: box-shadow 0.3s, transform 0.3s;
+}
+
+
+.sectionBox h2 {
+  margin-bottom: 15px;
+  font-weight: 450;
+  color: rgb(255, 255, 255);
+}
+
+
+/* Listes personnalisées */ 
+
+.manage-list-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  color: white;
+  text-decoration: underline;
+}
+
+
+/* Seen it rate it */
+.intro-section {
+  color: white;
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.intro-section p {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* Affiches de films MIEUX */
+
+.movie-wrapper {
+  min-width: 200px;
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+}
+
+.affiche-film {
+  cursor: pointer;
+  transition: transform 0.3s;
+  transform-origin: center center;
+}
+
+.affiche-film:hover {
+  transform: scale(1.05);
+}
+
+/* L’image brille au hover */
+.poster-image {
+  height: 300px;
+  width: 200px;
+  object-fit: cover;
+  border-radius: 0;
+  transition: box-shadow 0.3s ease, opacity 0.3s ease;
+}
+
+.affiche-film:hover .poster-image {
+  box-shadow: 0 12px 30px rgba(111, 84, 255, 0.3);
+  opacity: 0.9;
+}
+
+
+/* Affiches de films */
+.movie-cardW {
   transition: all 0.3s ease;
   padding: 5px;
 }
- 
-.movie-card:hover {
+
+.movie-cardW:hover {
   transform: scale(1.05);
   border-color: #4a6bff;
   box-shadow: 0 10px 20px rgba(74, 107, 255, 0.3);
 }
- 
-.movie-card:hover .movie-card-content {
-  transform: none;
+
+.movie-cardW:hover .movie-card-content {
+  transform: none; 
 }
- 
-.movie-card:hover img {
+
+.movie-cardW:hover img {
   opacity: 0.9;
 }
- 
-.horizontal-scroll {
-  display: flex;
-  overflow-x: auto;
-  scroll-behavior: smooth;
-  gap: 16px;
-  width: 100%;
-  padding-left: 0;
-  padding-right: 0;
-}
- 
-.movie-card {
+
+.movie-cardW {
   flex: 0 0 auto;
   scroll-snap-align: start;
-  min-width: 160px; /* ou 150px si tu préfères */
+  min-width: 160px; 
 }
- 
- 
- 
- 
-.boutonScroll-gauche,
-.boutonScroll-droite {
+
+/* Scroll */
+
+.scroll-films {
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;  
+
+  gap:  16px;
+  width: 100%;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+}
+
+/* Boutons pour scroll */
+
+.boutonScroll-gaucheW,
+.boutonScroll-droiteW {
   border: 1px solid rgba(255, 255, 255, 0.3);
   color: white;
   padding: 8px 16px;
@@ -64,47 +147,59 @@ h1, h2, h3 {
    z-index: 10;
   background-color: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
- 
+
   -webkit-backdrop-filter: blur(10px);
- 
+
   /*background: linear-gradient(to right, rgba(0, 0, 0, 0.6), transparent);*/
 }
- 
-.boutonScroll-gauche {
+
+.boutonScroll-gaucheW:hover,
+.boutonScroll-droiteW:hover {
+  background-color: rgba(90, 90, 90, 0.25);
+  border: 1px solid rgba(145, 145, 145, 0.5);
+}
+
+.boutonScroll-gaucheW {
   margin-left: 10px;
   margin-right: 5px;
 }
-.boutonScroll-droite {
+.boutonScroll-droiteW {
   margin-left: 5px;
 }
- 
+
+
+
+
+
+
+
 .horizontal-scrollbar::-webkit-scrollbar {
   height: 10px;
 }
- 
+
 .horizontal-scrollbar::-webkit-scrollbar-track {
   background: rgba(130, 126, 255, 0.2);
   /*rgba(255, 255, 255, 0.1);*/
   /* fond (long) */
   border-radius: 10px;
 }
- 
+
 .horizontal-scrollbar::-webkit-scrollbar-thumb {
   /*background: rgba(111, 84, 255, 0.6); /* le petit truc  PAS DE DÉGRADÉ*/
   border-radius: 20px;
   border: 1px solid rgba(42, 3, 151, 0.796);
   /* border du petit truc */
- 
+
   /*background: linear-gradient(to right,  rgba(36, 0, 136, 0.796), rgba(0, 76, 255, 0.796),  rgba(36, 0, 136, 0.796)); BLEU*/
   background: linear-gradient(to right, rgba(58, 38, 148, 0.796), rgba(111, 84, 255, 0.796), rgba(58, 38, 148, 0.796));
   /* MAUVE*/
 }
- 
+
 .horizontal-scrollbar::-webkit-scrollbar-thumb:hover {
   /*background: rgba(154, 134, 255, 0.9); /* quand tu passes la souris sur le petit truc */
   background: linear-gradient(to right, rgba(107, 67, 252, 0.9), rgba(149, 128, 255, 0.9), rgba(107, 67, 252, 0.9));
 }
- 
+
 /* ChatGPT m'a aidé pour la scrollbar sur Firefox */
 .horizontal-scrollbar {
   scrollbar-width: thin;
