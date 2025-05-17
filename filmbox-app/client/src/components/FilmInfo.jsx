@@ -8,7 +8,9 @@ const FilmInfo = () => {
   const { filmId } = useParams();
   const navigate = useNavigate();
   const numericFilmId = Number(filmId);
-  const userId = localStorage.getItem("userId");
+
+  const [user, setUser] = useState({});
+  const [sessionLoaded, setSessionLoaded] = useState(false);
 
   const [film, setFilm] = useState(null);
   const [movieLogo, setMovieLogo] = useState(null);
@@ -20,14 +22,35 @@ const FilmInfo = () => {
   const [comment, setComment] = useState("");
   const [personalizedLists, setPersonalizedLists] = useState([]);
   const [successMsg, setSuccessMsg] = useState("");
+  const [isFavorite, setIsFavorite] = useState(false);
 
-  const [isFavorite, setIsFavorite] = useState(false); 
-
+  // 1. Charger la session utilisateur
   useEffect(() => {
-    if (!filmId || isNaN(numericFilmId)) {
-      setErreur("ID de film invalide.");
-      return;
-    }
+    const fetchUserSession = async () => {
+      try {
+        const response = await fetch("http://localhost:4000/get-session", {
+          credentials: "include",
+        });
+        const data = await response.json();
+        if (data.loggedIn) {
+          setUser(data.user);
+        } else {
+          setErreur("Session non trouvée");
+        }
+      } catch (err) {
+        console.error("Erreur session:", err);
+        setErreur("Erreur de session");
+      } finally {
+        setSessionLoaded(true);
+      }
+    };
+
+    fetchUserSession();
+  }, []);
+
+  // 2. Charger les données du film une fois la session chargée
+  useEffect(() => {
+    if (!filmId || isNaN(numericFilmId) || !sessionLoaded || !user.utilisateur_id) return;
 
     const fetchData = async () => {
       try {
@@ -40,11 +63,11 @@ const FilmInfo = () => {
         const englishLogo = imageData.logos?.find(logo => logo.iso_639_1 === 'en');
         setMovieLogo(englishLogo || null);
 
-        const watchlistRes = await fetch(`http://localhost:4000/api/watchlist/${userId}`);
+        const watchlistRes = await fetch(`http://localhost:4000/api/watchlist/${user.utilisateur_id}`);
         const watchlistData = await watchlistRes.json();
         setIsInWatchlist(watchlistData.some(movie => movie.id === numericFilmId));
 
-        const watchedRes = await fetch(`http://localhost:4000/api/watched/${userId}`);
+        const watchedRes = await fetch(`http://localhost:4000/api/watched/${user.utilisateur_id}`);
         const watchedData = await watchedRes.json();
         const watched = watchedData.find(movie =>
           movie.id === numericFilmId || movie.films_film_id === numericFilmId
@@ -60,33 +83,25 @@ const FilmInfo = () => {
           }
         }
 
-        const favRes = await fetch(`http://localhost:4000/api/favorites/${userId}`);
-        const favData = await favRes.json(); 
-        setIsFavorite(favData.some(movie => movie.id === numericFilmId)); 
+        const favRes = await fetch(`http://localhost:4000/api/favorites/${user.utilisateur_id}`);
+        const favData = await favRes.json();
+        setIsFavorite(favData.some(movie => movie.id === numericFilmId));
 
+        const personalRes = await fetch(`http://localhost:4000/mongo/getPersonalizedList?userId=${user.utilisateur_id}`);
+        const personalData = await personalRes.json();
+        setPersonalizedLists(personalData.data || []);
       } catch (err) {
-        console.error("Erreur lors du chargement des données:", err);
+        console.error("Erreur chargement des données:", err);
       }
     };
 
     fetchData();
-
-    fetch(`http://localhost:4000/mongo/getPersonalizedList?userId=${userId}`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.data) {
-          setPersonalizedLists(data.data);
-        } else {
-          console.warn("No personalized lists found");
-        }
-      })
-      .catch((err) => console.error("Error fetching personalized lists:", err));
-  }, [filmId, numericFilmId, userId]);
+  }, [filmId, numericFilmId, sessionLoaded, user]);
 
   const handleWatchlist = async () => {
     try {
       if (isInWatchlist) {
-        await fetch(`http://localhost:4000/api/watchlist/${userId}/${numericFilmId}`, {
+        await fetch(`http://localhost:4000/api/watchlist/${user.utilisateur_id}/${numericFilmId}`, {
           method: "DELETE",
         });
         setIsInWatchlist(false);
@@ -94,19 +109,19 @@ const FilmInfo = () => {
         await fetch("http://localhost:4000/api/watchlist", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId, movieId: numericFilmId }),
+          body: JSON.stringify({ userId: user.utilisateur_id, movieId: numericFilmId }),
         });
         setIsInWatchlist(true);
       }
     } catch (err) {
-      console.error("Erreur lors de la modification de la watchlist:", err);
+      console.error("Erreur watchlist:", err);
     }
   };
 
   const handleWatched = async () => {
     try {
       if (markedWatched) {
-        await fetch(`http://localhost:4000/api/watched/${userId}/${numericFilmId}`, {
+        await fetch(`http://localhost:4000/api/watched/${user.utilisateur_id}/${numericFilmId}`, {
           method: "DELETE",
         });
         setMarkedWatched(false);
@@ -116,22 +131,21 @@ const FilmInfo = () => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            userId,
+            userId: user.utilisateur_id,
             movieId: numericFilmId,
           }),
         });
         setMarkedWatched(true);
       }
 
-      //We remove to movie from watchlist since the user has now watched the movie
       if (isInWatchlist) {
-        await fetch(`http://localhost:4000/api/watchlist/${userId}/${numericFilmId}`, {
+        await fetch(`http://localhost:4000/api/watchlist/${user.utilisateur_id}/${numericFilmId}`, {
           method: "DELETE",
         });
         setIsInWatchlist(false);
       }
     } catch (err) {
-      console.error("Erreur lors du changement de statut 'vu':", err);
+      console.error("Erreur statut 'vu':", err);
     }
   };
 
@@ -141,49 +155,31 @@ const FilmInfo = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          userId,
+          userId: user.utilisateur_id,
           movieId: numericFilmId,
           rating: rating,
           comment,
         }),
       });
 
-      setSuccessMsg("Rating added!!!!");
+      setSuccessMsg("Rating added!");
       setTimeout(() => setSuccessMsg(""), 3000);
-
-      const watchedRes = await fetch(`http://localhost:4000/api/watched/${userId}`);
-      const watchedData = await watchedRes.json();
-      const watched = watchedData.find(movie =>
-        movie.id === numericFilmId || movie.films_film_id === numericFilmId
-      );
-
-      if (watched) {
-        setRating(watched.valeur_note);
-        setComment(watched.commentaire || "");
-      }
-
     } catch (err) {
-      console.error("Erreur lors de l'enregistrement de la note:", err);
+      console.error("Erreur rating:", err);
     }
   };
 
   const handleAddToList = async (listId) => {
     try {
-      const response = await fetch("http://localhost:4000/mongo/addToPersonalizedList", {
+      await fetch("http://localhost:4000/mongo/addToPersonalizedList", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, personalizedListId: listId, filmId: numericFilmId }),
+        body: JSON.stringify({ userId: user.utilisateur_id, personalizedListId: listId, filmId: numericFilmId }),
       });
-
-      const data = await response.json();
-      if (response.ok) {
-        alert("Movie added to list!");
-      } else {
-        alert(data.message);
-      }
+      alert("Movie added to list!");
     } catch (error) {
       console.error("Error adding film to list:", error);
-      alert("Server error while adding film to list");
+      alert("Error");
     }
   };
 
@@ -195,46 +191,45 @@ const FilmInfo = () => {
       const response = await fetch("http://localhost:4000/mongo/createPersonalizedList", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, listName }),
+        body: JSON.stringify({ userId: user.utilisateur_id, listName }),
       });
 
       const data = await response.json();
       if (response.ok) {
-        alert("List created!");
-
-        const updatedRes = await fetch(`http://localhost:4000/mongo/getPersonalizedList?userId=${userId}`);
+        const updatedRes = await fetch(`http://localhost:4000/mongo/getPersonalizedList?userId=${user.utilisateur_id}`);
         const updatedData = await updatedRes.json();
         if (updatedData.data) {
           setPersonalizedLists(updatedData.data);
         }
+        alert("List created!");
       } else {
         alert(data.message);
       }
     } catch (error) {
       console.error("Error creating list:", error);
-      alert("Server error while creating list");
+      alert("Server error");
     }
   };
 
   const toggleFavorite = async () => {
-  try {
-    if (isFavorite) {
-      await fetch(`http://localhost:4000/api/favorites/${userId}/${numericFilmId}`, {
-        method: "DELETE",
-      });
-      setIsFavorite(false);
-    } else {
-      await fetch("http://localhost:4000/api/favorites", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, movieId: numericFilmId }),
-      });
-      setIsFavorite(true);
+    try {
+      if (isFavorite) {
+        await fetch(`http://localhost:4000/api/favorites/${user.utilisateur_id}/${numericFilmId}`, {
+          method: "DELETE",
+        });
+        setIsFavorite(false);
+      } else {
+        await fetch("http://localhost:4000/api/favorites", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId: user.utilisateur_id, movieId: numericFilmId }),
+        });
+        setIsFavorite(true);
+      }
+    } catch (err) {
+      console.error("Error toggling favorite:", err);
     }
-  } catch (err) {
-    console.error("Error toggling favorite:", err);
-  }
-};
+  };
 
   if (erreur) return <p className="text-danger text-center">{erreur}</p>;
   if (!film) return <p className="text-center text-white">Chargement...</p>;
@@ -315,10 +310,7 @@ const FilmInfo = () => {
                     color: (hoverRating || rating) >= star ? "#FFD700" : "#CCCCCC",
                     cursor: "pointer",
                   }}
-                  onClick={() => {
-                    if (!markedWatched) setMarkedWatched(true);
-                    setRating(star);
-                  }}
+                  onClick={() => setRating(star)}
                   onMouseEnter={() => setHoverRating(star)}
                   onMouseLeave={() => setHoverRating(0)}
                 >
