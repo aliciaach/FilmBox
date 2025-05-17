@@ -65,43 +65,6 @@ function ManageUsers() {
       .catch(err => setError(err.message));
   }, []);
 
-  /* Récupérer la liste des utilisateurs
-  fetch("http://localhost:4000/getUsers") //requête GET pour récupérer les utilisateurs depuis l'URL
-    .then((response) => {
-      //permet de traiter la reponse quand elle arrive
-      if (!response.ok)
-        throw new Error("Error while fetching users"); //vérifie si la réponse HTTP est valide (statut 200 à 299).
-      return response.json(); //convertir la reponse en JSON si elle est valide
-    })
-    .then((data) => {
-      //récupères la liste des utilisateurs renvoyée par le serveur sous forme de JSON
-      setUsers(data); // Mettre à jour la liste des utilisateurs avec les nouvelles données
-    })
-    .catch((erreur) => setError(erreur.message)); // Gérer les erreurs*/
-
-  //Changer compte à suspended //COMME CHANGE PASSWORD dans UserSettings
-  const suspendAccount = async (e) => {
-    e.preventDefault();
-    if (!userSelectionne) {
-      setMessage("No user selected");
-      return;
-    }
-    try {
-      const response = await fetch("http://localhost:4000/suspendAccount", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: userSelectionne.utilisateur_id }),
-      });
-      const data = await response.json();
-      setMessage(
-        data.success ? "User suspended" : "Error, couldn't suspend user"
-      );
-    } catch (error) {
-      console.error("Error suspending user:", error);
-      setMessage("An error occurred while  suspending the user.");
-    }
-  };
-
   const clickObtenirInformationsUser = (userId) => {
     const user = users.find((u) => u.utilisateur_id === userId);
     setUserSelectionne(user);
@@ -426,18 +389,6 @@ function ManageUsers() {
 
             {/* Ligne bas : séparation et bouton */}
             <div className="section-grow d-flex justify-content-center align-items-center">
-              {/* Bouton Suspend Account
-              <form onSubmit={suspendAccount} className="text-center">*/}
-              <form onSubmit={suspendAccount} className="text-center">
-                <button
-                  className=" btnCustomRouge "
-                  style={{ fontSize: "30px" }}
-                >
-                  {" "}
-                  {/*btn btn-outline-light*/} {/*btnCustom*/}
-                  Suspend Account
-                </button>
-              </form>
             </div>
           </div>
         </div>

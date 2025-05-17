@@ -405,34 +405,6 @@ app.get("/getUsers", async (req, res) => {
 });
 
 /*
-      Inspiré de changePassword- Modifier état compte à suspended    -------------------------------------------------------------------------------------------------------------------
-   
-  */
-app.post("/suspendAccount", (req, res) => {
-  console.log("Trying to suspend account");
-  const { userId } = req.body;
-  const sql =
-    "UPDATE utilisateur SET accountState = 'suspended' WHERE utilisateur_id = ?";
-
-  con.query(sql, [userId], (err, results) => {
-    if (err) {
-      console.error("Database error: ", err);
-      return res.status(500).json({ message: "Internal server error" });
-    }
-    if (results.affectedRows > 0) {
-      console.log("Account suspended !!!!!");
-      return res
-        .status(200)
-        .json({ success: true, message: "this account was suspended !" });
-    } else {
-      console.log("Error, couldnt suspended account");
-      return res
-        .status(404)
-        .json({ succes: false, message: "Error, couldnt create user..." });
-    }
-  });
-});
-/*
       API - Obtenir tous les films -------------------------------------------------------------------------------------------------------------------
   */
 
@@ -1075,36 +1047,28 @@ app.post("/adminLogin", async (req, res) => {
     await client.close();
   }
 });
-/////////////////////////////////////////GET USER STATISIQUES////////////////////////////////
-app.get("/getStatistiques", (req, res) => {
-  const userId = req.body;
 
-  if (!userId)
-  {
-    return res
-      .status(400)
-      .json({message: "Error: Missing user id!"});
+
+/////////////////////////////////////////GET USER STATISIQUES////////////////////////////////
+app.get("/getStatistiques/:userId", (req, res) => {
+  const userId = req.params.userId;
+  if (!userId) {
+    return res.status(400).json({ message: "Error: Missing user id!" });
   }
 
-   const sql = `
-    SELECT
-      COUNT(*) AS watchedCount,
+  const sql = `SELECT COUNT(*) AS watchedCount,
       SUM(CASE WHEN valeur_note IS NOT NULL THEN 1 ELSE 0 END) AS ratingCount,
       SUM(CASE WHEN commentaire IS NOT NULL THEN 1 ELSE 0 END) AS commentCount
     FROM note
-    WHERE utilisateur_utilisateur_id = ?
-  `;
+    WHERE utilisateur_utilisateur_id = ?`;
 
-   con.query(sql, [userId], (err, results) => {
+  con.query(sql, [userId], (err, results) => {
     if (err) {
       console.error("Error fetching stats:", err);
-      return res
-        .status(500)
-        .json({ message: "Database error", error: err });
+      return res.status(500).json({ message: "Database error", error: err });
     }
-    res.json(results[0]);
+    res.json(results[0]); // { watchedCount, ratingCount, commentCount }
   });
-
 });
 /////////////////////////////////////////WATCHLIST///////////////////////////////////////////
 
