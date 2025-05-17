@@ -12,6 +12,7 @@ function ManageUsers() {
   const [userSelectionne, setUserSelectionne] = useState(null); // Détails de l'utilisateur sélectionné
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
+  const [stats, setStats] = useState({ watched: 0, ratings: 0, comments: 0 });
 
   useEffect(() => {
     // Récupérer l'admin connecté
@@ -30,6 +31,29 @@ function ManageUsers() {
       })
       .catch((erreur) => setError(erreur.message)); // Gérer les erreurs
   }, [navigate]);
+
+  useEffect(() => {
+    if (!userSelectionne) return;
+
+    fetch(`http://localhost:4000/getStatistiques/${userSelectionne.utilisateur_id}`, {
+      credentials: "include",
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Error fetching user stats");
+        return res.json();
+      })
+      .then((data) => {
+        setStats({
+          watched: data.watchedCount,
+          ratings: data.ratingCount,
+          comments: data.commentCount,
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+        setMessage("Could not load user stats");
+      });
+  }, [userSelectionne]);
 
   useEffect(() => {
     fetch("http://localhost:4000/getUsers", { credentials: "include" })
@@ -145,7 +169,7 @@ function ManageUsers() {
             </span>
             <Link to="/userManagement" className="text-white text-decoration-none fw-light">USER MANAGEMENT</Link>
 
-            
+
           </div>
         </div>
 
@@ -229,83 +253,6 @@ function ManageUsers() {
                   {user.nom} {user.prenom}
                 </button>
               ))}
-              <div></div>
-              {/*
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button> */}
             </div>
           </div>
 
@@ -433,7 +380,7 @@ function ManageUsers() {
                     className="border border-1 rounded-4 py-5"
                     style={{ fontSize: "48px" }}
                   >
-                    687
+                    {stats.watched}
                   </h2>
                   <p className="mt-3" style={{ fontSize: "18px" }}>
                     Movies Watched
@@ -445,7 +392,7 @@ function ManageUsers() {
                     className="border border-1 rounded-4 py-5"
                     style={{ fontSize: "48px" }}
                   >
-                    18
+                    {stats.ratings}
                   </h2>
                   <p className="mt-3" style={{ fontSize: "18px" }}>
                     Ratings written
@@ -457,35 +404,12 @@ function ManageUsers() {
                     className="border border-1 rounded-4 py-5"
                     style={{ fontSize: "48px" }}
                   >
-                    6
+                    {stats.comments}
                   </h2>
                   <p className="mt-3" style={{ fontSize: "18px" }}>
                     Commentaries
                   </p>
                 </div>
-
-                {/*
-                <div className="col-md-4">
-                  <div className="border border-1 rounded-4 py-4">
-                    <h2 style={{ fontSize: '48px' }}>687</h2>
-                    <p style={{ fontSize: '18px' }}>Movies Watched</p>
-                  </div>
-                </div>
- 
-                <div className="col-md-4">
-                  <div className="border border-1 rounded-4 py-4">
-                    <h2 style={{ fontSize: '48px' }}>18</h2>
-                    <p style={{ fontSize: '18px' }}>Ratings written</p>
-                  </div>
-                </div>
-               
-                <div className="col-md-4">
-                  <div className="border border-1 rounded-4 py-4">
-                    <h2 style={{ fontSize: '48px' }}>6</h2>
-                    <p style={{ fontSize: '18px' }}>Commentaries</p>
-                  </div>
-                </div>
-                */}
               </div>
 
               {/* Ligne séparatrice */}
