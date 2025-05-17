@@ -27,7 +27,7 @@ const con = mysql.createConnection({
   host: "localhost",
   user: "scott",
   password: "oracle",
-  database: "filmbox",
+  database: "prototype",
 });
 
 con.connect(function (err) {
