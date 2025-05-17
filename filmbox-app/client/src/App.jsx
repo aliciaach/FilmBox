@@ -1,6 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import ReactDOM from "react-dom/client";
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import BodyAccueil from "./components/BodyAccueil";
 import Connexion from "./components/Connexion";
@@ -18,6 +18,19 @@ import SearchResults from './components/SearchResults';
 import BrowseMovies from './components/BrowseMoviePage';
 
 function App() {
+  useEffect(() => {
+     const handleBeforeUnload = () => {
+      const rememberMe = localStorage.getItem("rememberMe");
+      if (rememberMe !== "true") {
+        navigator.sendBeacon("http://localhost:4000/destroy-session");
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
   return (
     <BrowserRouter>
       <Routes>
@@ -32,15 +45,15 @@ function App() {
         <Route path="/adminManagement" element={<AdminManagement />} />
         <Route path="/AdminManagementPage" element={<AdminManagementPage />} />
         <Route path="/PageWatchlist" element={<PageWatchList />} />
-        <Route path="/SearchResults/:searchQuery" element={<SearchResults/>} />
-        <Route path="/BrowseMovies" element={<BrowseMovies/>} />
+        <Route path="/SearchResults/:searchQuery" element={<SearchResults />} />
+        <Route path="/BrowseMovies" element={<BrowseMovies />} />
       </Routes>
-      <Footer/>
+      <Footer />
     </BrowserRouter>
   );
 }
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(<App />);
- 
+
 export default App;

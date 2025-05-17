@@ -15,12 +15,13 @@ function Header() {
   const handleLogout = async () => {
     try {
       const response = await fetch("http://localhost:4000/destroy-session", {
-        method: "GET",
+        method: "POST",
         credentials: "include",
       });
 
       if (response.ok) {
         navigate("/");
+          localStorage.removeItem("rememberMe");
       } else {
         console.error("Error: Couldn't destroy session");
       }

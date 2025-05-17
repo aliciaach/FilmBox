@@ -44,6 +44,9 @@ app.use(
     secret: "mySecretKey",
     resave: false,
     saveUninitialized: false,
+    cookie: {
+      maxAge: 15 * 60 * 1000 // 15 minutes
+    }
   })
 );
 app.use(
@@ -64,7 +67,7 @@ app.get("/get-session", (req, res) => {
   }
 });
 
-app.get("/destroy-session", (req, res) => {
+app.post("/destroy-session", (req, res) => {
   req.session.destroy((err) => {
     if (err) {
       console.error("Error destroying session:", err);
@@ -75,6 +78,8 @@ app.get("/destroy-session", (req, res) => {
     }
   });
 });
+
+
 
 /*
     Dist folder with all the pages
@@ -96,57 +101,57 @@ app.post("/login", (req, res) => {
   const { email, password, rememberMe } = req.body;
   const sql = "SELECT * FROM utilisateur WHERE courriel = ?";
 
-con.query(sql, [email], (err, results) => {
-  if (err) {
-    console.error("Database error: ", err);
-    return res.status(500).json({ message: "Internal server error" });
-  }
+  con.query(sql, [email], (err, results) => {
+    if (err) {
+      console.error("Database error: ", err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
 
-  if (results.length > 0) {
-    const user = results[0];
+    if (results.length > 0) {
+      const user = results[0];
 
-    bcrypt.compare(password, user.mot_de_passe, (err, isMatch) => {
-      if (err) {
-        console.error("Error comparing passwords: ", err);
-        return res.status(500).json({ message: "Internal server error" });
-      }
+      bcrypt.compare(password, user.mot_de_passe, (err, isMatch) => {
+        if (err) {
+          console.error("Error comparing passwords: ", err);
+          return res.status(500).json({ message: "Internal server error" });
+        }
 
-      if (!isMatch) {
-        return res.status(401).json({
-          success: false,
-          message: "Access denied, wrong password",
-        });
-      }
+        if (!isMatch) {
+          return res.status(401).json({
+            success: false,
+            message: "Access denied, wrong password",
+          });
+        }
 
-      req.session.user = {
-        id: user.utilisateur_id,
-        prenom: user.prenom,
-        nom: user.nom,
-        courriel: user.courriel,
-        telephone: user.telephone,
-      };
+        req.session.user = {
+          id: user.utilisateur_id,
+          prenom: user.prenom,
+          nom: user.nom,
+          courriel: user.courriel,
+          telephone: user.telephone,
+        };
 
-      if (rememberMe) {
+        if (rememberMe) {
           req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000; // 30 days
         } else {
           req.session.cookie.expires = false; // dies when browser closes
         }
 
-      console.log("USER FOUNDDDDDD" + results[0].courriel);
-      return res.status(200).json({
-        success: true,
-        message: "Login Successful!",
-        userId: results[0].utilisateur_id,
+        console.log("USER FOUNDDDDDD" + results[0].courriel);
+        return res.status(200).json({
+          success: true,
+          message: "Login Successful!",
+          userId: results[0].utilisateur_id,
+        });
       });
-    });
-  } else {
-    console.log("USER NOT FOUND");
-    return res.status(401).json({
-      success: false,
-      message: "Not account associated to this email",
-    });
-  }
-});
+    } else {
+      console.log("USER NOT FOUND");
+      return res.status(401).json({
+        success: false,
+        message: "Not account associated to this email",
+      });
+    }
+  });
 });
 
 app.post("/LoginRegister", (req, res) => {

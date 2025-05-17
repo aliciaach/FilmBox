@@ -8,15 +8,15 @@ import '../styles/Connexion.css';
 import { useNavigate } from 'react-router-dom';
 
 
-function Connexion(){
-    //My variables 
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const navigate = useNavigate();
-    const [rememberMeBox, setRememberMeBox] = useState(false);
+function Connexion() {
+  //My variables 
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+  const [rememberMeBox, setRememberMeBox] = useState(false);
 
-    useEffect(() => {
+  useEffect(() => {
     const checkSession = async () => {
       try {
         const response = await fetch('http://localhost:4000/get-session', {
@@ -38,52 +38,55 @@ function Connexion(){
   }, []);
 
 
-    const handleSubmit = async (e) => {
-      e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-      const userLogin = { email, password, rememberMe: rememberMeBox };
-      
-      try {
-          const response = await fetch('http://localhost:4000/login', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json'
-              },
-              credentials: 'include',
-              body: JSON.stringify(userLogin)
-          });
-          
-          const data = await response.json();
-          console.log("data:" + data);
-          if (response.ok)
-          {
-            localStorage.setItem("userId", data.userId);
-            console.log("Going to film page");
-            navigate('/listeFilms');
-          } else {
-            setError(data.message || "Inavalid logon")
-          }
-      } catch (error) {
-          console.error('Error:', error);
+    const userLogin = { email, password, rememberMe: rememberMeBox };
+
+    try {
+      const response = await fetch('http://localhost:4000/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify(userLogin)
+      });
+
+      const data = await response.json();
+      console.log("data:" + data);
+      if (response.ok) {
+        if (rememberMeBox) {
+          localStorage.setItem("rememberMe", "true");
+        } else {
+          localStorage.removeItem("rememberMe");
+        }
+        console.log("Going to film page");
+        navigate('/listeFilms');
+      } else {
+        setError(data.message || "Inavalid logon")
       }
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
-return(
+  return (
 
-  <div className="d-flex flex-column justify-content-center align-items-center" //vh-100" 
-  style={{
-    
-    minHeight: '120vh', // Page + haute   => minHeight: '100vh', ///////
-    paddingTop: '5vh', // 
-    paddingBottom: '5vh', //
+    <div className="d-flex flex-column justify-content-center align-items-center" //vh-100" 
+      style={{
 
-    margin: 0,
-    padding: 0,
-    boxSizing: 'border-box',
-    fontFamily: 'Istok Web, sans-serif',
-    fontSize: 'large',
+        minHeight: '120vh', // Page + haute   => minHeight: '100vh', ///////
+        paddingTop: '5vh', // 
+        paddingBottom: '5vh', //
 
-    background: `linear-gradient(to bottom,
+        margin: 0,
+        padding: 0,
+        boxSizing: 'border-box',
+        fontFamily: 'Istok Web, sans-serif',
+        fontSize: 'large',
+
+        background: `linear-gradient(to bottom,
         rgba(5, 14, 66, 1),
         rgba(26, 0, 255, 0.6), 
         rgba(0, 0, 255, 0.5), 
@@ -94,14 +97,14 @@ return(
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
         color: '#fff'
-  }}
-  > 
-    <h2 style={{marginTop: '15vh', marginBottom: '2rem'}}>Log in</h2>
-     
-     {/* Container du formulaire */}
-    <div>
+      }}
+    >
+      <h2 style={{ marginTop: '15vh', marginBottom: '2rem' }}>Log in</h2>
 
-      <form onSubmit={handleSubmit} className='login-form' style={{
+      {/* Container du formulaire */}
+      <div>
+
+        <form onSubmit={handleSubmit} className='login-form' style={{
           display: 'flex',
           flexDirection: 'column',
           gap: '1.31rem',
@@ -112,59 +115,59 @@ return(
           padding: '2rem 2.5rem',
           borderRadius: '10px',
           boxShadow: '0 10px 20px rgba(0, 0, 0, 0.2)'
-          }}>
-        
-        {/* Email */}
-        <label htmlFor="email" className="input-label">Email</label>
-        
-        <div className="mb-3 position-relative">
-          <input id="inputForm" className='w-100 p-2 pe-5 ps-3 text-white border-1 rounded-4' type='email' placeholder='Example@gmail.com' required value={email} onChange={(e) => setEmail(e.target.value)}
-            style={{backgroundImage: `url(${arobase})`}}/>
-        </div>
+        }}>
 
-        {/* Mot de passe */}
-        <label htmlFor="password" className="input-label">Password</label>
-          
-        <div className="mb-3 position-relative">
-          <input id="inputForm" className='w-100 p-2 pe-5 ps-3 text-white border-1 rounded-4 ' type='password' placeholder='Enter your password' required value={password} onChange={(e) => setPassword(e.target.value)}
-            style={{backgroundImage: `url(${cadenas})`}}/>
-        </div>
+          {/* Email */}
+          <label htmlFor="email" className="input-label">Email</label>
 
-        {/* Checkbox "Remember me" */}
-        <div  style={{display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px'}}>
-          <input 
-            type="checkbox" 
-            id="remember" 
-            style={{accentColor: '#7465F7', cursor: 'pointer' }}
-            checked={rememberMeBox}
-            onChange={(e) => setRememberMeBox(e.target.checked)} 
-          />
-          <label htmlFor="remember"> Remember me</label>
-        </div>
+          <div className="mb-3 position-relative">
+            <input id="inputForm" className='w-100 p-2 pe-5 ps-3 text-white border-1 rounded-4' type='email' placeholder='Example@gmail.com' required value={email} onChange={(e) => setEmail(e.target.value)}
+              style={{ backgroundImage: `url(${arobase})` }} />
+          </div>
 
-        {/* Ligne séparatrice */}
-        <div style={{alignSelf: 'center', width: '100%', height: '1px', backgroundColor: 'rgba(255, 255, 255, 0.5)'}}></div>
+          {/* Mot de passe */}
+          <label htmlFor="password" className="input-label">Password</label>
 
-        {/* Bouton login */}
-        <button type="submit" className="btn btn-primary w-100 login-btn">Login</button>
-        {error && <p style={{ color: "red" }}>{error}</p>}
+          <div className="mb-3 position-relative">
+            <input id="inputForm" className='w-100 p-2 pe-5 ps-3 text-white border-1 rounded-4 ' type='password' placeholder='Enter your password' required value={password} onChange={(e) => setPassword(e.target.value)}
+              style={{ backgroundImage: `url(${cadenas})` }} />
+          </div>
 
-      </form>
+          {/* Checkbox "Remember me" */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px' }}>
+            <input
+              type="checkbox"
+              id="remember"
+              style={{ accentColor: '#7465F7', cursor: 'pointer' }}
+              checked={rememberMeBox}
+              onChange={(e) => setRememberMeBox(e.target.checked)}
+            />
+            <label htmlFor="remember"> Remember me</label>
+          </div>
 
-      {/* Don't have an account? */}
-      <div className='text-center mt-5'>
+          {/* Ligne séparatrice */}
+          <div style={{ alignSelf: 'center', width: '100%', height: '1px', backgroundColor: 'rgba(255, 255, 255, 0.5)' }}></div>
 
-        <p className='signup-text'>You don’t have an account? </p>
-      
-        <div className='btnWrapper' style={{ marginBottom: '15vh'}}>
-          <button className="btnFakeBorder" >
-            <Link to="/inscription" className="nav-link active " >
-              Create Account
-            </Link>
-          </button>
-        </div>
+          {/* Bouton login */}
+          <button type="submit" className="btn btn-primary w-100 login-btn">Login</button>
+          {error && <p style={{ color: "red" }}>{error}</p>}
 
-        {/*<button className="btn btn-outline-primary" >
+        </form>
+
+        {/* Don't have an account? */}
+        <div className='text-center mt-5'>
+
+          <p className='signup-text'>You don’t have an account? </p>
+
+          <div className='btnWrapper' style={{ marginBottom: '15vh' }}>
+            <button className="btnFakeBorder" >
+              <Link to="/inscription" className="nav-link active " >
+                Create Account
+              </Link>
+            </button>
+          </div>
+
+          {/*<button className="btn btn-outline-primary" >
           <Link
             to="/inscription"
             className="nav-link active text-white text-"
@@ -172,12 +175,12 @@ return(
             >
           Create Account
             </Link>
-        </button>*/}        
-      </div>
+        </button>*/}
+        </div>
 
+      </div>
     </div>
-  </div>
-)
+  )
 };
 
 export default Connexion
