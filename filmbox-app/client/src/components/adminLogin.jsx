@@ -24,13 +24,15 @@ function AdminLogin() {
       const response = await fetch('http://localhost:4000/adminLogin', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({ username, password }),
+        credentials: "include"
       });
       const data = await response.json();
 
       if (response.ok) {
         console.log("WE ARE HEREE THOOOO");
-        navigate('/UserManagement');
+        //navigate('/UserManagement');
+        setTimeout(() => navigate("/userManagement"), 200);
       } else {
         setError(data.message || 'Erreur de connexion admin');
       }

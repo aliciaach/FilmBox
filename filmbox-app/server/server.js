@@ -70,6 +70,15 @@ app.get("/get-session", (req, res) => {
   }
 });
 
+app.get("/get-admin-session", (req, res) => {
+  if (req.session.admin) {
+    res.json({ loggedIn: true, admin: req.session.admin });
+  } else {
+    res.json({ loggedIn: false });
+  }
+});
+
+
 app.post("/destroy-session", (req, res) => {
   req.session.destroy((err) => {
     if (err) {
@@ -137,6 +146,7 @@ app.post("/login", (req, res) => {
         nom: user.nom,
         courriel: user.courriel,
         telephone: user.telephone,
+        role: user.role
       };
 
       if (rememberMe) {
@@ -1049,7 +1059,14 @@ app.post("/adminLogin", async (req, res) => {
     } else {
       console.log("The admin connexion was succesful");
     }
-
+    req.session.admin = {
+      id: admin._id,
+      username: admin.username,
+      prenom: admin.name,
+      nom: admin.lastName,
+      role: admin.role
+    };
+    console.log("AdminSessionStarted");
     return res.json({ message: "Admin Connexion Succesful" });
   } catch (error) {
     console.error("Error during admin connexion:", error);
