@@ -46,6 +46,12 @@ app.use(
     saveUninitialized: false,
   })
 );
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 
 app.get("/get-session", (req, res) => {
   if (req.session.user) {
@@ -1279,8 +1285,6 @@ app.delete("/api/watched/:userId/:movieId", (req, res) => {
 const uri = "mongodb://localhost:27017";
 const client = new MongoClient(uri);
 const dbName = "FilmBox";
-
-app.use(cors());
 
 // API to fetch admins
 app.get("/adminsTab", async (req, res) => {

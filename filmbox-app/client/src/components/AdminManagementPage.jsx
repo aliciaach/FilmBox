@@ -13,7 +13,8 @@ import {
 } from "react-bootstrap";
 
 function AdminManagement() {
-  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+  const [sortConfig, setSortConfig] = useState();
+  const [ordreDonnees, setOrdreDonnees] = useState("asc");
   const [searchValue, setSearchValue] = useState("");
   const [admins, setAdmins] = useState([]);
   const [adminChoisi, setAdminChoisi] = useState(null);
@@ -96,6 +97,10 @@ function AdminManagement() {
   };
   const handleCancel = () => {
     setAdminChoisi(adminOriginal);
+
+    setTimeout(() => {
+      setAdminChoisi(null);
+    }, 0);
   };
   const fetchAdmins = async () => {
     console.log("Fetching admins...");
@@ -109,14 +114,19 @@ function AdminManagement() {
         console.error("Error fetching admins:", error);
       });
   };
-  const sortArrow = (key) => {
-    if (sortConfig.key !== key) return "▲";
-    return sortConfig.direction === "asc" ? "▲" : "▼";
+  const sortArrow = (column) => {
+    if (sortConfig != column) return null;
+    return ordreDonnees === "asc" ? "↓" : "↑";
   };
-  const handleSort = (key) => {
-    const direction =
-      sortConfig.key === key && sortConfig.direction === "asc" ? "desc" : "asc";
-    setSortConfig({ key, direction });
+  const handleSort = (column) => {
+    if (sortConfig === column) {
+      //inverser sens lorsque reclick
+      setOrdreDonnees((prevOrdre) => (prevOrdre === "asc" ? "desc" : "asc"));
+    } else {
+      //sinon nouveau tri sur autre colonne
+      setSortConfig(column);
+      setOrdreDonnees("asc"); //par default ascendant
+    }
   };
   const handleSearch = (query) => {
     console.log("Searching for:", query);
@@ -130,6 +140,35 @@ function AdminManagement() {
       admin.lastName.toLowerCase().includes(recherche)
     );
   });
+  const adminsSorted = [...adminsFiltres];
+  if (sortConfig) {
+    adminsSorted.sort((a, b) => {
+      let valA = a[sortConfig];
+      let valB = b[sortConfig];
+
+      // trier les dates
+      if (sortConfig === "lastLogin") {
+        valA = new Date(valA);
+        valB = new Date(valB);
+      }
+
+      // trier les strings
+      if (typeof valA === "string") {
+        valA = valA
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "");
+        valB = valB
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "");
+      }
+
+      if (valA < valB) return ordreDonnees === "asc" ? -1 : 1;
+      if (valA > valB) return ordreDonnees === "asc" ? 1 : -1;
+      return 0;
+    });
+  }
   //Appelle methode pour chercher admins
   useEffect(() => {
     fetchAdmins();
@@ -225,7 +264,7 @@ function AdminManagement() {
         console.error("Erreur dans la supprimation admin: ", data.error);
       }
     } catch (error) {
-      console.error("Erreur serveur durant action de supprimer:", error);
+      console.log(error);
       alert("Erreur serveur durant action de supprimer");
       // window.location.reload();
     }
@@ -278,10 +317,16 @@ function AdminManagement() {
         {/* liens pages */}
         <div className="d-flex justify-content-center flex-grow-1">
           <div className="d-flex gap-5">
-            <Link to="#" className="text-white text-decoration-none fw-light">
+            <Link
+              to="/adminManagementPage"
+              className="text-white text-decoration-none fw-light"
+            >
               ADMINS MANAGEMENT
             </Link>
-            <Link to="#" className="text-white text-decoration-none fw-light">
+            <Link
+              to="/userManagement"
+              className="text-white text-decoration-none fw-light"
+            >
               USERS MANAGEMENT
             </Link>
           </div>
@@ -314,9 +359,13 @@ function AdminManagement() {
           </Dropdown.Toggle>
 
           <Dropdown.Menu>
-            <Dropdown.Item>Mon Profil</Dropdown.Item>
+            <Dropdown.Item as={Link} to="/userSettings">
+              Mon Profil
+            </Dropdown.Item>
             <Dropdown.Divider />
-            <Dropdown.Item>Deconnexion</Dropdown.Item>
+            <Dropdown.Item as={Link} to="/adminLogin">
+              Deconnexion
+            </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
       </nav>
@@ -441,7 +490,7 @@ function AdminManagement() {
             </thead>
             <tbody>
               {adminsFiltres && adminsFiltres.length > 0 ? (
-                adminsFiltres.map((admin) => (
+                adminsSorted.map((admin) => (
                   <tr
                     key={admin.id}
                     className="bg-transparent border-bottom text-white"
