@@ -5,6 +5,7 @@ import Header from '../components/Header';
 import { useNavigate } from 'react-router-dom';
 import '../styles/UserSettings.css';
 import { validEmail, validPassword, validName, validPhoneNumber } from './regex';
+import HeaderSpace from '../Functions/HeaderSpace';
 
 /*
     https://www.youtube.com/watch?v=oYGhoHW7zqI
@@ -227,6 +228,7 @@ function UserSettings() {
         color: '#fff'
       }}>
 
+        <HeaderSpace/>
         <Header />
 
 

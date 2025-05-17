@@ -6,7 +6,7 @@ import Header from '../components/Header';
 import { Dropdown, DropdownButton } from "react-bootstrap";
 import ContainerManageList from './ContainerManageList';
 import '../styles/PageWatchList.css'
-import HeaderSpacer from '../Functions/HeaderSpace.jsx';
+import HeaderSpace from '../Functions/HeaderSpace.jsx';
 
 function PageWatchList() {
   const [watchlist, setWatchlist] = useState([]);
@@ -165,7 +165,7 @@ function PageWatchList() {
   return (
     <>
       <div style={backgroundStyle}>
-        <HeaderSpacer />
+        <HeaderSpace />
 
         <Header />
 
