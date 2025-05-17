@@ -101,25 +101,43 @@ app.post("/login", (req, res) => {
       console.error("Database error: ", err);
       return res.status(500).json({ message: "Internal server error" });
     }
+
     if (results.length > 0) {
-      req.session.user = {
-        id: results[0].utilisateur_id, // Adjust column name if needed
-        prenom: results[0].prenom,
-        nom: results[0].nom,
-        courriel: results[0].courriel,
-        telephone: results[0].telephone,
-      };
-      console.log("USER FOUNDDDDDD" + results[0].courriel);
-      return res.status(200).json({
-        success: true,
-        message: "Login Successful!",
-        userId: results[0].utilisateur_id,
+      const user = results[0];
+
+      bcrypt.compare(password, user.mot_de_passe, (err, isMatch) => {
+        if (err) {
+          console.error("Error comparing passwords: ", err);
+          return res.status(500).json({ message: "Internal server error" });
+        }
+
+        if (!isMatch) {
+          return res.status(401).json({
+            success: false,
+            message: "Access denied, wrong password",
+          });
+        }
+
+        req.session.user = {
+          id: user.utilisateur_id,
+          prenom: user.prenom,
+          nom: user.nom,
+          courriel: user.courriel,
+          telephone: user.telephone,
+        };
+
+        console.log("USER FOUNDDDDDD" + results[0].courriel);
+        return res.status(200).json({
+          success: true,
+          message: "Login Successful!",
+          userId: results[0].utilisateur_id,
+        });
       });
     } else {
       console.log("USER NOT FOUND");
       return res.status(401).json({
         success: false,
-        message: "Access denied, wrong password or email",
+        message: "Not account associated to this email",
       });
     }
   });
@@ -195,12 +213,13 @@ app.post("/saveUserAccountChanges", (req, res) => {
 
   const sql = `UPDATE utilisateur SET prenom = ?, nom = ?, courriel = ?, telephone = ? WHERE utilisateur_id = ?`;
 
+  console.log("Values received:", { id, prenom, nom, courriel, telephone });
   con.query(sql, [prenom, nom, courriel, telephone, id], (err, results) => {
     if (err) {
       console.error("Database error: ", err);
       return res.status(500).json({ message: "Internal server error" });
     }
-
+    console.log("typeof id:", typeof id); // Should be "number"
     if (results.affectedRows > 0) {
       console.log("USER INFO UPDATED!");
       return res
@@ -218,31 +237,65 @@ app.post("/saveUserAccountChanges", (req, res) => {
 
 app.post("/ChangePassword", (req, res) => {
   console.log("Trying to update password");
-  const { email, newPassword } = req.body;
+  const { email, currentPassword, newPassword } = req.body;
 
-  bcrypt.hash(newPassword, 10, (err, hashedPassword) => {
+  const getUserSql = "SELECT mot_de_passe FROM utilisateur WHERE courriel = ?";
+  con.query(getUserSql, [email], (err, results) => {
     if (err) {
-      console.error("Error hashing password:", err);
+      console.error("Database error:", err);
       return res.status(500).json({ message: "Internal server error" });
     }
 
-    const sql = "UPDATE utilisateur SET mot_de_passe = ? WHERE courriel = ?";
-    con.query(sql, [hashedPassword, email], (err, results) => {
+    if (!results || results.length === 0) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    const hashedPasswordInDB = results[0].mot_de_passe;
+
+    //Compare the current password, to make sure its the right user
+    bcrypt.compare(currentPassword, hashedPasswordInDB, (err, isMatch) => {
       if (err) {
-        console.error("Database error: ", err);
+        console.error("Error comparing passwords:", err);
         return res.status(500).json({ message: "Internal server error" });
       }
-      if (results.affectedRows > 0) {
-        console.log("PASSWORD UPDATED !!!!!");
+
+      if (!isMatch) {
         return res
-          .status(200)
-          .json({ success: true, message: "Your password was updated!" });
-      } else {
-        console.log("Error, couldn't update password");
-        return res
-          .status(404)
-          .json({ success: false, message: "Error, couldn't update user..." });
+          .status(401)
+          .json({ success: false, message: "Incorrect current password" });
       }
+      console.log("Password match, proceeding to hash new password");
+
+      bcrypt.hash(newPassword, 10, (err, hashedNewPassword) => {
+        if (err) {
+          console.error("Error hashing password:", err);
+          return res.status(500).json({ message: "Internal server error" });
+        }
+
+        const sql =
+          "UPDATE utilisateur SET mot_de_passe = ? WHERE courriel = ?";
+
+        con.query(sql, [hashedNewPassword, email], (err, results) => {
+          if (err) {
+            console.error("Database error: ", err);
+            return res.status(500).json({ message: "Internal server error" });
+          }
+          if (results.affectedRows > 0) {
+            console.log("PASSWORD UPDATED !!!!!");
+            return res
+              .status(200)
+              .json({ success: true, message: "Your password was updated!" });
+          } else {
+            console.log("Error, couldn't update password");
+            return res.status(404).json({
+              success: false,
+              message: "Error, couldn't update user...",
+            });
+          }
+        });
+      });
     });
   });
 });
@@ -272,24 +325,24 @@ app.delete("/deleteAccount", (req, res) => {
 });
 
 /*
-    API - Obtenir tous les films
-*/
+      API - Obtenir tous les films
+  */
 /*app.get("/api/movies", (req, res) => {
-  console.log("Request received at /api/movies");
-  const sql = "SELECT film_id, titre FROM films";
-  con.query(sql, (err, results) => {
-    if (err) {
-      console.error("Erreur SQL:", err);
-      return res.status(500).json({ message: "Erreur serveur" });
-    }
-    console.log(` Movies fetched: ${results.length} rows`); // Log number of rows
-    console.table(results);
-    res.json(results);
-  });
-});*/
+    console.log("Request received at /api/movies");
+    const sql = "SELECT film_id, titre FROM films";
+    con.query(sql, (err, results) => {
+      if (err) {
+        console.error("Erreur SQL:", err);
+        return res.status(500).json({ message: "Erreur serveur" });
+      }
+      console.log(` Movies fetched: ${results.length} rows`); // Log number of rows
+      console.table(results);
+      res.json(results);
+    });
+  });*/
 /*
-    API - Obtenir tous les utilisateurs             -------------------------------------------------------------------------------------------------------------------
-*/
+      API - Obtenir tous les utilisateurs-------------------------------------------------------------------------------------------------------------------
+  */
 //con query : méthode de connexion à la BDD MySQL dans Node.js. Elle est utilisée pour envoyer une requête SQL à la base de données
 // et récupérer des données ou effectuer des actions (comme INSERT, UPDATE, DELETE, ou SELECT).
 
@@ -314,9 +367,9 @@ app.get("/getUsers", async (req, res) => {
 });
 
 /*
-    Inspiré de changePassword- Modifier état compte à suspended             -------------------------------------------------------------------------------------------------------------------
-
-*/
+      Inspiré de changePassword- Modifier état compte à suspended             -------------------------------------------------------------------------------------------------------------------
+   
+  */
 app.post("/suspendAccount", (req, res) => {
   console.log("Trying to suspend account");
   const { userId } = req.body;
@@ -342,8 +395,8 @@ app.post("/suspendAccount", (req, res) => {
   });
 });
 /*
-    API - Obtenir tous les films -------------------------------------------------------------------------------------------------------------------
-*/
+      API - Obtenir tous les films -------------------------------------------------------------------------------------------------------------------
+  */
 
 ///////////////////////////MOVIES RESQUEST ///////////////////////////////////////
 
@@ -563,8 +616,8 @@ app.get("/discoverMoviesFiltered", async (req, res) => {
   }
 
   /*if (movieDuration) {
-    params.append('')
-  }*/
+      params.append('')
+    }*/
 
   try {
     console.log("WE ARE GETTTING HEREEEEEEEEEEEEE");
@@ -671,55 +724,25 @@ app.get("/discoverMoviesFiltered", async (req, res) => {
 });
 
 /*app.get("/api/getMoviesResults/:searchQuery", async (req, res) => {
-  const userInput = req.params.searchQuery;
-  const page = req.query.page || 1; 
-
-  try {
-    const response = await fetch(`https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(userInput)}&page=${page}`, {
-      method: "GET",
-      headers: {
-        accept: "application/json",
-        Authorization: "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
-      }
-    });
-
-    const data = await response.json();
-    res.json(data.results); 
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed while searching movies" });
-  }
-});*/
-
-/*
-    API - Obtenir un film par ID
-*/
-/*app.get("/api/movies/:id", (req, res) => {
-  const filmID = Number(req.params.id); //converti le id en nombre au cas ou
-  if (isNaN(filmID)) {
-    return res.status(400).json({ message: "ID invalide" }); //gestions des erreurs etc
-  }
-
-  //requete sql qui fait les jointures avec les tables
-  const sql = `
-    SELECT f.film_id, f.titre, f.film_duree, f.date_sortie, 
-           f.pays_origin_film, f.langue_original, d.nom_directeur, g.genre
-    FROM films f
-    JOIN directeur d ON f.directeur_directeur_id = d.directeur_id
-    LEFT JOIN genre g ON f.film_id = g.films_film_id
-    WHERE f.film_id = ?`;
-
-  con.query(sql, [filmID], (err, results) => {
-    if (err) {
-      console.error("Erreur SQL:", err);
-      return res.status(500).json({ message: "Erreur serveur" });
+    const userInput = req.params.searchQuery;
+    const page = req.query.page || 1; 
+   
+    try {admin
+      const response = await fetch(`https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(userInput)}&page=${page}`, {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+        }
+      });
+   
+      const data = await response.json();
+      res.json(data.results); 
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: "Failed while searching movies" });
     }
-    if (results.length === 0) {
-      return res.status(404).json({ message: "Film non trouvé" });
-    }
-    res.json(results[0]);
-  });
-});*/
+  });*/
 
 app.get("/api/movies/:id", async (req, res) => {
   const filmID = Number(req.params.id); //Conversion du id en nombbre au cas ou
@@ -788,7 +811,7 @@ app.get("/api/movies/:id/images", async (req, res) => {
 app.delete("/mongo/removeMovieFromList/:listId/:movieId", async (req, res) => {
   const listId = req.params.listId;
   const movieId = req.params.movieId;
-
+  console.log("MOVIES ID THAT WE ARE REMOVING: " + movieId);
   const uri = process.env.DB_URI;
   const client = new MongoClient(uri);
 
@@ -799,9 +822,14 @@ app.delete("/mongo/removeMovieFromList/:listId/:movieId", async (req, res) => {
 
     const result = await list.updateOne(
       { _id: new ObjectId(listId) },
-      { $pull: { movies: { _id: new ObjectId(movieId) } } }
+      { $pull: { movies: Number(movieId) } }
     );
     res.json({ message: "Movie removed from list" });
+    console.log(
+      "Movie: " + movieId + " succesfully removes from list: " + listId
+    );
+
+    console.log("Movie succesfully removes from list ");
   } catch (error) {
     console.error(
       "Error removing movie: " + movieId + "from list: " + listId,
@@ -812,6 +840,7 @@ app.delete("/mongo/removeMovieFromList/:listId/:movieId", async (req, res) => {
     await client.close();
   }
 });
+
 /* =============================== ADD A MOVIE TO A PERSONALIZED LIST ========================= */
 app.post("/mongo/addToPersonalizedList", async (req, res) => {
   const { userId, personalizedListId, filmId } = req.body;
@@ -943,7 +972,7 @@ app.post("/adminLogin", async (req, res) => {
     }
 
     //const isPasswordValid = await compare(password, admin.password);
-    const isPasswordValid = password === admin.password;
+    const isPasswordValid = await bcrypt.compare(password, admin.password);
     if (!isPasswordValid) {
       return res.status(401).json({ message: "Mot de passe invalide" });
     } else {
@@ -1002,7 +1031,7 @@ app.post("/api/watchlist", (req, res) => {
       const movieData = await tmdbResponse.json();
 
       //This is the data that will be saved on our local database
-      const newFilmSQL = `INSERT INTO films (film_id, titre, film_duree, date_sortie, pays_origin_film, langue_original, status, directeur_directeur_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+      const newFilmSQL = `INSERT INTO films (film_id, titre, film_duree, date_sortie, pays_origin_film, langue_original, status) VALUES (?, ?, ?, ?, ?, ?, ?)`;
 
       const filmValues = [
         movieData.id,
@@ -1012,8 +1041,7 @@ app.post("/api/watchlist", (req, res) => {
         movieData.production_countries?.[0]?.name || "Unknown",
         movieData.original_language || "Unknown",
         movieData.status || "Unknown",
-        null,
-      ]; //director is null for now, have to fix a bug first
+      ];
 
       con.query(newFilmSQL, filmValues, (insertErr) => {
         if (insertErr) {
@@ -1076,17 +1104,17 @@ app.post("/api/watchlist", (req, res) => {
 });
 
 /*const sql =
-  "INSERT INTO film_watchlist (film_id, utilisateur_utilisateur_id) VALUES (?, ?)";
-con.query(sql, [movieId, userId], (err, results) => {
-  if (err) {
-    console.error("Database error:", err);
-    return res.status(500).json({ message: "Internal server error" });
-  }
-  res
-    .status(201)
-    .json({ success: true, message: "Film ajoute dans watchlist" });
-});
-});*/
+    "INSERT INTO film_watchlist (film_id, utilisateur_utilisateur_id) VALUES (?, ?)";
+  con.query(sql, [movieId, userId], (err, results) => {
+    if (err) {
+      console.error("Database error:", err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+    res
+      .status(201)
+      .json({ success: true, message: "Film ajoute dans watchlist" });
+  });
+  });*/
 
 // Get Watchlist
 // Get Watchlist - Updated to use TMDB API
@@ -1147,7 +1175,7 @@ app.delete("/api/watchlist/:userId/:movieId", (req, res) => {
 
 app.post("/api/watched", (req, res) => {
   const { userId, movieId, rating, comment } = req.body;
-
+  console.log("Received watched POST:", req.body);
   // 1. Check if the film exists
   const checkFilmSql = "SELECT film_id FROM films WHERE film_id = ?";
   con.query(checkFilmSql, [movieId], (err, result) => {
@@ -1156,8 +1184,8 @@ app.post("/api/watched", (req, res) => {
     if (result.length === 0) {
       // 2. Insert placeholder film if not found
       const insertFilmSql = `
-        INSERT INTO films (film_id, titre, film_duree, date_sortie, pays_origin_film, langue_original, status, directeur_directeur_id)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO films (film_id, titre, film_duree, date_sortie, pays_origin_film, langue_original, status)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
       `;
       const now = new Date().toISOString().split("T")[0]; // format YYYY-MM-DD
 
@@ -1171,7 +1199,6 @@ app.post("/api/watched", (req, res) => {
           "USA", // Placeholder country
           "en", // Placeholder language
           "vu", // Placeholder status
-          1, // Default director (must exist)
         ],
         (err2) => {
           if (err2) {
@@ -1228,7 +1255,7 @@ app.get("/api/watched/:userId", (req, res) => {
         const movie = await res.json();
         return {
           ...movie,
-          rating: row.valeur_note,
+          valeur_note: row.valeur_note,
           commentaire: row.commentaire,
         };
       })
@@ -1358,7 +1385,7 @@ app.post("/createAdmin", async (req, res) => {
       username,
       email,
       role,
-      password,
+      password: hashedPassword,
       lastName,
       name,
       phoneNumber,
@@ -1403,15 +1430,15 @@ app.delete("/deleteAdmin/:id", async (req, res) => {
 });
 
 /*
-    Description des routes
-*/
+      Description des routes
+  */
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../client/dist", "index.html"));
 });
 
 /*
-    Connect to server
-*/
+      Connect to server
+  */
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}...`);

@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import BlackImage from '../assets/BlackImage.png';
 import ReactPaginate from 'react-paginate';
+import HeaderSpace from '../Functions/HeaderSpace.jsx';
 
 /*
 This is the source for the whole tutorial to do the pagination thing : 
@@ -49,6 +50,7 @@ function SearchResults() {
                 color: "white",
                 minHeight: "100vh"
             }}>
+                <HeaderSpace />
                 <Header />
 
                 <h1>Search Results for "{searchQuery}"</h1>
@@ -60,7 +62,7 @@ function SearchResults() {
                                 : BlackImage;
 
                             return (
-                                <div key={film.id || index} className="col-lg-2 col-md-3 col-sm-6 mb-4">
+                                <div key={film.id || index} className="movie-col mb-4">
                                     <div className="card border-0 shadow movie-card"
                                         style={{
                                             borderRadius: "0px",
@@ -148,6 +150,10 @@ function SearchResults() {
             background-color:rgb(0, 21, 92);
             color: white;
             border-color: white;
+        }
+        .movie-col {
+            width: 20%;
+            padding: 10px;
         }
         `}</style>
             </div>

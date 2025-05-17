@@ -9,13 +9,6 @@
 
 -- predefined type, no DDL - XMLTYPE
 
-CREATE TABLE directeur (
-    directeur_id  NUMBER(255) NOT NULL,
-    nom_directeur VARCHAR2(255) NOT NULL
-);
-
-ALTER TABLE directeur ADD CONSTRAINT directeur_pk PRIMARY KEY ( directeur_id );
-
 CREATE TABLE droit (
     droit_id   NUMBER(255) NOT NULL,
     nom        VARCHAR2(255) NOT NULL,
@@ -43,8 +36,7 @@ CREATE TABLE films (
     date_sortie            DATE NOT NULL,
     pays_origin_film       VARCHAR2(255) NOT NULL,
     langue_original        VARCHAR2(255) NOT NULL,
-    status                 VARCHAR2(255) NOT NULL,
-    directeur_directeur_id NUMBER(255) NOT NULL
+    status                 VARCHAR2(255) NOT NULLNOT NULL
 );
 
 ALTER TABLE films ADD CONSTRAINT films_pk PRIMARY KEY ( film_id );
@@ -111,10 +103,6 @@ ALTER TABLE utilisateur ADD CONSTRAINT utilisateur_pk PRIMARY KEY ( utilisateur_
 ALTER TABLE film_watchlist
     ADD CONSTRAINT film_watchlist_utilisateur_fk FOREIGN KEY ( utilisateur_utilisateur_id )
         REFERENCES utilisateur ( utilisateur_id );
-
-ALTER TABLE films
-    ADD CONSTRAINT films_directeur_fk FOREIGN KEY ( directeur_directeur_id )
-        REFERENCES directeur ( directeur_id );
 
 ALTER TABLE films_favoris
     ADD CONSTRAINT films_favoris_utilisateur_fk FOREIGN KEY ( utilisateur_utilisateur_id )
@@ -195,12 +183,6 @@ ALTER TABLE "session"
 --------------------------------------------------------------------------------------------------------------
 
 
-CREATE TABLE directeur (
-    directeur_id INT NOT NULL AUTO_INCREMENT,
-    nom_directeur VARCHAR(255) NOT NULL,
-    PRIMARY KEY (directeur_id)
-);
-
 CREATE TABLE utilisateur (
     utilisateur_id INT NOT NULL AUTO_INCREMENT,
     nom VARCHAR(255) NOT NULL,
@@ -225,11 +207,9 @@ CREATE TABLE films (
     date_sortie DATE NOT NULL,
     pays_origin_film VARCHAR(255) NOT NULL,
     langue_original VARCHAR(255) NOT NULL,
-    status VARCHAR(255) NOT NULL,
-    directeur_directeur_id INT,
+    status VARCHAR(255) NOT NULL
     PRIMARY KEY (film_id),
-    FOREIGN KEY (directeur_directeur_id) REFERENCES directeur(directeur_id) ON DELETE SET NULL
-);
+    );
 
 
 CREATE TABLE genre (
@@ -299,10 +279,6 @@ REFERENCES utilisateur(utilisateur_id) ON DELETE CASCADE;
 ---------------------INSERTION DES VALEURS DANS LES TABLES---------------------------------------------------
 -------------------------------------------------------------------------------------------------------------
 
-INSERT INTO directeur (nom_directeur) VALUES 
-('Christopher Nolan'), 
-('Quentin Tarantino');
-
 INSERT INTO utilisateur (nom, prenom, courriel, mot_de_passe, telephone) VALUES 
 ('Doe', 'John', 'john.doe@example.com', 'password123', '1234567890'), 
 ('Smith', 'Jane', 'jane.smith@example.com', 'securepass', '0987654321');
@@ -311,9 +287,9 @@ INSERT INTO droit (nom, type_droit) VALUES
 ('Admin', 'Full Access'), 
 ('User', 'Read Only');
 
-INSERT INTO films (titre, film_duree, date_sortie, pays_origin_film, langue_original, status, directeur_directeur_id) VALUES 
+INSERT INTO films (titre, film_duree, date_sortie, pays_origin_film, langue_original, status) VALUES 
 ('Inception', 148, '2010-07-16', 'États-Unis', 'Anglais', 'Vu', 1), 
-('Pulp Fiction', 154, '1994-10-14', 'États-Unis', 'Anglais', 'Non vu', 2);
+('Pulp Fiction', 154, '1994-10-14', 'États-Unis', 'Anglais', 'Non vu');
 
 INSERT INTO genre (genre, films_film_id) VALUES 
 ('Science Fiction', 1), 
@@ -339,7 +315,7 @@ INSERT INTO films_favoris (film_id, utilisateur_utilisateur_id) VALUES
 (1, 1), 
 (2, 2);
 
-INSERT INTO films (film_id, titre, film_duree, date_sortie, pays_origin_film, langue_original, status, directeur_directeur_id)
+INSERT INTO films (film_id, titre, film_duree, date_sortie, pays_origin_film, langue_original, status)
 VALUES
 (3, 'The Dark Knight', 152, '2008-07-18', 'USA', 'English', 'vu', 1),
 (4, 'Interstellar', 169, '2014-11-07', 'USA', 'English', 'vu', 2),
@@ -360,4 +336,4 @@ VALUES
 (19, 'Joker', 122, '2019-10-04', 'USA', 'English', 'vu', 1),
 (20, 'Spider-Man: No Way Home', 148, '2021-12-17', 'USA', 'English', 'vu', 1),
 (21, 'Django Unchained', 165, '2012-12-25', 'USA', 'English', 'non vu', 2),
-(22, 'The Wolf of Wall Street', 180, '2013-12-25', 'USA', 'English', 'vu', 1);
+(22, 'The Wolf of Wall Street', 180, '2013-12-25', 'USA', 'English', 'vu');

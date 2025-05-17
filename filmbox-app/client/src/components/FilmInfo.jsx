@@ -19,6 +19,7 @@ const FilmInfo = () => {
   const [hoverRating, setHoverRating] = useState(0);
   const [comment, setComment] = useState("");
   const [personalizedLists, setPersonalizedLists] = useState([]);
+  const [successMsg, setSuccessMsg] = useState("");
 
   useEffect(() => {
     if (!filmId || isNaN(numericFilmId)) {
@@ -34,7 +35,8 @@ const FilmInfo = () => {
 
         const imageRes = await fetch(`http://localhost:4000/api/movies/${numericFilmId}/images`);
         const imageData = await imageRes.json();
-        setMovieLogo(imageData.logos?.[0]);
+        const englishLogo = imageData.logos?.find(logo => logo.iso_639_1 === 'en');
+        setMovieLogo(englishLogo || null);
 
         const watchlistRes = await fetch(`http://localhost:4000/api/watchlist/${userId}`);
         const watchlistData = await watchlistRes.json();
@@ -42,11 +44,18 @@ const FilmInfo = () => {
 
         const watchedRes = await fetch(`http://localhost:4000/api/watched/${userId}`);
         const watchedData = await watchedRes.json();
-        const watched = watchedData.find(movie => movie.id === numericFilmId);
+        const watched = watchedData.find(movie =>
+          movie.id === numericFilmId || movie.films_film_id === numericFilmId
+        );
+
         if (watched) {
           setMarkedWatched(true);
-          setRating(watched.rating);
-          if (watched.commentaire) setComment(watched.commentaire);
+          if (watched.valeur_note !== undefined && watched.valeur_note !== null) {
+            setRating(watched.valeur_note);
+          }
+          if (watched.commentaire) {
+            setComment(watched.commentaire);
+          }
         }
       } catch (err) {
         console.error("Erreur lors du chargement des données:", err);
@@ -96,6 +105,14 @@ const FilmInfo = () => {
         setMarkedWatched(false);
         setComment("");
       } else {
+        await fetch("http://localhost:4000/api/watched", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId,
+            movieId: numericFilmId,
+          }),
+        });
         setMarkedWatched(true);
       }
     } catch (err) {
@@ -104,6 +121,7 @@ const FilmInfo = () => {
   };
 
   const handleRatingSubmit = async () => {
+    console.log("Submitting rating:", rating, "comment:", comment);
     try {
       await fetch("http://localhost:4000/api/watched", {
         method: "POST",
@@ -111,11 +129,26 @@ const FilmInfo = () => {
         body: JSON.stringify({
           userId,
           movieId: numericFilmId,
-          rating,
+          rating: rating,
           comment,
         }),
       });
-      alert("Note enregistrée !");
+
+      setSuccessMsg("Rating added!!!!");
+      setTimeout(() => setSuccessMsg(""), 3000); //permet d'Afficher le message pour 3 seconds
+
+      const watchedRes = await fetch(`http://localhost:4000/api/watched/${userId}`);
+      const watchedData = await watchedRes.json();
+      const watched = watchedData.find(movie =>
+        movie.id === numericFilmId || movie.films_film_id === numericFilmId
+      );
+
+      if (watched) {
+        setRating(watched.valeur_note);
+        setComment(watched.commentaire || "");
+      }
+
+      console.error("Submitting rating:", rating, "comment:", comment);
     } catch (err) {
       console.error("Erreur lors de l'enregistrement de la note:", err);
     }
@@ -155,6 +188,12 @@ const FilmInfo = () => {
       const data = await response.json();
       if (response.ok) {
         alert("List created!");
+
+        const updatedRes = await fetch(`http://localhost:4000/mongo/getPersonalizedList?userId=${userId}`);
+        const updatedData = await updatedRes.json();
+        if (updatedData.data) {
+          setPersonalizedLists(updatedData.data);
+        }
       } else {
         alert(data.message);
       }
@@ -181,15 +220,19 @@ const FilmInfo = () => {
       fontFamily: "Fredoka",
     }}>
       <Header />
-      
-      <div className="container py-5 text-start" style={{ maxWidth: "800px" }}>
-        {movieLogo && (
-          <img
-            src={`https://image.tmdb.org/t/p/original${movieLogo.file_path}`}
-            alt="Movie Logo"
-            style={{ maxHeight: 100, marginBottom: 20, marginTop : "70px" }}
-          />
-        )}
+
+      <div className="container py-5 text-start" style={{ maxWidth: "800px", marginLeft: "0", paddingLeft: "2rem" }}>
+        <div style={{ marginBottom: 20, marginTop: "70px" }}>
+          {movieLogo ? (
+            <img
+              src={`https://image.tmdb.org/t/p/original${movieLogo.file_path}`}
+              alt="Movie Logo"
+              style={{ maxHeight: 100 }}
+            />
+          ) : (
+            <h2 style={{ fontWeight: "bold" }}>{film.title}</h2>
+          )}
+        </div>
 
         <p>{new Date(film.release_date).getFullYear()} • {film.runtime} min • {genres}</p>
         <p>{film.overview}</p>
@@ -205,7 +248,7 @@ const FilmInfo = () => {
             <button className="btn btn-outline-light" onClick={handleWatchlist}>
               {isInWatchlist ? "In Watchlist" : "Add To Watchlist"}
             </button>
-)}
+          )}
           <DropdownButton id="list-dropdown" title="Add To List">
             {personalizedLists.length === 0 && (
               <Dropdown.Item disabled>No Lists Available</Dropdown.Item>
@@ -221,25 +264,28 @@ const FilmInfo = () => {
             </Dropdown.Item>
           </DropdownButton>
         </div>
-        
+
         {markedWatched && (
           <div className="mt-4">
             <label className="form-label">Rate this movie:</label>
             <div className="d-flex gap-2">
               {[1, 2, 3, 4, 5].map((star) => (
-                <spa  n
+                <span
                   key={star}
                   style={{
                     fontSize: "2rem",
                     color: (hoverRating || rating) >= star ? "#FFD700" : "#CCCCCC",
                     cursor: "pointer",
                   }}
-                  onClick={() => setRating(star)}
+                  onClick={() => {
+                    if (!markedWatched) setMarkedWatched(true);
+                    setRating(star);
+                  }}
                   onMouseEnter={() => setHoverRating(star)}
                   onMouseLeave={() => setHoverRating(0)}
                 >
                   ★
-                </spa>
+                </span>
               ))}
             </div>
 
@@ -258,6 +304,8 @@ const FilmInfo = () => {
             <button className="btn btn-primary mt-3" onClick={handleRatingSubmit}>
               Submit Rating
             </button>
+
+            {successMsg && <p style={{ color: "green" }}>{successMsg}</p>}
           </div>
         )}
       </div>

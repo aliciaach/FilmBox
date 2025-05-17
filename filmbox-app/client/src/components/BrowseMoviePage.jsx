@@ -4,7 +4,8 @@ import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import BlackImage from '../assets/BlackImage.png';
 import ReactPaginate from 'react-paginate';
-
+import '../styles/BrowseMoviePage.css';
+import HeaderSpace from '../Functions/HeaderSpace.jsx';
 
 function BrowseMovies() {
     const { searchQuery } = useParams();
@@ -63,80 +64,97 @@ function BrowseMovies() {
         <>
             <div style={{
                 padding: "40px",
-                background: "rgb(5, 14, 66)",
-                color: "white",
-                minHeight: "100vh"
+                background: `linear-gradient(to bottom, 
+                        rgba(7, 0, 66, 1), 
+                        rgba(7, 0, 66, 1), 
+                        rgba(5, 0, 50, 1))`,
+                color: '#fff',
+                fontFamily: 'Fredoka',
+                minHeight: "100vh",
             }}>
+                <HeaderSpace/>
                 <Header />
 
-                <h1>Page for the movie categories and all</h1>
+                <h1 style={{marginTop : '60px'}}>Page for the movie categories and all</h1>
 
                 {/* --- Filter section --- */}
-                <div style={{ marginBottom: '20px' }}>
-                    <label>Genre:</label>
-                    <select value={filters.genre} onChange={(e) => setFilters({ ...filters, genre: e.target.value })}>
-                        <option value="">All Genres</option>
-                        <option value="28">Action</option>
-                        <option value="35">Comedy</option>
-                        <option value="18">Drama</option>
-                        <option value="27">Horror</option>
-                        <option value="878">Science Fiction</option>
-                    </select>
+                <div className='filtreContainer'>
+                    
+                    <div className="filtreGroup">
+                        <label>Genre:</label>
+                        <select value={filters.genre} onChange={(e) => setFilters({ ...filters, genre: e.target.value })}>
+                            <option value="">All Genres</option>
+                            <option value="28">Action</option>
+                            <option value="35">Comedy</option>
+                            <option value="18">Drama</option>
+                            <option value="27">Horror</option>
+                            <option value="878">Science Fiction</option>
+                        </select>
+                    </div>
 
-                    <label style={{ marginLeft: '20px' }}>Language:</label>
-                    <select value={filters.language} onChange={(e) => setFilters({ ...filters, language: e.target.value })}>
-                        <option value="">All Languages</option>
-                        <option value="en">English</option>
-                        <option value="fr">French</option>
-                        <option value="es">Spanish</option>
-                        <option value="ja">Japanese</option>
-                    </select>
+                    <div className="filtreGroup">
+                        <label className='filtreTitre'>Language:</label>
+                        <select value={filters.language} onChange={(e) => setFilters({ ...filters, language: e.target.value })}>
+                            <option value="">All Languages</option>
+                            <option value="en">English</option>
+                            <option value="fr">French</option>
+                            <option value="es">Spanish</option>
+                            <option value="ja">Japanese</option>
+                        </select>
+                    </div>
 
-                    <label style={{ marginLeft: '20px' }}>Decades:</label>
-                    <select value={filters.decade} onChange={(e) => setFilters({ ...filters, decade: e.target.value })}>
-                        <option value="">All Time</option>
-                        <option value="2020">2020s</option>
-                        <option value="2010">2010s</option>
-                        <option value="2000">2000s</option>
-                        <option value="1990">1990s</option>
-                        <option value="1980">1980s</option>
-                    </select>
+                    <div className="filtreGroup">
+                        <label className='filtreTitre'>Decades:</label>
+                        <select value={filters.decade} onChange={(e) => setFilters({ ...filters, decade: e.target.value })}>
+                            <option value="">All Time</option>
+                            <option value="2020">2020s</option>
+                            <option value="2010">2010s</option>
+                            <option value="2000">2000s</option>
+                            <option value="1990">1990s</option>
+                            <option value="1980">1980s</option>
+                        </select>
+                    </div>
 
-                    <label style={{ marginLeft: '20px' }}>Original Country:</label>
-                    <select
-                        value={filters.country}
-                        onChange={(e) => setFilters({ ...filters, country: e.target.value })}
-                    >
-                        <option value="">All Countries</option>
-                        <option value="AU">Australia</option>
-                        <option value="CA">Canada</option>
-                        <option value="CN">China</option>
-                        <option value="FR">France</option>
-                        <option value="DE">Germany</option>
-                        <option value="HK">Hong Kong</option>
-                        <option value="IN">India</option>
-                        <option value="IT">Italy</option>
-                        <option value="JP">Japan</option>
-                        <option value="KP">North Korea</option>
-                        <option value="KR">South Korea</option>
-                        <option value="RU">Russia</option>
-                        <option value="TR">Turkey</option>
-                        <option value="GB">United Kingdom</option>
-                        <option value="US">United States</option>
-                    </select>
+                    <div className="filtreGroup">
+                        <label className='filtreTitre'>Original Country:</label>
+                        <select
+                            value={filters.country}
+                            onChange={(e) => setFilters({ ...filters, country: e.target.value })}
+                        >
+                            <option value="">All Countries</option>
+                            <option value="AU">Australia</option>
+                            <option value="CA">Canada</option>
+                            <option value="CN">China</option>
+                            <option value="FR">France</option>
+                            <option value="DE">Germany</option>
+                            <option value="HK">Hong Kong</option>
+                            <option value="IN">India</option>
+                            <option value="IT">Italy</option>
+                            <option value="JP">Japan</option>
+                            <option value="KP">North Korea</option>
+                            <option value="KR">South Korea</option>
+                            <option value="RU">Russia</option>
+                            <option value="TR">Turkey</option>
+                            <option value="GB">United Kingdom</option>
+                            <option value="US">United States</option>
+                        </select>
+                    </div>
 
-                    <label style={{ marginLeft: '20px' }}>Movie Duration:</label>
-                    <select
-                        value={filters.movieDuration}
-                        onChange={(e) => setFilters({ ...filters, movieDuration: e.target.value })}
-                    >
-                        <option value="">All Time</option>
-                        <option value="0">Less than an hour</option>
-                        <option value="1">One hour</option>
-                        <option value="2">Two hours</option>
-                        <option value="3">Four hours</option>
-                        <option value="4">Over 4 hours</option>
-                    </select>
+                    <div className="filtreGroup">
+                        <label className='filtreTitre'>Movie Duration:</label>
+                        <select
+                            value={filters.movieDuration}
+                            onChange={(e) => setFilters({ ...filters, movieDuration: e.target.value })}
+                        >
+                            <option value="">All Time</option>
+                            <option value="0">Less than an hour</option>
+                            <option value="1">One hour</option>
+                            <option value="2">Two hours</option>
+                            <option value="3">Four hours</option>
+                            <option value="4">Over 4 hours</option>
+                        </select>
+                    </div>
+
                 </div>
 
                 {/* code to show the movies, based on the filters */}
