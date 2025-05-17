@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import BlackImage from '../assets/BlackImage.png';
 import ReactPaginate from 'react-paginate';
+import HeaderSpace from '../Functions/HeaderSpace.jsx';
 
 
 function BrowseMovies() {
@@ -67,6 +68,7 @@ function BrowseMovies() {
                 color: "white",
                 minHeight: "100vh"
             }}>
+                <HeaderSpace/>
                 <Header />
 
                 <h1>Page for the movie categories and all</h1>

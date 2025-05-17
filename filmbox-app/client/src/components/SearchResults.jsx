@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import BlackImage from '../assets/BlackImage.png';
 import ReactPaginate from 'react-paginate';
+import HeaderSpace from '../Functions/HeaderSpace.jsx';
 
 /*
 This is the source for the whole tutorial to do the pagination thing : 
@@ -49,6 +50,7 @@ function SearchResults() {
                 color: "white",
                 minHeight: "100vh"
             }}>
+                <HeaderSpace/>
                 <Header />
 
                 <h1>Search Results for "{searchQuery}"</h1>
