@@ -134,7 +134,7 @@ app.post("/login", (req, res) => {
       }
 
       req.session.user = {
-        id: user.utilisateur_id,
+        utilisateur_id: user.utilisateur_id,
         prenom: user.prenom,
         nom: user.nom,
         courriel: user.courriel,
