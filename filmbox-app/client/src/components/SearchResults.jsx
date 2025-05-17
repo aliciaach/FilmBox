@@ -50,7 +50,7 @@ function SearchResults() {
                 color: "white",
                 minHeight: "100vh"
             }}>
-                <HeaderSpace/>
+                <HeaderSpace />
                 <Header />
 
                 <h1>Search Results for "{searchQuery}"</h1>
@@ -62,7 +62,7 @@ function SearchResults() {
                                 : BlackImage;
 
                             return (
-                                <div key={film.id || index} className="col-lg-2 col-md-3 col-sm-6 mb-4">
+                                <div key={film.id || index} className="movie-col mb-4">
                                     <div className="card border-0 shadow movie-card"
                                         style={{
                                             borderRadius: "0px",
@@ -150,6 +150,10 @@ function SearchResults() {
             background-color:rgb(0, 21, 92);
             color: white;
             border-color: white;
+        }
+        .movie-col {
+            width: 20%;
+            padding: 10px;
         }
         `}</style>
             </div>
