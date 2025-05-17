@@ -613,10 +613,12 @@ app.get("/api/getMoviesResults/:searchQuery", async (req, res) => {
 // Need to fix this part, the issue with charging all the pages
 app.get("/discoverMoviesFiltered", async (req, res) => {
   console.log("WE ARE GETTTING HEREEEEEEEEEEEEE");
+  const params = new URLSearchParams(); 
+  const page = req.query.page || 1;
+  params.append("page", page);
   const { genre, language, decade, movieDuration, originCountry } = req.query;
 
   const originalUrl = "https://api.themoviedb.org/3/discover/movie";
-  const params = new URLSearchParams();
 
   //Help of chatgpt just to figure ou the way to do the url, so what do put for the genre, so like with_genres, or with_original_languages
   if (genre) {
@@ -736,7 +738,10 @@ app.get("/discoverMoviesFiltered", async (req, res) => {
       filteredMovies.push(fullMovieData);
     }
 
-    res.json(filteredMovies);
+    res.json({
+      results: filteredMovies,
+      total_pages: data.total_pages
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Failed to fetch movies" });
@@ -984,12 +989,12 @@ app.delete("/mongo/deletePersonalizedList/:listId", async (req, res) => {
     const db = client.db("FilmBox");
     const lists = db.collection("CustomLists");
 
-    const result = await lists.deleteOne({_id: new ObjectId(persoListId)});
+    const result = await lists.deleteOne({ _id: new ObjectId(persoListId) });
 
-    if(result.deletedCount === 1) {
-      res.json({ message: "List succesfully deleted"});
+    if (result.deletedCount === 1) {
+      res.json({ message: "List succesfully deleted" });
     } else {
-      res.status(400).json({message: "No list with this id found"});
+      res.status(400).json({ message: "No list with this id found" });
     }
   } catch (error) {
     console.error("Couldnt delete list: ", error);

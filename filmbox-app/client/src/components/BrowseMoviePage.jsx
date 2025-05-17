@@ -21,6 +21,10 @@ function BrowseMovies() {
     const [filteredMovies, setFilteredMovies] = useState([]);
     const [error, setError] = useState();
 
+    const handlePageClick = (data) => {
+        setCurrentPage(data.selected);
+    };
+
     useEffect(() => {
         const fetchMovies = async () => {
             let buildUrl = '';
@@ -40,7 +44,7 @@ function BrowseMovies() {
                 buildUrl += `originCountry=${filters.country}&`;
             }
 
-            const fullBuildUrlApi = `http://localhost:4000/discoverMoviesFiltered?${buildUrl}`;
+            const fullBuildUrlApi = `http://localhost:4000/discoverMoviesFiltered?${buildUrl}page=${currentPage + 1}`;
 
             try {
                 const response = await fetch(fullBuildUrlApi);
@@ -50,14 +54,15 @@ function BrowseMovies() {
                 }
 
                 const data = await response.json();
-                setFilteredMovies(data);
+                setFilteredMovies(data.results);
+                setPageCount(data.total_pages);
             } catch (err) {
                 setError(err.message);
             }
         };
 
         fetchMovies();
-    }, [filters]);
+    }, [filters, currentPage]);
 
 
     return (
@@ -72,14 +77,14 @@ function BrowseMovies() {
                 fontFamily: 'Fredoka',
                 minHeight: "100vh",
             }}>
-                <HeaderSpace/>
+                <HeaderSpace />
                 <Header />
 
-                <h1 style={{marginTop : '60px'}}>Page for the movie categories and all</h1>
+                <h1 style={{ marginTop: '60px' }}>Page for the movie categories and all</h1>
 
                 {/* --- Filter section --- */}
                 <div className='filtreContainer'>
-                    
+
                     <div className="filtreGroup">
                         <label>Genre:</label>
                         <select value={filters.genre} onChange={(e) => setFilters({ ...filters, genre: e.target.value })}>
@@ -198,6 +203,20 @@ function BrowseMovies() {
                         <p>No movies found. Try changing filters !</p> //If we dont have any results, we dont show anything
                     )}
 
+                    {/* Pagination */}
+                    <ReactPaginate
+                        previousLabel={"Previous"}
+                        nextLabel={"Next"}
+                        breakLabel={"..."}
+                        breakClassName={"break-me"}
+                        pageCount={pageCount}
+                        marginPagesDisplayed={2}
+                        pageRangeDisplayed={3}
+                        onPageChange={handlePageClick}
+                        containerClassName={"pagination"}
+                        activeClassName={"active"}
+                    />
+
                     {/* Hover Styles */}
                     <style>{`
                     .movie-card:hover {
@@ -237,6 +256,39 @@ function BrowseMovies() {
                             width: 100%; /* 1 per row */
                         }
                     }
+                        .pagination {
+            display: flex;
+            justify-content: center;
+            padding-left: 0;
+            list-style: none;
+            margin-top: 20px;
+            color: white;
+        }
+
+        .pagination li {
+            margin: 0 5px;
+        }
+        .pagination li a {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: rgba(255, 255, 255, 0.4);
+            color:white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .pagination li a:hover {
+            background-color:rgb(0, 21, 92);
+            color: white;
+        }
+
+        .pagination li.active a {
+            background-color:rgb(0, 21, 92);
+            color: white;
+            border-color: white;
+        }
                 `}</style> {/*Code to addapt the number of movie per row depending on the ui with @media was done with chatgpt's help*/}
                 </div>
             </div>
