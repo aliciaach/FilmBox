@@ -19,6 +19,7 @@ const FilmInfo = () => {
   const [hoverRating, setHoverRating] = useState(0);
   const [comment, setComment] = useState("");
   const [personalizedLists, setPersonalizedLists] = useState([]);
+  const [successMsg, setSuccessMsg] = useState("");
 
   useEffect(() => {
     if (!filmId || isNaN(numericFilmId)) {
@@ -34,8 +35,6 @@ const FilmInfo = () => {
 
         const imageRes = await fetch(`http://localhost:4000/api/movies/${numericFilmId}/images`);
         const imageData = await imageRes.json();
-        //setMovieLogo(imageData.logos?.[0]);
-        //Code to get the logo in english given by chatgpt
         const englishLogo = imageData.logos?.find(logo => logo.iso_639_1 === 'en');
         setMovieLogo(englishLogo || null);
 
@@ -48,7 +47,6 @@ const FilmInfo = () => {
         const watched = watchedData.find(movie =>
           movie.id === numericFilmId || movie.films_film_id === numericFilmId
         );
-        //const watched = watchedData.find(movie => movie.id === numericFilmId || movie.films_film_id === numericFilmId);
 
         if (watched) {
           setMarkedWatched(true);
@@ -135,7 +133,9 @@ const FilmInfo = () => {
           comment,
         }),
       });
-      alert("Note enregistrée !");
+
+      setSuccessMsg("Rating added!!!!");
+      setTimeout(() => setSuccessMsg(""), 3000); //permet d'Afficher le message pour 3 seconds
 
       const watchedRes = await fetch(`http://localhost:4000/api/watched/${userId}`);
       const watchedData = await watchedRes.json();
@@ -147,6 +147,7 @@ const FilmInfo = () => {
         setRating(watched.valeur_note);
         setComment(watched.commentaire || "");
       }
+
       console.error("Submitting rating:", rating, "comment:", comment);
     } catch (err) {
       console.error("Erreur lors de l'enregistrement de la note:", err);
@@ -188,7 +189,6 @@ const FilmInfo = () => {
       if (response.ok) {
         alert("List created!");
 
-        //Fetch again to refresh
         const updatedRes = await fetch(`http://localhost:4000/mongo/getPersonalizedList?userId=${userId}`);
         const updatedData = await updatedRes.json();
         if (updatedData.data) {
@@ -278,7 +278,7 @@ const FilmInfo = () => {
                     cursor: "pointer",
                   }}
                   onClick={() => {
-                    if (!markedWatched) setMarkedWatched(true); // auto-activate the form
+                    if (!markedWatched) setMarkedWatched(true);
                     setRating(star);
                   }}
                   onMouseEnter={() => setHoverRating(star)}
@@ -304,6 +304,8 @@ const FilmInfo = () => {
             <button className="btn btn-primary mt-3" onClick={handleRatingSubmit}>
               Submit Rating
             </button>
+
+            {successMsg && <p style={{ color: "green" }}>{successMsg}</p>}
           </div>
         )}
       </div>

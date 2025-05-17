@@ -13,7 +13,7 @@ function PageWatchList() {
   const [lowestRated, setLowestRated] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [personalizedLists, setPersonalizedLists] = useState([]);
+  //const [personalizedLists, setPersonalizedLists] = useState([]);
   const [selectedList, setSelectedList] = useState(null);
   const navigate = useNavigate();
 
@@ -30,41 +30,45 @@ function PageWatchList() {
 
   const refreshLists = async () => {
     try {
-      const [watchlistRes, watchedRes, personalizedRes] = await Promise.all([
+      const [watchlistRes, watchedRes, /*personalizedRes*/] = await Promise.all([
         fetch(`http://localhost:4000/api/watchlist/${userId}`),
         fetch(`http://localhost:4000/api/watched/${userId}`),
-        fetch(`http://localhost:4000/mongo/getPersonalizedList?userId=${userId}`)
+        //fetch(`http://localhost:4000/mongo/getPersonalizedList?userId=${userId}`)
       ]);
 
       if (!watchlistRes.ok || !watchedRes.ok) throw new Error("Failed to fetch watchlist or watched movies");
 
       const watchlistData = await watchlistRes.json();
       const watchedData = await watchedRes.json();
-      const personalizedData = await personalizedRes.json();
+      //const personalizedData = await personalizedRes.json();
 
-      const cleanedWatchlist = watchlistData.filter(m => m.title && m.title !== "N/A");
+      const cleanedWatchlist = watchlistData.filter(m => m.title && m.title !== "N/A"); //Filters out any movies from the watchlist that don’t have a valid title.
       const cleanedWatched = watchedData.filter(m => m.title && m.title !== "N/A");
-      const watchedIds = cleanedWatched.map(m => m.id);
-      const filteredWatchlist = cleanedWatchlist.filter(m => !watchedIds.includes(m.id));
+
+      const watchedIds = cleanedWatched.map(m => m.id);//Extracts all movie IDs from the watched list (to know which ones have already been watched).
+      const filteredWatchlist = cleanedWatchlist.filter(m => !watchedIds.includes(m.id)); //Keeps only the movies that are in the watchlist but not in the watched list (to avoid duplicates).
 
       setWatchlist(filteredWatchlist);
       setWatched(cleanedWatched);
 
+
+      //https://www.w3schools.com/js/js_array_sort.asp
       const highestUnsorted = cleanedWatched.filter(m => m.valeur_note >= 3 && m.valeur_note <= 5);
       const lowestUnsorted = cleanedWatched.filter(m => m.valeur_note >= 0 && m.valeur_note <= 2);
-      const highest = highestUnsorted.sort((a, b) => b.rating - a.rating);
-      const lowest = lowestUnsorted.sort((a, b) => a.rating - b.rating);
+
+      const highest = highestUnsorted.sort((a, b) => b.valeur_note - a.valeur_note);
+      const lowest = lowestUnsorted.sort((a, b) => a.valeur_note - b.valeur_note);
 
       setHighestRated(highest);
       setLowestRated(lowest);
-      setPersonalizedLists(personalizedData.data || []);
+      //setPersonalizedLists(personalizedData.data || []);
 
-      if (selectedList) {
+      /*if (selectedList) {
         const updatedList = (personalizedData.data || []).find(list => list._id === selectedList._id);
         if (updatedList) {
           setSelectedList(updatedList);
         }
-      }
+      }*/
 
     } catch (err) {
       setError(err.message);
@@ -123,8 +127,8 @@ function PageWatchList() {
                   <span className="float-end">⭐ {movie.vote_average.toFixed(1)}</span>
                 )}
               </p>
-              {movie.rating && (
-                <div className="text-warning small">Your rating: {movie.rating} ⭐</div>
+              {movie.valeur_note && (
+                <div className="text-warning small">Your rating: {movie.valeur_note} ⭐</div>
               )}
             </div>
           </div>
@@ -207,6 +211,9 @@ function PageWatchList() {
 
 
         {/* Render personalized lists only if there are any movies */}
+
+        {/* REMOVE COMMENT WHEN USING MANGODB
+
         {personalizedLists.length > 0 && personalizedLists.map((list) => (
           <div key={list._id} style={sectionBoxStyle}>
             <div className="d-flex justify-content-between align-items-center mt-5 mb-4">
@@ -226,7 +233,7 @@ function PageWatchList() {
 
         {selectedList && ( //Si une liste est selectionnée, on affiche le container 
           <ContainerManageList list={selectedList} onClose={handleCloseContainer} onUpdate={refreshLists} />
-        )}
+        )} */}
 
         <style>{`
           .movie-card:hover {

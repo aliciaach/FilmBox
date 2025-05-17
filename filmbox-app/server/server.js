@@ -283,12 +283,10 @@ app.post("/ChangePassword", (req, res) => {
               .json({ success: true, message: "Your password was updated!" });
           } else {
             console.log("Error, couldn't update password");
-            return res
-              .status(404)
-              .json({
-                success: false,
-                message: "Error, couldn't update user...",
-              });
+            return res.status(404).json({
+              success: false,
+              message: "Error, couldn't update user...",
+            });
           }
         });
       });
@@ -723,7 +721,7 @@ app.get("/discoverMoviesFiltered", async (req, res) => {
     const userInput = req.params.searchQuery;
     const page = req.query.page || 1; 
    
-    try {
+    try {admin
       const response = await fetch(`https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(userInput)}&page=${page}`, {
         method: "GET",
         headers: {
@@ -738,36 +736,6 @@ app.get("/discoverMoviesFiltered", async (req, res) => {
       console.error(err);
       res.status(500).json({ error: "Failed while searching movies" });
     }
-  });*/
-
-/*
-      API - Obtenir un film par ID
-  */
-/*app.get("/api/movies/:id", (req, res) => {
-    const filmID = Number(req.params.id); //converti le id en nombre au cas ou
-    if (isNaN(filmID)) {
-      return res.status(400).json({ message: "ID invalide" }); //gestions des erreurs etc
-    }
-   
-    //requete sql qui fait les jointures avec les tables
-    const sql = `
-      SELECT f.film_id, f.titre, f.film_duree, f.date_sortie, 
-             f.pays_origin_film, f.langue_original, d.nom_directeur, g.genre
-      FROM films f
-      JOIN directeur d ON f.directeur_directeur_id = d.directeur_id
-      LEFT JOIN genre g ON f.film_id = g.films_film_id
-      WHERE f.film_id = ?`;
-   
-    con.query(sql, [filmID], (err, results) => {
-      if (err) {
-        console.error("Erreur SQL:", err);
-        return res.status(500).json({ message: "Erreur serveur" });
-      }
-      if (results.length === 0) {
-        return res.status(404).json({ message: "Film non trouvé" });
-      }
-      res.json(results[0]);
-    });
   });*/
 
 app.get("/api/movies/:id", async (req, res) => {
@@ -998,7 +966,7 @@ app.post("/adminLogin", async (req, res) => {
     }
 
     //const isPasswordValid = await compare(password, admin.password);
-    const isPasswordValid = password === admin.password;
+    const isPasswordValid = await bcrypt.compare(password, admin.password);
     if (!isPasswordValid) {
       return res.status(401).json({ message: "Mot de passe invalide" });
     } else {
@@ -1057,7 +1025,7 @@ app.post("/api/watchlist", (req, res) => {
       const movieData = await tmdbResponse.json();
 
       //This is the data that will be saved on our local database
-      const newFilmSQL = `INSERT INTO films (film_id, titre, film_duree, date_sortie, pays_origin_film, langue_original, status, directeur_directeur_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+      const newFilmSQL = `INSERT INTO films (film_id, titre, film_duree, date_sortie, pays_origin_film, langue_original, status) VALUES (?, ?, ?, ?, ?, ?, ?)`;
 
       const filmValues = [
         movieData.id,
@@ -1067,8 +1035,7 @@ app.post("/api/watchlist", (req, res) => {
         movieData.production_countries?.[0]?.name || "Unknown",
         movieData.original_language || "Unknown",
         movieData.status || "Unknown",
-        null,
-      ]; //director is null for now, have to fix a bug first
+      ];
 
       con.query(newFilmSQL, filmValues, (insertErr) => {
         if (insertErr) {
@@ -1211,8 +1178,8 @@ app.post("/api/watched", (req, res) => {
     if (result.length === 0) {
       // 2. Insert placeholder film if not found
       const insertFilmSql = `
-        INSERT INTO films (film_id, titre, film_duree, date_sortie, pays_origin_film, langue_original, status, directeur_directeur_id)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO films (film_id, titre, film_duree, date_sortie, pays_origin_film, langue_original, status)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
       `;
       const now = new Date().toISOString().split("T")[0]; // format YYYY-MM-DD
 
@@ -1226,7 +1193,6 @@ app.post("/api/watched", (req, res) => {
           "USA", // Placeholder country
           "en", // Placeholder language
           "vu", // Placeholder status
-          1, // Default director (must exist)
         ],
         (err2) => {
           if (err2) {
@@ -1415,7 +1381,7 @@ app.post("/createAdmin", async (req, res) => {
       username,
       email,
       role,
-      password,
+      password: hashedPassword,
       lastName,
       name,
       phoneNumber,
