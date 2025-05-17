@@ -6,6 +6,7 @@ import Header from '../components/Header';
 import { Dropdown, DropdownButton } from "react-bootstrap";
 import ContainerManageList from './ContainerManageList';
 import '../styles/PageWatchList.css'
+
 function PageWatchList() {
   const [watchlist, setWatchlist] = useState([]);
   const [watched, setWatched] = useState([]);
@@ -13,8 +14,9 @@ function PageWatchList() {
   const [lowestRated, setLowestRated] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  //const [personalizedLists, setPersonalizedLists] = useState([]);
+  const [personalizedLists, setPersonalizedLists] = useState([]);
   const [selectedList, setSelectedList] = useState(null);
+  const [favorites, setFavorites] = useState([]);
   const navigate = useNavigate();
 
   const userId = localStorage.getItem("userId"); //Faudra changer ça !!!
@@ -28,54 +30,57 @@ function PageWatchList() {
     setSelectedList(null);  // Pour fermer
   };
 
-  const refreshLists = async () => {
-    try {
-      const [watchlistRes, watchedRes, /*personalizedRes*/] = await Promise.all([
-        fetch(`http://localhost:4000/api/watchlist/${userId}`),
-        fetch(`http://localhost:4000/api/watched/${userId}`),
-        //fetch(`http://localhost:4000/mongo/getPersonalizedList?userId=${userId}`)
-      ]);
+const refreshLists = async () => {
+  try {
+    const [watchlistRes, watchedRes, favoritesRes/*, personalizedRes*/] = await Promise.all([
+      fetch(`http://localhost:4000/api/watchlist/${userId}`),
+      fetch(`http://localhost:4000/api/watched/${userId}`),
+      fetch(`http://localhost:4000/api/favorites/${userId}`) 
+      //fetch(`http://localhost:4000/mongo/getPersonalizedList?userId=${userId}`)
+    ]);
 
-      if (!watchlistRes.ok || !watchedRes.ok) throw new Error("Failed to fetch watchlist or watched movies");
+    if (!watchlistRes.ok || !watchedRes.ok || !favoritesRes.ok) throw new Error("Failed to fetch movie lists");
 
-      const watchlistData = await watchlistRes.json();
-      const watchedData = await watchedRes.json();
-      //const personalizedData = await personalizedRes.json();
+    const watchlistData = await watchlistRes.json();
+    const watchedData = await watchedRes.json();
+    const favoritesData = await favoritesRes.json(); 
+    //const personalizedData = await personalizedRes.json();
 
-      const cleanedWatchlist = watchlistData.filter(m => m.title && m.title !== "N/A"); //Filters out any movies from the watchlist that don’t have a valid title.
-      const cleanedWatched = watchedData.filter(m => m.title && m.title !== "N/A");
+    const cleanedWatchlist = watchlistData.filter(m => m.title && m.title !== "N/A"); //Filters out any movies from the watchlist that don’t have a valid title.
+    const cleanedWatched = watchedData.filter(m => m.title && m.title !== "N/A");
+    const cleanedFavorites = favoritesData.filter(m => m.title && m.title !== "N/A");
 
-      const watchedIds = cleanedWatched.map(m => m.id);//Extracts all movie IDs from the watched list (to know which ones have already been watched).
-      const filteredWatchlist = cleanedWatchlist.filter(m => !watchedIds.includes(m.id)); //Keeps only the movies that are in the watchlist but not in the watched list (to avoid duplicates).
+    const watchedIds = cleanedWatched.map(m => m.id);//Extracts all movie IDs from the watched list (to know which ones have already been watched).
+    const filteredWatchlist = cleanedWatchlist.filter(m => !watchedIds.includes(m.id)); //Keeps only the movies that are in the watchlist but not in the watched list (to avoid duplicates).
 
-      setWatchlist(filteredWatchlist);
-      setWatched(cleanedWatched);
+    setWatchlist(filteredWatchlist);
+    setWatched(cleanedWatched);
+    setFavorites(cleanedFavorites); 
 
+    //https://www.w3schools.com/js/js_array_sort.asp
+    const highestUnsorted = cleanedWatched.filter(m => m.valeur_note >= 3 && m.valeur_note <= 5);
+    const lowestUnsorted = cleanedWatched.filter(m => m.valeur_note >= 0 && m.valeur_note <= 2);
 
-      //https://www.w3schools.com/js/js_array_sort.asp
-      const highestUnsorted = cleanedWatched.filter(m => m.valeur_note >= 3 && m.valeur_note <= 5);
-      const lowestUnsorted = cleanedWatched.filter(m => m.valeur_note >= 0 && m.valeur_note <= 2);
+    const highest = highestUnsorted.sort((a, b) => b.valeur_note - a.valeur_note);
+    const lowest = lowestUnsorted.sort((a, b) => a.valeur_note - b.valeur_note);
 
-      const highest = highestUnsorted.sort((a, b) => b.valeur_note - a.valeur_note);
-      const lowest = lowestUnsorted.sort((a, b) => a.valeur_note - b.valeur_note);
+    setHighestRated(highest);
+    setLowestRated(lowest);
+    //setPersonalizedLists(personalizedData.data || []);
 
-      setHighestRated(highest);
-      setLowestRated(lowest);
-      //setPersonalizedLists(personalizedData.data || []);
+    /*if (selectedList) {
+      const updatedList = (personalizedData.data || []).find(list => list._id === selectedList._id);
+      if (updatedList) {
+        setSelectedList(updatedList);
+      }
+    }*/
 
-      /*if (selectedList) {
-        const updatedList = (personalizedData.data || []).find(list => list._id === selectedList._id);
-        if (updatedList) {
-          setSelectedList(updatedList);
-        }
-      }*/
-
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  } catch (err) {
+    setError(err.message);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const SectionDivider = () => (
     <div style={{
@@ -161,81 +166,88 @@ function PageWatchList() {
   }
 
   return (
-    <div style={backgroundStyle}>
-      <Header />
+    <>
+      <div style={backgroundStyle}>
+        <Header />
 
-      <div style={{
-        backgroundColor: "#050032",
-        width: "100%",
-        marginLeft: 0,
-        marginRight: 0,
-        color: "white",
-        textAlign: "center",
-        padding: "40px 20px",
-      }}>
-        <h1>Seen it? Rate it!</h1>
-        <p style={{
-          maxWidth: "500px",
-          margin: "0 auto"
+        <div style={{
+          backgroundColor: "#050032",
+          width: "100%",
+          marginLeft: 0,
+          marginRight: 0,
+          color: "white",
+          textAlign: "center",
+          padding: "40px 20px",
         }}>
-          Don’t forget to leave your opinion on the movies you watch.
-          Every story deserves a final word. Will it be 5 stars or 0? The ending is yours to decide!
-        </p>
-      </div>
-
-      <div className="container">
-
-        <div className="text-white" style={sectionBoxStyle} >
-          <h2 className="text-white" style={{ marginBottom: "10px" }}>My Watchlist</h2>
-          <SectionDivider />
-          {watchlist.length > 0 ? renderMovieRow(watchlist) : <p>Your watchlist is empty.</p>}
+          <h1>Seen it? Rate it!</h1>
+          <p style={{
+            maxWidth: "500px",
+            margin: "0 auto"
+          }}>
+            Don’t forget to leave your opinion on the movies you watch.
+            Every story deserves a final word. Will it be 5 stars or 0? The ending is yours to decide!
+          </p>
         </div>
 
-        <div style={sectionBoxStyle}>
-          <h2 className="text-white text-decoration-none mb-4">My Watched Movies</h2>
-          <SectionDivider />
-          {watched.length > 0 ? renderMovieRow(watched) : <p>No movies marked as watched yet.</p>}
-        </div>
-
-        <div style={sectionBoxStyle}>
-          <h2 className="text-white text-decoration-none mb-4">My Highest Rated Movies(3-5 ⭐)</h2>
-          <SectionDivider />
-          {highestRated.length > 0 ? renderMovieRow(highestRated) : <p>No high rated movies yet.</p>}
-        </div>
-
-        <div style={sectionBoxStyle}>
-          <h2 className="text-white text-decoration-none mb-4">My Lowest Rated Movies (0-2 ⭐)</h2>
-          <SectionDivider />
-          {lowestRated.length > 0 ? renderMovieRow(lowestRated) : <p>No low rated movies yet.</p>}
-        </div>
+        <div className="container">
 
 
-        {/* Render personalized lists only if there are any movies */}
-
-        {/* REMOVE COMMENT WHEN USING MANGODB
-
-        {personalizedLists.length > 0 && personalizedLists.map((list) => (
-          <div key={list._id} style={sectionBoxStyle}>
-            <div className="d-flex justify-content-between align-items-center mt-5 mb-4">
-              <h2 className="fw-bold mt-0">{list.name}</h2>
-              <button className="btn btn-primary" style={{
-                backgroundColor: "transparent",
-                backgroundRepeat: "no-repeat",
-                border: "none",
-                cursor: "pointer",
-                overflow: "hidden"
-              }} onClick={() => handleGestionList(list)} >Manage List</button>
-            </div>
+          <div style={sectionBoxStyle}> 
+            <h2 className="text-white text-decoration-none mb-4">❤️ My Favorites</h2>
             <SectionDivider />
-            {list.movies && list.movies.length > 0 ? renderMovieRow(list.movies) : <p>No movies in this list yet.</p>}
+            {favorites.length > 0 ? renderMovieRow(favorites) : <p>No favorites yet.</p>}
           </div>
-        ))}
 
-        {selectedList && ( //Si une liste est selectionnée, on affiche le container 
-          <ContainerManageList list={selectedList} onClose={handleCloseContainer} onUpdate={refreshLists} />
-        )} */}
+          <div className="text-white" style={sectionBoxStyle} >
+            <h2 className="text-white" style={{ marginBottom: "10px" }}>My Watchlist</h2>
+            <SectionDivider />
+            {watchlist.length > 0 ? renderMovieRow(watchlist) : <p>Your watchlist is empty.</p>}
+          </div>
 
-        <style>{`
+          <div style={sectionBoxStyle}>
+            <h2 className="text-white text-decoration-none mb-4">My Watched Movies</h2>
+            <SectionDivider />
+            {watched.length > 0 ? renderMovieRow(watched) : <p>No movies marked as watched yet.</p>}
+          </div>
+
+          <div style={sectionBoxStyle}>
+            <h2 className="text-white text-decoration-none mb-4">My Highest Rated Movies(3-5 ⭐)</h2>
+            <SectionDivider />
+            {highestRated.length > 0 ? renderMovieRow(highestRated) : <p>No high rated movies yet.</p>}
+          </div>
+
+          <div style={sectionBoxStyle}>
+            <h2 className="text-white text-decoration-none mb-4">My Lowest Rated Movies (0-2 ⭐)</h2>
+            <SectionDivider />
+            {lowestRated.length > 0 ? renderMovieRow(lowestRated) : <p>No low rated movies yet.</p>}
+          </div>
+
+          {/* Render personalized lists only if there are any movies */}
+
+
+          {/*
+          {personalizedLists.length > 0 && personalizedLists.map((list) => (
+            <div key={list._id} style={sectionBoxStyle}>
+              <div className="d-flex justify-content-between align-items-center mt-5 mb-4">
+                <h2 className="fw-bold mt-0">{list.name}</h2>
+                <button className="btn btn-primary" style={{
+                  backgroundColor: "transparent",
+                  backgroundRepeat: "no-repeat",
+                  border: "none",
+                  cursor: "pointer",
+                  overflow: "hidden"
+                }} onClick={() => handleGestionList(list)} >Manage List</button>
+              </div>
+              <SectionDivider />
+              {list.movies && list.movies.length > 0 ? renderMovieRow(list.movies) : <p>No movies in this list yet.</p>}
+            </div>
+          ))}
+
+          {selectedList && ( //Si une liste est selectionnée, on affiche le container 
+            <ContainerManageList list={selectedList} onClose={handleCloseContainer} onUpdate={refreshLists} />
+          )} */}
+
+          <style>{`
           .movie-card:hover {
             border: 2px solid #4a6bff !important;
             transform: translateY(-5px) !important;
@@ -245,10 +257,10 @@ function PageWatchList() {
             opacity: 0.9;
           }
         `}</style>
-      </div>
+        </div>
 
-      {/*Cette partie est entierement creer par CHATGPT pour le style du scrollbar */}
-      <style>{`
+        {/*Cette partie est entierement creer par CHATGPT pour le style du scrollbar */}
+        <style>{`
         .movie-slider::-webkit-scrollbar {
           height: 8px;
         }
@@ -267,7 +279,8 @@ function PageWatchList() {
           background: #777;
         }
      `}</style>
-    </div>
+      </div>
+    </>
   );
 }
 

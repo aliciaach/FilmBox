@@ -27,7 +27,7 @@ const con = mysql.createConnection({
   host: "localhost",
   user: "scott",
   password: "oracle",
-  database: "filmbox",
+  database: "prototype",
 });
 
 con.connect(function (err) {
@@ -361,7 +361,7 @@ app.get("/getUsers", async (req, res) => {
 });
 
 /*
-      Inspiré de changePassword- Modifier état compte à suspended             -------------------------------------------------------------------------------------------------------------------
+      Inspiré de changePassword- Modifier état compte à suspended    -------------------------------------------------------------------------------------------------------------------
    
   */
 app.post("/suspendAccount", (req, res) => {
@@ -517,7 +517,7 @@ app.get("/api/genres", async (req, res) => {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${process.env.TMDB_TOKEN}`,
+          Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0`,
         },
       }
     );
@@ -1269,6 +1269,89 @@ app.delete("/api/watched/:userId/:movieId", (req, res) => {
       return res.status(500).json({ message: "Error removing watched status" });
     }
     res.json({ success: true });
+  });
+});
+
+//////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////FAVORITITE/////////////////////////////////////////
+
+// Add to favorites
+app.post("/api/favorites", (req, res) => {
+  const { userId, movieId } = req.body;
+
+  if (!userId || !movieId) {
+    return res.status(400).json({ message: "Missing userId or movieId" });
+  }
+
+  const sql = `
+    INSERT IGNORE INTO films_favoris (film_id, utilisateur_utilisateur_id)
+    VALUES (?, ?)
+  `;
+
+  con.query(sql, [movieId, userId], (err) => {
+    if (err) {
+      console.error("Failed to add favorite:", err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+
+    res
+      .status(201)
+      .json({ success: true, message: "Movie added to favorites!" });
+  });
+});
+// Get all favorites for a user
+app.get("/api/favorites/:userId", async (req, res) => {
+  const userId = req.params.userId;
+  const sql = `
+    SELECT film_id FROM films_favoris
+    WHERE utilisateur_utilisateur_id = ?
+  `;
+
+  con.query(sql, [userId], async (err, results) => {
+    if (err) {
+      console.error("Database error:", err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+
+    try {
+      const movies = await Promise.all(
+        results.map(async (row) => {
+          const response = await fetch(
+            `https://api.themoviedb.org/3/movie/${row.film_id}`,
+            {
+              headers: {
+                accept: "application/json",
+                Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0`,
+              },
+            }
+          );
+          return response.json();
+        })
+      );
+
+      res.json(movies);
+    } catch (fetchError) {
+      console.error("Failed to fetch movie data:", fetchError);
+      res.status(500).json({ message: "Failed to fetch movie data" });
+    }
+  });
+});
+
+app.delete("/api/favorites/:userId/:movieId", (req, res) => {
+  const { userId, movieId } = req.params;
+
+  const sql = `
+    DELETE FROM films_favoris
+    WHERE utilisateur_utilisateur_id = ? AND film_id = ?
+  `;
+
+  con.query(sql, [userId, movieId], (err, results) => {
+    if (err) {
+      console.error("Database error:", err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+
+    res.status(200).json({ message: "Favorite removed successfully" });
   });
 });
 

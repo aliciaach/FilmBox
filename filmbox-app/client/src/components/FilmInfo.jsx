@@ -21,6 +21,8 @@ const FilmInfo = () => {
   const [personalizedLists, setPersonalizedLists] = useState([]);
   const [successMsg, setSuccessMsg] = useState("");
 
+  const [isFavorite, setIsFavorite] = useState(false); 
+
   useEffect(() => {
     if (!filmId || isNaN(numericFilmId)) {
       setErreur("ID de film invalide.");
@@ -57,6 +59,11 @@ const FilmInfo = () => {
             setComment(watched.commentaire);
           }
         }
+
+        const favRes = await fetch(`http://localhost:4000/api/favorites/${userId}`);
+        const favData = await favRes.json(); 
+        setIsFavorite(favData.some(movie => movie.id === numericFilmId)); 
+
       } catch (err) {
         console.error("Erreur lors du chargement des données:", err);
       }
@@ -115,13 +122,19 @@ const FilmInfo = () => {
         });
         setMarkedWatched(true);
       }
+
+      if (isInWatchlist) {
+        await fetch(`http://localhost:4000/api/watchlist/${userId}/${numericFilmId}`, {
+          method: "DELETE",
+        });
+        setIsInWatchlist(false);
+      }
     } catch (err) {
       console.error("Erreur lors du changement de statut 'vu':", err);
     }
   };
 
   const handleRatingSubmit = async () => {
-    console.log("Submitting rating:", rating, "comment:", comment);
     try {
       await fetch("http://localhost:4000/api/watched", {
         method: "POST",
@@ -135,7 +148,7 @@ const FilmInfo = () => {
       });
 
       setSuccessMsg("Rating added!!!!");
-      setTimeout(() => setSuccessMsg(""), 3000); //permet d'Afficher le message pour 3 seconds
+      setTimeout(() => setSuccessMsg(""), 3000);
 
       const watchedRes = await fetch(`http://localhost:4000/api/watched/${userId}`);
       const watchedData = await watchedRes.json();
@@ -148,7 +161,6 @@ const FilmInfo = () => {
         setComment(watched.commentaire || "");
       }
 
-      console.error("Submitting rating:", rating, "comment:", comment);
     } catch (err) {
       console.error("Erreur lors de l'enregistrement de la note:", err);
     }
@@ -203,6 +215,26 @@ const FilmInfo = () => {
     }
   };
 
+  const toggleFavorite = async () => {
+  try {
+    if (isFavorite) {
+      await fetch(`http://localhost:4000/api/favorites/${userId}/${numericFilmId}`, {
+        method: "DELETE",
+      });
+      setIsFavorite(false);
+    } else {
+      await fetch("http://localhost:4000/api/favorites", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, movieId: numericFilmId }),
+      });
+      setIsFavorite(true);
+    }
+  } catch (err) {
+    console.error("Error toggling favorite:", err);
+  }
+};
+
   if (erreur) return <p className="text-danger text-center">{erreur}</p>;
   if (!film) return <p className="text-center text-white">Chargement...</p>;
 
@@ -249,6 +281,11 @@ const FilmInfo = () => {
               {isInWatchlist ? "In Watchlist" : "Add To Watchlist"}
             </button>
           )}
+
+          <button className={`btn ${isFavorite ? 'btn-danger' : 'btn-outline-danger'}`} onClick={toggleFavorite}>
+            ♥ {isFavorite ? "In Favorites" : "Add to Favorites"}
+          </button>
+
           <DropdownButton id="list-dropdown" title="Add To List">
             {personalizedLists.length === 0 && (
               <Dropdown.Item disabled>No Lists Available</Dropdown.Item>
