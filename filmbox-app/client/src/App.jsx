@@ -8,8 +8,7 @@ import Inscription from "./components/Inscription";
 import ListeFilms from "./components/PageFilm";
 import FilmInfo from "./components/FilmInfo";
 import UserSettings from "./components/UserSettings";
-import AdminLogin from "./components/AdminLogin";
-import AdminManagement from "./components/adminManagement";
+import AdminLogin from "./components/adminLogin";
 import AdminManagementPage from "./components/AdminManagementPage";
 import UserManagement from "./components/UserManagement";
 import PageWatchList from "./components/PageWatchList";
@@ -46,9 +45,8 @@ function App() {
         <Route path="/listeFilms" element={<ListeFilms />} />
         <Route path="/movies/:filmId" element={<FilmInfo />} />
         <Route path="/userSettings" element={<UserSettings />} />
-        <Route path="/AdminLogin" element={<AdminLogin />} />
+        <Route path="/adminLogin" element={<AdminLogin />} />
         <Route path="/UserManagement" element={<UserManagement />} />
-        <Route path="/adminManagement" element={<AdminManagement />} />
         <Route path="/AdminManagementPage" element={<AdminManagementPage />} />
         <Route path="/PageWatchlist" element={<PageWatchList />} />
         <Route path="/SearchResults/:searchQuery" element={<SearchResults />} />
