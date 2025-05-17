@@ -28,9 +28,8 @@ function App() {
         <Route path="/movies/:filmId" element={<FilmInfo />} />
         <Route path="/userSettings" element={<UserSettings />} />
         <Route path="/AdminLogin" element={<AdminLogin />} />
-        <Route path="/userManagement" element={<UserManagement />} />
+        <Route path="/UserManagement" element={<UserManagement />} />
         <Route path="/adminManagement" element={<AdminManagement />} />
-        <Route path="/userManagement" element={<UserManagement />} />
         <Route path="/AdminManagementPage" element={<AdminManagementPage />} />
         <Route path="/PageWatchlist" element={<PageWatchList />} />
         <Route path="/SearchResults/:searchQuery" element={<SearchResults/>} />
