@@ -24,9 +24,9 @@ Voici comment déployer notre projet FilmBox dans votre machine :
 
 7. Il faut entrer dans le dossier "filmbox-app" dans les deux terminaux. Voici un exemple : cd C:\Users\farru\Downloads\FilmBox-main\FilmBox-main\filmbox-app
 
-8. Entrer ensuite dans le dossier server avec cd server dans le premier terminal et exécuter la commande suivante : npm i express
+8. Entrer ensuite dans le dossier server avec "cd server" dans le premier terminal et exécuter la commande suivante : npm i express
 
-9. Ensuite, entrer dans le dossier client avec cd client dans le deuxième terminal et exécuter la commande suivante : npm i
+9. Ensuite, entrer dans le dossier client avec "cd client" dans le deuxième terminal et exécuter la commande suivante : npm i
 
 10. Finalement, retourner dans le premier terminal (server) pour activer notre serveur avec : node server.js
 
