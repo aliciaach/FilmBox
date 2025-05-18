@@ -93,14 +93,14 @@ function PageWatchList() {
  
       const cleanedWatchlist = watchlistData.filter(m => m.title && m.title !== "N/A"); //Filters out any movies from the watchlist that don’t have a valid title.
       const cleanedWatched = watchedData.filter(m => m.title && m.title !== "N/A");
-      const cleanedFavorites = favoritesData.filter(m => m.title && m.title !== "N/A");
+      //const cleanedFavorites = favoritesData.filter(m => m.title && m.title !== "N/A");
 
       const watchedIds = cleanedWatched.map(m => m.id);//Extracts all movie IDs from the watched list (to know which ones have already been watched).
       const filteredWatchlist = cleanedWatchlist.filter(m => !watchedIds.includes(m.id)); //Keeps only the movies that are in the watchlist but not in the watched list (to avoid duplicates).
  
       setWatchlist(filteredWatchlist);
       setWatched(cleanedWatched);
-      setFavorites(cleanedFavorites);
+      //setFavorites(cleanedFavorites);
  
  
       //https://www.w3schools.com/js/js_array_sort.asp
