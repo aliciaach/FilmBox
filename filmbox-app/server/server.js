@@ -9,10 +9,11 @@ import mysql from "mysql";
 import { body, validationResult } from "express-validator";
 import dateFormat from "dateformat";
 import { MongoClient, ObjectId } from "mongodb";
-import { config } from "dotenv";
 import bcrypt from "bcrypt";
 import cors from "cors";
 import fetch from "node-fetch";
+import { config } from "dotenv";
+config();
 
 config();
 const app = express();
@@ -416,9 +417,7 @@ app.get("/api/movies", async (req, res) => {
     method: "GET",
     headers: {
       accept: "application/json",
-      //Need to find a way to make this secure !!
-      Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+      Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`,
     },
   };
 
@@ -459,8 +458,7 @@ app.get("/api/topRatedMovies", async (req, res) => {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+          Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`,
         },
       }
     );
@@ -482,8 +480,7 @@ app.get("/api/upcomingMovies", async (req, res) => {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+          Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`,
         },
       }
     );
@@ -511,8 +508,7 @@ app.get("/api/moviesByGenres", async (req, res) => {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+          Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`,
         },
       }
     );
@@ -533,7 +529,7 @@ app.get("/api/genres", async (req, res) => {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0`,
+          Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`,
         },
       }
     );
@@ -558,8 +554,7 @@ app.get("/api/searchMovie", async (req, res) => {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+          Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`,
         },
       }
     );
@@ -585,8 +580,7 @@ app.get("/api/getMoviesResults/:searchQuery", async (req, res) => {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+          Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`,
         },
       }
     );
@@ -638,8 +632,7 @@ app.get("/discoverMoviesFiltered", async (req, res) => {
       headers: {
         accept: "application/json",
         "Content-Type": "application/json",
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+        Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`,
       },
     });
 
@@ -658,8 +651,7 @@ app.get("/discoverMoviesFiltered", async (req, res) => {
         {
           headers: {
             accept: "application/json",
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+            Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`,
           },
         }
       );
@@ -738,27 +730,6 @@ app.get("/discoverMoviesFiltered", async (req, res) => {
   }
 });
 
-/*app.get("/api/getMoviesResults/:searchQuery", async (req, res) => {
-    const userInput = req.params.searchQuery;
-    const page = req.query.page || 1; 
-   
-    try {admin
-      const response = await fetch(`https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(userInput)}&page=${page}`, {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          Authorization: "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
-        }
-      });
-   
-      const data = await response.json();
-      res.json(data.results); 
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ error: "Failed while searching movies" });
-    }
-  });*/
-
 app.get("/api/movies/:id", async (req, res) => {
   const filmID = Number(req.params.id); //Conversion du id en nombbre au cas ou
   if (isNaN(filmID)) {
@@ -769,8 +740,7 @@ app.get("/api/movies/:id", async (req, res) => {
     headers: {
       accept: "application/json",
       //Need to find a way to make this secure !!
-      Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+      Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`,
     },
   };
 
@@ -797,9 +767,7 @@ app.get("/api/movies/:id/images", async (req, res) => {
     method: "GET",
     headers: {
       accept: "application/json",
-      //Need to find a way to make this secure !!
-      Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+      Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`,
     },
   };
 
@@ -951,8 +919,7 @@ app.get("/mongo/getPersonalizedList", async (req, res) => {
                 method: "GET",
                 headers: {
                   accept: "application/json",
-                  Authorization:
-                    "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+                  Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`,
                 },
               }
             );
@@ -1098,8 +1065,7 @@ app.post("/api/watchlist", (req, res) => {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+         Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`,
         },
       };
 
@@ -1209,8 +1175,7 @@ app.get("/api/watchlist/:userId", async (req, res) => {
     method: "GET",
     headers: {
       accept: "application/json",
-      Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+      Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`,
     },
   };
 
@@ -1326,8 +1291,7 @@ app.get("/api/watched/:userId", (req, res) => {
       method: "GET",
       headers: {
         accept: "application/json",
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+        Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`,
       },
     };
 
@@ -1412,7 +1376,7 @@ app.get("/api/favorites/:userId", async (req, res) => {
             {
               headers: {
                 accept: "application/json",
-                Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0`,
+                Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`,
               },
             }
           );
