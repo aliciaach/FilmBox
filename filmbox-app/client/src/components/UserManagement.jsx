@@ -12,6 +12,7 @@ function ManageUsers() {
   const [userSelectionne, setUserSelectionne] = useState(null); // Détails de l'utilisateur sélectionné
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
+  const [stats, setStats] = useState({ watched: 0, ratings: 0, comments: 0 });
 
   useEffect(() => {
     // Récupérer l'admin connecté
@@ -32,6 +33,29 @@ function ManageUsers() {
   }, [navigate]);
 
   useEffect(() => {
+    if (!userSelectionne) return;
+
+    fetch(`http://localhost:4000/getStatistiques/${userSelectionne.utilisateur_id}`, {
+      credentials: "include",
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Error fetching user stats");
+        return res.json();
+      })
+      .then((data) => {
+        setStats({
+          watched: data.watchedCount,
+          ratings: data.ratingCount,
+          comments: data.commentCount,
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+        setMessage("Could not load user stats");
+      });
+  }, [userSelectionne]);
+
+  useEffect(() => {
     fetch("http://localhost:4000/getUsers", { credentials: "include" })
       .then(res => {
         if (!res.ok) throw new Error("Error fetching users");
@@ -40,43 +64,6 @@ function ManageUsers() {
       .then(data => setUsers(data))
       .catch(err => setError(err.message));
   }, []);
-
-  /* Récupérer la liste des utilisateurs
-  fetch("http://localhost:4000/getUsers") //requête GET pour récupérer les utilisateurs depuis l'URL
-    .then((response) => {
-      //permet de traiter la reponse quand elle arrive
-      if (!response.ok)
-        throw new Error("Error while fetching users"); //vérifie si la réponse HTTP est valide (statut 200 à 299).
-      return response.json(); //convertir la reponse en JSON si elle est valide
-    })
-    .then((data) => {
-      //récupères la liste des utilisateurs renvoyée par le serveur sous forme de JSON
-      setUsers(data); // Mettre à jour la liste des utilisateurs avec les nouvelles données
-    })
-    .catch((erreur) => setError(erreur.message)); // Gérer les erreurs*/
-
-  //Changer compte à suspended //COMME CHANGE PASSWORD dans UserSettings
-  const suspendAccount = async (e) => {
-    e.preventDefault();
-    if (!userSelectionne) {
-      setMessage("No user selected");
-      return;
-    }
-    try {
-      const response = await fetch("http://localhost:4000/suspendAccount", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: userSelectionne.utilisateur_id }),
-      });
-      const data = await response.json();
-      setMessage(
-        data.success ? "User suspended" : "Error, couldn't suspend user"
-      );
-    } catch (error) {
-      console.error("Error suspending user:", error);
-      setMessage("An error occurred while  suspending the user.");
-    }
-  };
 
   const clickObtenirInformationsUser = (userId) => {
     const user = users.find((u) => u.utilisateur_id === userId);
@@ -145,7 +132,7 @@ function ManageUsers() {
             </span>
             <Link to="/userManagement" className="text-white text-decoration-none fw-light">USER MANAGEMENT</Link>
 
-            
+
           </div>
         </div>
 
@@ -229,83 +216,6 @@ function ManageUsers() {
                   {user.nom} {user.prenom}
                 </button>
               ))}
-              <div></div>
-              {/*
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button>
-              <button className="list-group-item bg-transparent text-white btnUser">
-                FirstName LastName
-              </button> */}
             </div>
           </div>
 
@@ -433,7 +343,7 @@ function ManageUsers() {
                     className="border border-1 rounded-4 py-5"
                     style={{ fontSize: "48px" }}
                   >
-                    687
+                    {stats.watched}
                   </h2>
                   <p className="mt-3" style={{ fontSize: "18px" }}>
                     Movies Watched
@@ -445,7 +355,7 @@ function ManageUsers() {
                     className="border border-1 rounded-4 py-5"
                     style={{ fontSize: "48px" }}
                   >
-                    18
+                    {stats.ratings}
                   </h2>
                   <p className="mt-3" style={{ fontSize: "18px" }}>
                     Ratings written
@@ -457,35 +367,12 @@ function ManageUsers() {
                     className="border border-1 rounded-4 py-5"
                     style={{ fontSize: "48px" }}
                   >
-                    6
+                    {stats.comments}
                   </h2>
                   <p className="mt-3" style={{ fontSize: "18px" }}>
                     Commentaries
                   </p>
                 </div>
-
-                {/*
-                <div className="col-md-4">
-                  <div className="border border-1 rounded-4 py-4">
-                    <h2 style={{ fontSize: '48px' }}>687</h2>
-                    <p style={{ fontSize: '18px' }}>Movies Watched</p>
-                  </div>
-                </div>
- 
-                <div className="col-md-4">
-                  <div className="border border-1 rounded-4 py-4">
-                    <h2 style={{ fontSize: '48px' }}>18</h2>
-                    <p style={{ fontSize: '18px' }}>Ratings written</p>
-                  </div>
-                </div>
-               
-                <div className="col-md-4">
-                  <div className="border border-1 rounded-4 py-4">
-                    <h2 style={{ fontSize: '48px' }}>6</h2>
-                    <p style={{ fontSize: '18px' }}>Commentaries</p>
-                  </div>
-                </div>
-                */}
               </div>
 
               {/* Ligne séparatrice */}
@@ -502,18 +389,6 @@ function ManageUsers() {
 
             {/* Ligne bas : séparation et bouton */}
             <div className="section-grow d-flex justify-content-center align-items-center">
-              {/* Bouton Suspend Account
-              <form onSubmit={suspendAccount} className="text-center">*/}
-              <form onSubmit={suspendAccount} className="text-center">
-                <button
-                  className=" btnCustomRouge "
-                  style={{ fontSize: "30px" }}
-                >
-                  {" "}
-                  {/*btn btn-outline-light*/} {/*btnCustom*/}
-                  Suspend Account
-                </button>
-              </form>
             </div>
           </div>
         </div>

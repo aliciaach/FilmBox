@@ -20,6 +20,8 @@ function PageWatchList() {
   const [selectedList, setSelectedList] = useState(null);
   const navigate = useNavigate();
   const [user, setUser] = useState({});
+  const [favorites, setFavorites] = useState([]);
+
  
   useEffect(() => {
       const fetchUserSession = async () => {
@@ -31,11 +33,11 @@ function PageWatchList() {
           if (data.loggedIn) {
             setUser(data.user);
           } else {
-            setErreur("Session non trouvée");
+            setError("Session non trouvée");
           }
         } catch (err) {
           console.error("Erreur session:", err);
-          setErreur("Erreur de session");
+          setError("Erreur de session");
         } 
       };
   
@@ -73,26 +75,32 @@ function PageWatchList() {
  
   const refreshLists = async () => {
     try {
-      const [watchlistRes, watchedRes, personalizedRes] = await Promise.all([
+      const [watchlistRes, watchedRes, personalizedRes, favoritesRes] = await Promise.all([
         fetch(`http://localhost:4000/api/watchlist/${user.utilisateur_id}`),
         fetch(`http://localhost:4000/api/watched/${user.utilisateur_id}`),
+        fetch(`http://localhost:4000/api/favorites/${user.utilisateur_id}`),
         fetch(`http://localhost:4000/mongo/getPersonalizedList?userId=${user.utilisateur_id}`)
       ]);
  
-      if (!watchlistRes.ok || !watchedRes.ok) throw new Error("Failed to fetch watchlist or watched movies");
- 
+      if (!watchlistRes.ok || !watchedRes.ok) {
+        throw new Error('Failed to fetch watchlist or watched movies');
+      }
+         
       const watchlistData = await watchlistRes.json();
       const watchedData = await watchedRes.json();
+      const favoritesData = await favoritesRes.json();
       const personalizedData = await personalizedRes.json();
  
       const cleanedWatchlist = watchlistData.filter(m => m.title && m.title !== "N/A"); //Filters out any movies from the watchlist that don’t have a valid title.
       const cleanedWatched = watchedData.filter(m => m.title && m.title !== "N/A");
- 
+      const cleanedFavorites = favoritesData.filter(m => m.title && m.title !== "N/A");
+
       const watchedIds = cleanedWatched.map(m => m.id);//Extracts all movie IDs from the watched list (to know which ones have already been watched).
       const filteredWatchlist = cleanedWatchlist.filter(m => !watchedIds.includes(m.id)); //Keeps only the movies that are in the watchlist but not in the watched list (to avoid duplicates).
  
       setWatchlist(filteredWatchlist);
       setWatched(cleanedWatched);
+      setFavorites(cleanedFavorites);
  
  
       //https://www.w3schools.com/js/js_array_sort.asp
@@ -210,6 +218,29 @@ const backgroundStyle = {
         </div>
  
         <div className="container">
+
+          {/* FAVORITES */}
+          <div className="text-white sectionBox">
+            <h2 className="text-white text-decoration-none mb-4">My Favorite Movies ❤️</h2>
+            <SectionDivider />
+
+            {favorites.length > 0 ? (
+              <div style={{ display: "flex", alignItems: "center", position: "relative" }}>
+
+                <button className="boutonScroll-gaucheW" onClick={() => handleScroll(-1, containerRef)}> 
+                  &lt;
+                </button>
+
+                {renderMovieRow(favorites, containerRef)} 
+
+                <button className="boutonScroll-droiteW" onClick={() => handleScroll(1, containerRef)}>
+                  &gt;
+                </button>
+              </div>
+            ) : (
+              <p>No favorite movies yet.</p>
+            )}
+          </div>
                     
           {/* WATCHLIST */}
           <div className="text-white sectionBox" >
@@ -293,7 +324,7 @@ const backgroundStyle = {
                   &lt;
                 </button>
 
-                {renderMovieRow(lowestRated, containerRefLowest)} {/* Contenu */} 
+              {renderMovieRow(lowestRated, containerRefLowest)} {/* Contenu */} 
                 
                 <button className="boutonScroll-droiteW" onClick={() => handleScroll(1, containerRefLowest)} > {/* Bouton droite */} 
                   &gt;
@@ -320,10 +351,8 @@ const backgroundStyle = {
  
           {selectedList && ( //Si une liste est selectionnée, on affiche le container
             <ContainerManageList list={selectedList} onClose={handleCloseContainer} onUpdate={refreshLists} />
-          )}
- 
+          )} 
         </div>
-
       </div>
     </>
   );
