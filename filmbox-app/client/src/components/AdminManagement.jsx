@@ -11,7 +11,7 @@ import {
   DropdownDivider,
   DropdownMenu,
 } from "react-bootstrap";
-import "../styles/AdminManagement";
+import "../styles/AdminManagement.css";
 
 function AdminManagement() {
   const [sortConfig, setSortConfig] = useState();
@@ -296,7 +296,7 @@ function AdminManagement() {
         <div className="d-flex justify-content-center flex-grow-1">
           <div className="d-flex gap-5">
             <Link
-              to="/adminManagementPage"
+              to="/adminManagement"
               className="text-white text-decoration-none fw-light"
             >
               ADMINS MANAGEMENT
@@ -337,10 +337,6 @@ function AdminManagement() {
           </Dropdown.Toggle>
 
           <Dropdown.Menu>
-            <Dropdown.Item as={Link} to="/userSettings">
-              Mon Profil
-            </Dropdown.Item>
-            <Dropdown.Divider />
             <Dropdown.Item as={Link} to="/adminLogin">
               Deconnexion
             </Dropdown.Item>
