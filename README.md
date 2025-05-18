@@ -7,8 +7,7 @@ Voici comment déployer notre projet FilmBox dans votre machine :
    a) Pour créer le conteneur (instance de l’image) qui exécutera mysql dans docker, ouvrir un invite de commande et lancer la commande :
       docker run -d -p 3306:3306 --name mysql-server -e MYSQL_ROOT_PASSWORD=oracle -e MYSQL_DATABASE=scott -e MYSQL_USER=scott -e MYSQL_PASSWORD=oracle mysql/mysql-server:latest
 
-   b) Ensuite vous pourrez vous connecter à mysql avec la ligne de commande mysql et le mot de passe "oracle" :
-   
+   b) Ensuite vous pourrez vous connecter à mysql avec la ligne de commande mysql et le mot de passe "oracle" :   
       mysql -u root -p
 
    c) Ensuite créer une base de données :
