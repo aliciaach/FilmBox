@@ -36,6 +36,7 @@ const FilmInfo = () => {
           setUser(data.user);
         } else {
           setErreur("Session non trouvée");
+          navigate("/");
         }
       } catch (err) {
         console.error("Erreur session:", err);
