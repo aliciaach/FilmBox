@@ -183,7 +183,6 @@ ALTER TABLE "session"
 ---------------------SCRIPT----MYSQL-------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------------------
 
-
 CREATE TABLE utilisateur (
     utilisateur_id INT NOT NULL AUTO_INCREMENT,
     nom VARCHAR(255) NOT NULL,
@@ -210,8 +209,7 @@ CREATE TABLE films (
     langue_original VARCHAR(255) NOT NULL,
     status VARCHAR(255) NOT NULL,
     PRIMARY KEY (film_id)
-    );
-
+);
 
 CREATE TABLE genre (
     genre_id INT NOT NULL AUTO_INCREMENT,
@@ -232,7 +230,6 @@ CREATE TABLE note (
     FOREIGN KEY (films_film_id) REFERENCES films(film_id) ON DELETE CASCADE,
     FOREIGN KEY (utilisateur_utilisateur_id) REFERENCES utilisateur(utilisateur_id) ON DELETE CASCADE
 );
-
 
 CREATE TABLE permission (
     permission_id INT NOT NULL AUTO_INCREMENT,
@@ -268,13 +265,6 @@ CREATE TABLE films_favoris (
     FOREIGN KEY (film_id) REFERENCES films(film_id) ON DELETE CASCADE,
     FOREIGN KEY (utilisateur_utilisateur_id) REFERENCES utilisateur(utilisateur_id) ON DELETE CASCADE
 );
-ALTER TABLE films_favoris 
-ADD CONSTRAINT films_favoris_utilisateur_fk 
-FOREIGN KEY (utilisateur_utilisateur_id) 
-REFERENCES utilisateur(utilisateur_id) ON DELETE CASCADE;
-
-
-
 
 -------------------------------------------------------------------------------------------------------------
 ---------------------INSERTION DES VALEURS DANS LES TABLES---------------------------------------------------
