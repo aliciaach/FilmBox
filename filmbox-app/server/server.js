@@ -9,10 +9,11 @@ import mysql from "mysql";
 import { body, validationResult } from "express-validator";
 import dateFormat from "dateformat";
 import { MongoClient, ObjectId } from "mongodb";
-import { config } from "dotenv";
 import bcrypt from "bcrypt";
 import cors from "cors";
 import fetch from "node-fetch";
+import { config } from "dotenv";
+config();
 
 config();
 const app = express();
@@ -416,9 +417,7 @@ app.get("/api/movies", async (req, res) => {
     method: "GET",
     headers: {
       accept: "application/json",
-      //Need to find a way to make this secure !!
-      Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+      Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`,
     },
   };
 
@@ -459,8 +458,7 @@ app.get("/api/topRatedMovies", async (req, res) => {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+          Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`,
         },
       }
     );
@@ -482,8 +480,7 @@ app.get("/api/upcomingMovies", async (req, res) => {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+          Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`,
         },
       }
     );
@@ -511,8 +508,7 @@ app.get("/api/moviesByGenres", async (req, res) => {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+          Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`,
         },
       }
     );
@@ -533,7 +529,7 @@ app.get("/api/genres", async (req, res) => {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0`,
+          Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`,
         },
       }
     );
@@ -558,8 +554,7 @@ app.get("/api/searchMovie", async (req, res) => {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+          Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`,
         },
       }
     );
@@ -585,8 +580,7 @@ app.get("/api/getMoviesResults/:searchQuery", async (req, res) => {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+          Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`,
         },
       }
     );
@@ -606,7 +600,7 @@ app.get("/discoverMoviesFiltered", async (req, res) => {
   const params = new URLSearchParams();
   const page = req.query.page || 1;
   params.append("page", page);
-  const { genre, language, decade, movieDuration, originCountry } = req.query;
+  const { genre, language, decade } = req.query;
 
   const originalUrl = "https://api.themoviedb.org/3/discover/movie";
 
@@ -627,9 +621,6 @@ app.get("/discoverMoviesFiltered", async (req, res) => {
     params.append("primary_release_date.lte", `${endYearString}-12-31`);
   }
 
-  /*if (movieDuration) {
-      params.append('')
-    }*/
 
   try {
     console.log("WE ARE GETTTING HEREEEEEEEEEEEEE");
@@ -638,8 +629,7 @@ app.get("/discoverMoviesFiltered", async (req, res) => {
       headers: {
         accept: "application/json",
         "Content-Type": "application/json",
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+        Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`,
       },
     });
 
@@ -658,73 +648,13 @@ app.get("/discoverMoviesFiltered", async (req, res) => {
         {
           headers: {
             accept: "application/json",
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+            Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`,
           },
         }
       );
       console.log("CHECKKKKKKKKPOINT 1");
 
       const fullMovieData = await currentMovieInformation.json(); //All the information about the movie in details
-
-      // If the user selected
-      if (movieDuration) {
-        console.log("CHECKKKKKKKKPOINT 2");
-
-        const userPreferencesDuration = parseInt(movieDuration);
-        const runtime = fullMovieData.runtime;
-
-        if (!runtime) continue; // skip if no runtime
-
-        let durationIsOK = false;
-
-        if (userPreferencesDuration === 0 && runtime < 60) durationIsOK = true;
-        else if (userPreferencesDuration === 1 && runtime >= 60 && runtime < 90)
-          durationIsOK = true;
-        else if (
-          userPreferencesDuration === 2 &&
-          runtime >= 90 &&
-          runtime < 150
-        )
-          durationIsOK = true;
-        else if (
-          userPreferencesDuration === 3 &&
-          runtime >= 150 &&
-          runtime <= 240
-        )
-          durationIsOK = true;
-        else if (userPreferencesDuration === 4 && runtime > 240)
-          durationIsOK = true;
-
-        if (!durationIsOK) continue;
-      }
-      console.log("CHECKKKKKKKKPOINT 3");
-
-      if (originCountry) {
-        let correspondingCountryFound = false;
-
-        //check if production_companies exists
-        if (
-          fullMovieData.production_companies &&
-          fullMovieData.production_companies.length > 0
-        ) {
-          for (let i = 0; i < fullMovieData.production_companies.length; i++) {
-            const company = fullMovieData.production_companies[i];
-
-            if (company.origin_country === originCountry) {
-              correspondingCountryFound = true;
-              break; //if we found a match, the movie is good
-            }
-          }
-        }
-        console.log("CHECKKKKKKKKPOINT 4");
-
-        // If we didn’t, dont save the movie for the list
-        if (!correspondingCountryFound) {
-          continue;
-        }
-      }
-
       filteredMovies.push(fullMovieData);
     }
 
@@ -738,27 +668,6 @@ app.get("/discoverMoviesFiltered", async (req, res) => {
   }
 });
 
-/*app.get("/api/getMoviesResults/:searchQuery", async (req, res) => {
-    const userInput = req.params.searchQuery;
-    const page = req.query.page || 1; 
-   
-    try {admin
-      const response = await fetch(`https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(userInput)}&page=${page}`, {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          Authorization: "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
-        }
-      });
-   
-      const data = await response.json();
-      res.json(data.results); 
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ error: "Failed while searching movies" });
-    }
-  });*/
-
 app.get("/api/movies/:id", async (req, res) => {
   const filmID = Number(req.params.id); //Conversion du id en nombbre au cas ou
   if (isNaN(filmID)) {
@@ -769,8 +678,7 @@ app.get("/api/movies/:id", async (req, res) => {
     headers: {
       accept: "application/json",
       //Need to find a way to make this secure !!
-      Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+      Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`,
     },
   };
 
@@ -797,9 +705,7 @@ app.get("/api/movies/:id/images", async (req, res) => {
     method: "GET",
     headers: {
       accept: "application/json",
-      //Need to find a way to make this secure !!
-      Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+      Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`,
     },
   };
 
@@ -951,8 +857,7 @@ app.get("/mongo/getPersonalizedList", async (req, res) => {
                 method: "GET",
                 headers: {
                   accept: "application/json",
-                  Authorization:
-                    "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+                  Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`,
                 },
               }
             );
@@ -1098,8 +1003,7 @@ app.post("/api/watchlist", (req, res) => {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+         Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`,
         },
       };
 
@@ -1209,8 +1113,7 @@ app.get("/api/watchlist/:userId", async (req, res) => {
     method: "GET",
     headers: {
       accept: "application/json",
-      Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+      Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`,
     },
   };
 
@@ -1326,8 +1229,7 @@ app.get("/api/watched/:userId", (req, res) => {
       method: "GET",
       headers: {
         accept: "application/json",
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0",
+        Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`,
       },
     };
 
@@ -1412,7 +1314,7 @@ app.get("/api/favorites/:userId", async (req, res) => {
             {
               headers: {
                 accept: "application/json",
-                Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOWYyYWU0OWY2MTU1MDUzNTZjYmRkNGI0OGUyMmMzOSIsIm5iZiI6MTc0Mjk5NjkyOS40MjIwMDAyLCJzdWIiOiI2N2U0MDVjMWUyOGFmNDFjZmM3NjUwZmIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.1j-MADS28jj8Dyb_HYms84nRsZydvF8CZU4MHk9g_x0`,
+                Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`,
               },
             }
           );
