@@ -55,7 +55,7 @@ docker start mongodb_filmbox
 
 6. Finalement, retourner dans le premier terminal (server) pour activer notre serveur avec : node server.js
 
-Lors de votre première utilisation, créer vous un utilisateur. Par la suite, vous pourrez teste les différentes fonctionnalités du site !
+Lors de votre première utilisation, créer vous un utilisateur. Par la suite, vous pourrez tester les différentes fonctionnalités du site !
 
 Pour la section admin, vous pouvez y acceder à partir de admin login dans le footer. Utiliser un des utilisateur qui se trouve dans la liste fournis. Si non vous pouvez aussi insérer vote propre donner sur mongo db !
 
