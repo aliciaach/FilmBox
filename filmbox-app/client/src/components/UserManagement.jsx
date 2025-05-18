@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import fondNoir from "../assets/BlackImage.png";
 import "../styles/UserManagement.css";
 import { Dropdown } from "react-bootstrap";
-import imageProfil from "../assets/photo_profil.jpg";
+import imageProfil from "../assets/icone_utilisateur.png";
 
 function ManageUsers() {
   const [users, setUsers] = useState([]); // État pour stocker la liste des utilisateurs
@@ -35,9 +35,12 @@ function ManageUsers() {
   useEffect(() => {
     if (!userSelectionne) return;
 
-    fetch(`http://localhost:4000/getStatistiques/${userSelectionne.utilisateur_id}`, {
-      credentials: "include",
-    })
+    fetch(
+      `http://localhost:4000/getStatistiques/${userSelectionne.utilisateur_id}`,
+      {
+        credentials: "include",
+      }
+    )
       .then((res) => {
         if (!res.ok) throw new Error("Error fetching user stats");
         return res.json();
@@ -57,12 +60,12 @@ function ManageUsers() {
 
   useEffect(() => {
     fetch("http://localhost:4000/getUsers", { credentials: "include" })
-      .then(res => {
+      .then((res) => {
         if (!res.ok) throw new Error("Error fetching users");
         return res.json();
       })
-      .then(data => setUsers(data))
-      .catch(err => setError(err.message));
+      .then((data) => setUsers(data))
+      .catch((err) => setError(err.message));
   }, []);
 
   const clickObtenirInformationsUser = (userId) => {
@@ -93,20 +96,13 @@ function ManageUsers() {
         backgroundRepeat: "no-repeat",
       }}
     >
-      <nav
-        className="d-flex align-items-center px-4"
-        style={{
-          //   background: "linear-gradient(to right, #02002E, #030046)",
-          color: "white",
-          height: "60px",
-          fontWeight: "500",
-        }}
-      >
+      <nav className="d-flex align-items-center px-4 nav-admin">
         {/* Logo */}
         <div className="d-flex align-items-center me-4">
           <span className="fw-bold text-white fs-4">FILM</span>
           <span className="fw-bold text-primary fs-4">BOX</span>
         </div>
+
         {/* séparateur */}
         <div
           className="border-start border-white opacity-50 mx-3"
@@ -116,23 +112,18 @@ function ManageUsers() {
         {/* liens pages */}
         <div className="d-flex justify-content-center flex-grow-1">
           <div className="d-flex gap-5">
-            {/* Condition to switch to admin management page */}
-            <span
-              onClick={() => {
-                if (admin?.role === "moderator") {
-                  navigate("/adminManagementPage");
-                } else {
-                  alert("Only moderators can access this page. Please speak with a supervisor for any urgent matter.");
-                }
-              }}
+            <Link
+              to="/adminManagement"
               className="text-white text-decoration-none fw-light"
-              style={{ cursor: "pointer" }}
             >
-              ADMIN MANAGEMENT
-            </span>
-            <Link to="/userManagement" className="text-white text-decoration-none fw-light">USER MANAGEMENT</Link>
-
-
+              ADMINS MANAGEMENT
+            </Link>
+            <Link
+              to="/userManagement"
+              className="text-white text-decoration-none fw-light"
+            >
+              USERS MANAGEMENT
+            </Link>
           </div>
         </div>
 
@@ -163,10 +154,6 @@ function ManageUsers() {
           </Dropdown.Toggle>
 
           <Dropdown.Menu>
-            <Dropdown.Item as={Link} to="/userSettings">
-              Mon Profil
-            </Dropdown.Item>
-            <Dropdown.Divider />
             <Dropdown.Item as={Link} to="/adminLogin">
               Deconnexion
             </Dropdown.Item>
@@ -177,23 +164,13 @@ function ManageUsers() {
       {/* Header */}
       <div className="d-flex justify-content-between align-items-center p-4 mt-4">
         <h1>
-          {admin?.prenom ? `${admin.prenom} ${admin.nom} - Admin` : "Admin - Session Not Found"}
+          {admin?.prenom
+            ? `${admin.prenom} ${admin.nom} - Admin`
+            : "Admin - Session Not Found"}
         </h1>
         {/* Je mets par défaut que le role c'est "admin" mais je vois pas d'Autre
                                                                                                   choix dans la BDD que Admin, je fais quoiiii  AAAAAA */}
         {/*<h1> Admin Name - Role Level</h1>*/}
-        <button
-          className="btn btn-outline-light"
-          onClick={async () => {
-            await fetch("http://localhost:4000/destroy-session", {
-              method: "POST",
-              credentials: "include"
-            });
-            navigate("/");
-          }}
-        >
-          Logout
-        </button>
       </div>
 
       <div className="container-fluid page-container">
@@ -237,7 +214,7 @@ function ManageUsers() {
                   >
                     {userSelectionne
                       ? (userSelectionne.prenom?.[0] || "?") +
-                      (userSelectionne.nom?.[0] || "?")
+                        (userSelectionne.nom?.[0] || "?")
                       : "JD"}
                   </div>
                   <h2 className="mb-0">
@@ -388,8 +365,7 @@ function ManageUsers() {
             </div>
 
             {/* Ligne bas : séparation et bouton */}
-            <div className="section-grow d-flex justify-content-center align-items-center">
-            </div>
+            <div className="section-grow d-flex justify-content-center align-items-center"></div>
           </div>
         </div>
       </div>

@@ -187,7 +187,7 @@ function PageWatchList() {
       <div className="d-flex justify-content-center align-items-center min-vh-100"
            style={backgroundStyle}>
         <div className={error ? "text-danger" : "text-white"}>
-          {error ? `Error: ${error}` : "Chargement..."}
+          {error ? `Error: ${error}` : "Loading..."}
         </div>
       </div>
     );

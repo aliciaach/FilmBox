@@ -232,8 +232,9 @@ const FilmInfo = () => {
   };
 
   if (erreur) return <p className="text-danger text-center">{erreur}</p>;
-  if (!film) return <p className="text-center text-white">Chargement...</p>;
 
+  if (!film) return <p className="text-center text-white">Loading...</p>;
+ 
   const cheminImage = `https://image.tmdb.org/t/p/original/${film.backdrop_path}`;
   const genres = film.genres?.map(g => g.name).join(", ");
   const countries = film.production_countries?.map(c => c.name).join(", ");
@@ -264,9 +265,8 @@ const FilmInfo = () => {
 
         <p>{new Date(film.release_date).getFullYear()} • {film.runtime} min • {genres}</p>
         <p>{film.overview}</p>
-        <p><strong>Langue:</strong> {film.original_language}</p>
-        <p><strong>Pays:</strong> {countries}</p>
-
+        <p><strong>Language : </strong> {film.original_language}</p>
+        <p><strong>Country : </strong> {countries}</p>
         <div className="d-flex align-items-center gap-3 mt-4">
           <button className="btn btn-light" onClick={handleWatched}>
             {markedWatched ? "Unmark Watched" : "Mark As Watched"}
@@ -300,7 +300,7 @@ const FilmInfo = () => {
 
         {markedWatched && (
           <div className="mt-4">
-            <label className="form-label">Rate this movie:</label>
+            <label className="form-label">Rate this movie : </label>
             <div className="d-flex gap-2">
               {[1, 2, 3, 4, 5].map((star) => (
                 <span
