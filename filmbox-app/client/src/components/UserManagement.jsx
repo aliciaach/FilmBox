@@ -112,12 +112,20 @@ function ManageUsers() {
         {/* liens pages */}
         <div className="d-flex justify-content-center flex-grow-1">
           <div className="d-flex gap-5">
-            <Link
-              to="/adminManagement"
+            {/* Condition to switch to admin management page */}
+            <span
+              onClick={() => {
+                if (admin?.role === "moderator") {
+                  navigate("/AdminManagement");
+                } else {
+                  alert("Only moderators can access this page. Please speak with a supervisor for any urgent matter.");
+                }
+              }}
               className="text-white text-decoration-none fw-light"
+              style={{ cursor: "pointer" }}
             >
-              ADMINS MANAGEMENT
-            </Link>
+              ADMIN MANAGEMENT
+            </span>
             <Link
               to="/userManagement"
               className="text-white text-decoration-none fw-light"
@@ -214,7 +222,7 @@ function ManageUsers() {
                   >
                     {userSelectionne
                       ? (userSelectionne.prenom?.[0] || "?") +
-                        (userSelectionne.nom?.[0] || "?")
+                      (userSelectionne.nom?.[0] || "?")
                       : "JD"}
                   </div>
                   <h2 className="mb-0">

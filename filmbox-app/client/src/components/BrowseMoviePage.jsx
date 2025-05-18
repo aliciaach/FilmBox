@@ -16,8 +16,6 @@ function BrowseMovies() {
         genre: '',
         language: '',
         decade: '',
-        movieDuration: '',
-        country: '',
     });
     const [filteredMovies, setFilteredMovies] = useState([]);
     const [error, setError] = useState();
@@ -60,12 +58,6 @@ function BrowseMovies() {
             }
             if (filters.decade) {
                 buildUrl += `decade=${filters.decade}&`;
-            }
-            if (filters.movieDuration) {
-                buildUrl += `movieDuration=${filters.movieDuration}&`;
-            }
-            if (filters.country) {
-                buildUrl += `originCountry=${filters.country}&`;
             }
 
             const fullBuildUrlApi = `http://localhost:4000/discoverMoviesFiltered?${buildUrl}page=${currentPage + 1}`;
@@ -162,10 +154,6 @@ function BrowseMovies() {
                 </div>
             </div>
 
-
-
-
-
             <div style={{
                 padding: "40px",
                 background: `linear-gradient(to bottom, 
@@ -215,47 +203,6 @@ function BrowseMovies() {
                             <option value="1980">1980s</option>
                         </select>
                     </div>
-
-                    <div className="filtreGroup">
-                        <label className='filtreTitre'>Original Country:</label>
-                        <select
-                            value={filters.country}
-                            onChange={(e) => setFilters({ ...filters, country: e.target.value })}
-                        >
-                            <option value="">All Countries</option>
-                            <option value="AU">Australia</option>
-                            <option value="CA">Canada</option>
-                            <option value="CN">China</option>
-                            <option value="FR">France</option>
-                            <option value="DE">Germany</option>
-                            <option value="HK">Hong Kong</option>
-                            <option value="IN">India</option>
-                            <option value="IT">Italy</option>
-                            <option value="JP">Japan</option>
-                            <option value="KP">North Korea</option>
-                            <option value="KR">South Korea</option>
-                            <option value="RU">Russia</option>
-                            <option value="TR">Turkey</option>
-                            <option value="GB">United Kingdom</option>
-                            <option value="US">United States</option>
-                        </select>
-                    </div>
-
-                    <div className="filtreGroup">
-                        <label className='filtreTitre'>Movie Duration:</label>
-                        <select
-                            value={filters.movieDuration}
-                            onChange={(e) => setFilters({ ...filters, movieDuration: e.target.value })}
-                        >
-                            <option value="">All Time</option>
-                            <option value="0">Less than an hour</option>
-                            <option value="1">One hour</option>
-                            <option value="2">Two hours</option>
-                            <option value="3">Four hours</option>
-                            <option value="4">Over 4 hours</option>
-                        </select>
-                    </div>
-
                 </div>
 
                 {/* code to show the movies, based on the filters */}
