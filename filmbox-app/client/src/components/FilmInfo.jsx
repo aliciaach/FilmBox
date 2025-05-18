@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Header from "../components/Header";
+import '../styles/FilmInfo.css';
 import { Dropdown, DropdownButton } from "react-bootstrap";
 
 const FilmInfo = () => {
@@ -23,6 +24,8 @@ const FilmInfo = () => {
   const [personalizedLists, setPersonalizedLists] = useState([]);
   const [successMsg, setSuccessMsg] = useState("");
   const [isFavorite, setIsFavorite] = useState(false);
+
+  const [showListDropdown, setShowListDropdown] = useState(false);
 
   // 1. Charger la session utilisateur
   useEffect(() => {
@@ -275,34 +278,56 @@ const FilmInfo = () => {
         <p><strong>Pays:</strong> {countries}</p>
 
         <div className="d-flex align-items-center gap-3 mt-4">
-          <button className="btn btn-light" onClick={handleWatched}>
+          <button className="watched-button" onClick={handleWatched}>
             {markedWatched ? "Unmark Watched" : "Mark As Watched"}
           </button>
 
           {!markedWatched && (
-            <button className="btn btn-outline-light" onClick={handleWatchlist}>
+            <button className="watchlist-button" onClick={handleWatchlist}>
               {isInWatchlist ? "In Watchlist" : "Add To Watchlist"}
             </button>
           )}
 
-          <button className={`btn ${isFavorite ? 'btn-danger' : 'btn-outline-danger'}`} onClick={toggleFavorite}>
+          <button className={`favorite-button ${isFavorite ? 'active' : ''}`} onClick={toggleFavorite}>
             ♥ {isFavorite ? "In Favorites" : "Add to Favorites"}
           </button>
 
-          <DropdownButton id="list-dropdown" title="Add To List">
-            {personalizedLists.length === 0 && (
-              <Dropdown.Item disabled>No Lists Available</Dropdown.Item>
+          <div className="position-relative">
+            <button className="blur-button" onClick={() => setShowListDropdown(!showListDropdown)}>
+              {showListDropdown ? "Close" : "Add To List"}
+            </button>
+
+            {showListDropdown && (
+              <div className="custom-list-dropdown">
+                {personalizedLists.length === 0 && (
+                  <p className="dropdown-item disabled">No Lists Available</p>
+                )}
+
+                {personalizedLists.map((list) => (
+                  <div
+                    key={list._id}
+                    className="dropdown-item"
+                    onClick={() => {
+                      handleAddToList(list._id);
+                      setShowListDropdown(false);
+                    }}
+                  >
+                    {list.name}
+                  </div>
+                ))}
+
+                <hr className="dropdown-divider" />
+
+                <div className="dropdown-item create-new" onClick={() => {
+                  handleAddNewPersonalizedList();
+                  setShowListDropdown(false);
+                }}>
+                  + Create New List
+                </div>
+              </div>
             )}
-            {personalizedLists.map((list) => (
-              <Dropdown.Item key={list._id} onClick={() => handleAddToList(list._id)}>
-                {list.name}
-              </Dropdown.Item>
-            ))}
-            <Dropdown.Divider />
-            <Dropdown.Item onClick={handleAddNewPersonalizedList}>
-              Create New List
-            </Dropdown.Item>
-          </DropdownButton>
+          </div>  
+
         </div>
 
         {markedWatched && (
