@@ -338,7 +338,9 @@ const FilmInfo = () => {
                 <span
                   key={star}
                   style={{
-                    fontSize: "2rem",
+                    fontSize: "2.5rem",
+                    cursor: "pointer",
+                    transition: "transform 0.2s",
                     color: (hoverRating || rating) >= star ? "#FFD700" : "#CCCCCC",
                     cursor: "pointer",
                   }}
@@ -346,24 +348,23 @@ const FilmInfo = () => {
                   onMouseEnter={() => setHoverRating(star)}
                   onMouseLeave={() => setHoverRating(0)}
                 >
-                  ★
+                    {(hoverRating || rating) >= star ? "★" : "☆"}
                 </span>
               ))}
             </div>
  
             <div className="mt-3">
-              <label htmlFor="comment" className="form-label">Comment:</label>
+              <label htmlFor="comment" className="comment-label">Comment:</label>
               <textarea
                 id="comment"
-                className="form-control"
-                rows="3"
+                className="comment-box"
+                rows="4"
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
-                style={{ maxWidth: "500px" }}
               />
             </div>
  
-            <button className="btn btn-primary mt-3" onClick={handleRatingSubmit}>
+            <button className="submit-rating-button mt-3" onClick={handleRatingSubmit}>
               Submit Rating
             </button>
  

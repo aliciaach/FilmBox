@@ -165,3 +165,61 @@
     box-shadow: 0 0 20px rgba(131, 0, 24, 0.502);
 }
  
+/* bouton */
+
+.submit-rating-button {
+  background: rgba(0, 115, 255, 0.286); 
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #dceeff; 
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 10px 22px;
+  border: none;
+  border-radius: 50px;
+  box-shadow: 0 0 10px rgba(60, 120, 255, 0.2);
+  transition: all 0.3s ease;
+  letter-spacing: 0.4px;
+}
+
+.submit-rating-button:hover {
+  background: rgba(90, 150, 255, 0.4);
+  color: white;
+  transform: scale(1.07);
+  box-shadow: 0 0 20px rgba(90, 150, 255, 0.5);
+  cursor: pointer;
+}
+
+
+/* COMMENTAIRES BOXXX */ 
+
+.comment-box {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #ffffff;
+  border: none;
+  border-radius: 20px;
+  padding: 15px;
+  font-size: 1rem;
+  width: 100%;
+  max-width: 500px;
+  resize: vertical;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+  font-family: 'Fredoka', sans-serif;
+}
+
+.comment-box:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 20px rgba(100, 150, 255, 0.4);
+}
+
+.comment-label {
+  display: block; /* TRÈS IMPORTANTTTT */
+  margin-bottom: 8px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #ffffff;
+}
