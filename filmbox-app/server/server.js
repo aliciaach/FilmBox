@@ -1365,26 +1365,26 @@ app.delete("/api/watched/:userId/:movieId", (req, res) => {
 
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////FAVORITITE/////////////////////////////////////////
-
+ 
 // Add to favorites
 app.post("/api/favorites", (req, res) => {
   const { userId, movieId } = req.body;
-
+ 
   if (!userId || !movieId) {
     return res.status(400).json({ message: "Missing userId or movieId" });
   }
-
+ 
   const sql = `
     INSERT IGNORE INTO films_favoris (film_id, utilisateur_utilisateur_id)
     VALUES (?, ?)
   `;
-
+ 
   con.query(sql, [movieId, userId], (err) => {
     if (err) {
       console.error("Failed to add favorite:", err);
       return res.status(500).json({ message: "Internal server error" });
     }
-
+ 
     res
       .status(201)
       .json({ success: true, message: "Movie added to favorites!" });
@@ -1397,13 +1397,13 @@ app.get("/api/favorites/:userId", async (req, res) => {
     SELECT film_id FROM films_favoris
     WHERE utilisateur_utilisateur_id = ?
   `;
-
+ 
   con.query(sql, [userId], async (err, results) => {
     if (err) {
       console.error("Database error:", err);
       return res.status(500).json({ message: "Internal server error" });
     }
-
+ 
     try {
       const movies = await Promise.all(
         results.map(async (row) => {
@@ -1419,7 +1419,7 @@ app.get("/api/favorites/:userId", async (req, res) => {
           return response.json();
         })
       );
-
+ 
       res.json(movies);
     } catch (fetchError) {
       console.error("Failed to fetch movie data:", fetchError);
@@ -1427,25 +1427,25 @@ app.get("/api/favorites/:userId", async (req, res) => {
     }
   });
 });
-
+ 
 app.delete("/api/favorites/:userId/:movieId", (req, res) => {
   const { userId, movieId } = req.params;
-
+ 
   const sql = `
     DELETE FROM films_favoris
     WHERE utilisateur_utilisateur_id = ? AND film_id = ?
   `;
-
+ 
   con.query(sql, [userId, movieId], (err, results) => {
     if (err) {
       console.error("Database error:", err);
       return res.status(500).json({ message: "Internal server error" });
     }
-
+ 
     res.status(200).json({ message: "Favorite removed successfully" });
   });
 });
-
+ 
 //////////////////////////////////////////////////////////////////////////////////////
 
 //Pour afficher les admins dans le tableau d'admins
