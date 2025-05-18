@@ -15,8 +15,8 @@ function Footer() {
         <div className="row text-center">
           <hr className="my-3 border-light" />
           <div className="col-md-4 text-center  ">
-            <h6>Suivez-nous</h6>
-            <ul className="list-unstyled text-center">
+            <h5 style={{ fontSize: "18px", fontWeight: "bold" }}>Follow Us</h5>
+            <ul className="list-unstyled text-center"> 
               {/*
               <li>
                 <a href="#" className="text-light text-decoration-none">
@@ -29,15 +29,19 @@ function Footer() {
                 <a href="#" className="text-light text-decoration-none">
                   Instagram
                 </a>*/}
-                <a href="https://www.instagram.com/__filmbox__/" target="_blank" rel="noopener noreferrer" className="text-light text-decoration-none">
+                <Link
+                  to="https://www.instagram.com/__filmbox__/"
+                  className="text-light text-decoration-none"
+                  style={{ fontSize: "16px" }}
+                >
                   Instagram
-                </a>
+                </Link>               
               </li>
             </ul>
           </div>
 
           <div className="col-md-4 text-center">
-            <h6>Account</h6>
+            <h5 style={{ fontSize: "18px", fontWeight: "bold" }} >Account</h5>
               <ul className="list-unstyled">
                 <li>
                   <Link
@@ -61,7 +65,7 @@ function Footer() {
           </div>
 
           <div className="col-md-4 text-center">
-            <h6>Gestion</h6>
+            <h5 style={{ fontSize: "18px", fontWeight: "bold" }}>Management</h5>
             <ul className="list-unstyled">
               <li>
               <Link
