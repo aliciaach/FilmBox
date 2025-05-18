@@ -18,7 +18,7 @@ Voici comment déployer notre projet FilmBox dans votre machine :
 
 5. Insérer les valeur des tables(ce trouve en bas du script).
 
-========================================= SECTION MONGO DB =================================================
+============ SECTION MONGO DB ================
 
 Avant de commencer, assurez-vous d'avoir un terminal et d'avoir installé Docker.
 
@@ -40,7 +40,7 @@ db.createCollection("CustomLists")
 docker stop mongodb_filmbox
 docker start mongodb_filmbox
 
-========================================== LANCER LE PROJET ======================================
+============ LANCER LE PROJET ===================
 1. Ouvrir le dépôt git télécharger(ou cloner) sur Visual Studio avec la machine ouvert sur Docker.
 
 2. Ouvrir deux terminaux dans Visual Studio.
