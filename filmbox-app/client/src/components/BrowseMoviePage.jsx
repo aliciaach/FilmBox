@@ -6,6 +6,7 @@ import BlackImage from '../assets/BlackImage.png';
 import ReactPaginate from 'react-paginate';
 import '../styles/BrowseMoviePage.css';
 import HeaderSpace from '../Functions/HeaderSpace.jsx';
+import bannerBackground from '../assets/backgroundBrowseMovie.jpeg';
 
 function BrowseMovies() {
     const { searchQuery } = useParams();
@@ -21,33 +22,33 @@ function BrowseMovies() {
     const [filteredMovies, setFilteredMovies] = useState([]);
     const [error, setError] = useState();
     const navigate = useNavigate();
-    
+
     const handlePageClick = (data) => {
         setCurrentPage(data.selected);
     };
     useEffect(() => {
-    const fetchUserSession = async () => {
-      try {
-        const response = await fetch("http://localhost:4000/get-session", {
-          credentials: "include",
-        });
-        const data = await response.json();
-        if (data.loggedIn) {
-          setUser(data.user);
-        } else {
-          setErreur("Session non trouvée");
-          navigate("/");
-        }
-      } catch (err) {
-        console.error("Erreur session:", err);
-        setErreur("Erreur de session");
-      } finally {
-        setSessionLoaded(true);
-      }
-    };
+        const fetchUserSession = async () => {
+            try {
+                const response = await fetch("http://localhost:4000/get-session", {
+                    credentials: "include",
+                });
+                const data = await response.json();
+                if (data.loggedIn) {
+                    setUser(data.user);
+                } else {
+                    setErreur("Session non trouvée");
+                    navigate("/");
+                }
+            } catch (err) {
+                console.error("Erreur session:", err);
+                setErreur("Erreur de session");
+            } finally {
+                setSessionLoaded(true);
+            }
+        };
 
-    fetchUserSession();
-  }, []);
+        fetchUserSession();
+    }, []);
     useEffect(() => {
         const fetchMovies = async () => {
             let buildUrl = '';
@@ -90,6 +91,81 @@ function BrowseMovies() {
 
     return (
         <>
+            <div className="text-center mt-0 px-0">
+                <div
+                    style={{
+                        position: 'relative',
+                        width: '100%',
+                        minHeight: '70vh',
+                        overflow: 'hidden',
+                    }}
+                >
+                    {/* background */}
+                    <img
+                        src={bannerBackground}
+                        alt="Browse background"
+                        style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                            zIndex: 0,
+                        }}
+                    />
+
+                    {/* header */}
+                    <Header />
+
+                    {/* lowered & boxed banner text */}
+                    <div
+                        style={{
+                            position: 'absolute',
+                            top: '80%',               // moved down from 50%
+                            left: 0,
+                            right: 0,
+                            transform: 'translateY(-50%)',
+                            zIndex: 2,
+                            textAlign: 'center',
+                        }}
+                    >
+                        <div
+                            style={{
+                                display: 'inline-block',
+                                backgroundColor: 'rgba(5, 14, 66, 0.8)', // dark blue, semi-transparent
+                                padding: '1rem 2rem',
+                                borderRadius: '8px',
+                            }}
+                        >
+                            <h1 style={{ fontSize: '4rem', margin: 0, color: '#fff' }}>
+                                Discover Movies
+                            </h1>
+                            <p style={{ fontSize: '1.5rem', margin: 0, color: '#fff' }}>
+                                Find your next discovery
+                            </p>
+                        </div>
+                    </div>
+                    <div
+                        style={{
+                            position: 'absolute',
+                            bottom: 0,
+                            left: 0,
+                            width: '100%',
+                            height: '120px',
+                            background: 'linear-gradient(to top, rgba(7, 0, 66, 1), rgba(7, 0, 66, 0))',
+                            pointerEvents: 'none',
+                            zIndex: 1
+                        }}
+                    ></div>
+
+                </div>
+            </div>
+
+
+
+
+
             <div style={{
                 padding: "40px",
                 background: `linear-gradient(to bottom, 
@@ -100,10 +176,7 @@ function BrowseMovies() {
                 fontFamily: 'Fredoka',
                 minHeight: "100vh",
             }}>
-                <HeaderSpace />
-                <Header />
 
-                <h1 style={{ marginTop: '60px' }}>Page for the movie categories and all</h1>
 
                 {/* --- Filter section --- */}
                 <div className='filtreContainer'>
@@ -314,7 +387,7 @@ function BrowseMovies() {
         }
                 `}</style> {/*Code to addapt the number of movie per row depending on the ui with @media was done with chatgpt's help*/}
                 </div>
-            </div>
+            </div >
         </>
     );
 }
