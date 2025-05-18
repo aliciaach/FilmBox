@@ -1,0 +1,220 @@
+[{
+  "_id": {
+    "$oid": "67ed31bf1ca0be7741061d52"
+  },
+  "username": "admin2",
+  "email": "admin2@outlook.com",
+  "role": "admin",
+  "password": "$2b$10$CXAkBG583qvsV6e.KXYLjuQIgD5KJyCNmk1Og9yKoITsYv0xg2q0.",
+  "lastName": "peterson",
+  "name": "james",
+  "phoneNumber": "5141231234",
+  "lastLogin": {
+    "$date": "2025-03-19T12:00:00.000Z"
+  },
+  "accountStatus": "active",
+  "createdAt": {
+    "$date": "2025-03-18T09:00:00.000Z"
+  },
+  "deletedAt": null
+},
+{
+  "_id": {
+    "$oid": "67ed31f61ca0be7741061d56"
+  },
+  "username": "moderator",
+  "email": "admin2@outlook.com",
+  "role": "moderator",
+  "password": "$2b$10$1RQ6Qvm4OaSNvbqs0RSPaudTh6g3PcXrTreGFZ08utb5owBdVcvLK",
+  "lastName": "Peter",
+  "name": "Pan",
+  "phoneNumber": "5141231234",
+  "lastLogin": {
+    "$date": "2025-03-19T12:00:00.000Z"
+  },
+  "accountStatus": "active",
+  "createdAt": {
+    "$date": "2025-03-18T09:00:00.000Z"
+  },
+  "deletedAt": null
+},
+{
+  "_id": {
+    "$oid": "67ed320b1ca0be7741061d58"
+  },
+  "username": "admin4",
+  "email": "admin4@outlook.com",
+  "role": "admin",
+  "password": "$2b$10$vRNOYEAVPxuAnpNDFa8e.OxMSkWxulxfXCoqDF6zu0IGDYJpUAuN2",
+  "lastName": "Parker",
+  "name": "Peter",
+  "phoneNumber": "5141231234",
+  "lastLogin": {
+    "$date": "2025-03-19T12:00:00.000Z"
+  },
+  "accountStatus": "active",
+  "createdAt": {
+    "$date": "2025-03-18T09:00:00.000Z"
+  },
+  "deletedAt": null
+},
+{
+  "_id": {
+    "$oid": "67ef00001ca0be7741061d72"
+  },
+  "username": "user72_1",
+  "email": "user72_1@example.com",
+  "role": "User",
+  "password": "$2b$10$aU8RVuVHuZfOdDyXc6KOPOC/uTZX/7zP9cAKCvBmeWCV7wdZosQ6K",
+  "lastName": "Smith",
+  "name": "Alice",
+  "phoneNumber": "5141111111",
+  "lastLogin": {
+    "$date": "2025-05-17T10:00:00.000Z"
+  },
+  "accountStatus": "active",
+  "createdAt": {
+    "$date": "2025-05-01T08:30:00.000Z"
+  },
+  "deletedAt": null
+},
+{
+  "_id": {
+    "$oid": "67ef00011ca0be7741061d72"
+  },
+  "username": "user72_2",
+  "email": "user72_2@example.com",
+  "role": "User",
+  "password": "$2b$10$Ql9N5k0xXyHuwcuZDFFfIeX0DjPf6CE8tJGn94UyaFFx7IRutD6Dq",
+  "lastName": "Johnson",
+  "name": "Bob",
+  "phoneNumber": "5142222222",
+  "lastLogin": {
+    "$date": "2025-05-17T09:45:00.000Z"
+  },
+  "accountStatus": "active",
+  "createdAt": {
+    "$date": "2025-05-02T11:15:00.000Z"
+  },
+  "deletedAt": null
+},
+{
+  "_id": {
+    "$oid": "67ef00021ca0be7741061d72"
+  },
+  "username": "user72_3",
+  "email": "user72_3@example.com",
+  "role": "Moderator",
+  "password": "$2b$10$T6YWr97JukYsRnAYq0Rr/OJv1VhDY2EClcCdEXb4hhZu0WvH2kcnC",
+  "lastName": "Taylor",
+  "name": "Charlie",
+  "phoneNumber": "5143333333",
+  "lastLogin": {
+    "$date": "2025-05-16T22:00:00.000Z"
+  },
+  "accountStatus": "suspended",
+  "createdAt": {
+    "$date": "2025-05-03T13:00:00.000Z"
+  },
+  "deletedAt": null
+},
+{
+  "_id": {
+    "$oid": "6800000000000000000000a1"
+  },
+  "username": "superadmin",
+  "email": "superadmin@example.com",
+  "role": "admin",
+  "password": "$2b$10$ExampleHashForSuperAdmin1234567890abcde",
+  "lastName": "Anderson",
+  "name": "Emma",
+  "phoneNumber": "5144444444",
+  "lastLogin": {
+    "$date": "2025-05-15T18:30:00.000Z"
+  },
+  "accountStatus": "active",
+  "createdAt": {
+    "$date": "2025-04-20T14:00:00.000Z"
+  },
+  "deletedAt": null
+},
+{
+  "_id": {
+    "$oid": "6800000000000000000000a2"
+  },
+  "username": "mod_jackson",
+  "email": "jackson.mod@example.com",
+  "role": "moderator",
+  "password": "$2b$10$ExampleHashForModJackson0987654321abc",
+  "lastName": "Jackson",
+  "name": "Liam",
+  "phoneNumber": "5145555555",
+  "lastLogin": {
+    "$date": "2025-05-16T09:15:00.000Z"
+  },
+  "accountStatus": "active",
+  "createdAt": {
+    "$date": "2025-04-25T10:20:00.000Z"
+  },
+  "deletedAt": null
+},
+{
+  "_id": {
+    "$oid": "6800000000000000000000a3"
+  },
+  "username": "user15_1",
+  "email": "user15_1@example.com",
+  "role": "User",
+  "password": "$2b$10$ExampleHashForUser151234567890abcde",
+  "lastName": "Martin",
+  "name": "Olivia",
+  "phoneNumber": "5146666666",
+  "lastLogin": {
+    "$date": "2025-05-17T07:45:00.000Z"
+  },
+  "accountStatus": "active",
+  "createdAt": {
+    "$date": "2025-05-10T12:00:00.000Z"
+  },
+  "deletedAt": null
+},
+{
+  "_id": {
+    "$oid": "6800000000000000000000a4"
+  },
+  "username": "user15_2",
+  "email": "user15_2@example.com",
+  "role": "User",
+  "password": "$2b$10$ExampleHashForUser152345678901abcd",
+  "lastName": "Lee",
+  "name": "Noah",
+  "phoneNumber": "5147777777",
+  "lastLogin": {
+    "$date": "2025-05-17T08:30:00.000Z"
+  },
+  "accountStatus": "active",
+  "createdAt": {
+    "$date": "2025-05-11T15:30:00.000Z"
+  },
+  "deletedAt": null
+},
+{
+  "_id": {
+    "$oid": "6800000000000000000000a5"
+  },
+  "username": "mod_cheng",
+  "email": "cheng.mod@example.com",
+  "role": "moderator",
+  "password": "$2b$10$ExampleHashForModCheng567890abcd1234",
+  "lastName": "Cheng",
+  "name": "Sophia",
+  "phoneNumber": "5148888888",
+  "lastLogin": {
+    "$date": "2025-05-16T20:00:00.000Z"
+  },
+  "accountStatus": "suspended",
+  "createdAt": {
+    "$date": "2025-05-05T09:45:00.000Z"
+  },
+  "deletedAt": null
+}]
