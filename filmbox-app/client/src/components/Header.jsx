@@ -45,12 +45,12 @@ function Header() {
           const userInitials = (data.user.prenom?.[0] || '?') + (data.user.nom?.[0] || '?');
           setInitials(userInitials.toUpperCase());
         } else {
-          setMessage("SESSION INTROUVABLE");
-          navigate("/");
+          if (location.pathname !== "/") {
+          navigate("/", { replace: true });
+        }
         }
       } catch (error) {
         console.error('Error', error);
-        setMessage("Error");
       }
     };
 

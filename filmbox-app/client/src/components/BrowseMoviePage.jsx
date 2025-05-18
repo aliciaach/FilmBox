@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Header from '../components/Header';
@@ -20,11 +20,34 @@ function BrowseMovies() {
     });
     const [filteredMovies, setFilteredMovies] = useState([]);
     const [error, setError] = useState();
-
+    const navigate = useNavigate();
+    
     const handlePageClick = (data) => {
         setCurrentPage(data.selected);
     };
+    useEffect(() => {
+    const fetchUserSession = async () => {
+      try {
+        const response = await fetch("http://localhost:4000/get-session", {
+          credentials: "include",
+        });
+        const data = await response.json();
+        if (data.loggedIn) {
+          setUser(data.user);
+        } else {
+          setErreur("Session non trouvée");
+          navigate("/");
+        }
+      } catch (err) {
+        console.error("Erreur session:", err);
+        setErreur("Erreur de session");
+      } finally {
+        setSessionLoaded(true);
+      }
+    };
 
+    fetchUserSession();
+  }, []);
     useEffect(() => {
         const fetchMovies = async () => {
             let buildUrl = '';
