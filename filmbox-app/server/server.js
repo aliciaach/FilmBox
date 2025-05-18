@@ -152,7 +152,7 @@ app.post("/login", (req, res) => {
       if (rememberMe) {
         req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000;
       } else {
-        req.session.cookie.maxAge = 30 * 60 * 60 * 1000;
+        req.session.cookie.maxAge = 15 * 1000;
       }
 
       req.session.save((err) => {
@@ -1024,7 +1024,6 @@ app.post("/adminLogin", async (req, res) => {
       return res.status(401).json({ message: "Admin not found" });
     }
 
-    //const isPasswordValid = await compare(password, admin.password);
     const isPasswordValid = await bcrypt.compare(password, admin.password);
     if (!isPasswordValid) {
       return res.status(401).json({ message: "Mot de passe invalide" });
@@ -1038,6 +1037,10 @@ app.post("/adminLogin", async (req, res) => {
       nom: admin.lastName,
       role: admin.role
     };
+    //req.session.cookie.maxAge = 3 * 60 * 1000;
+    req.session.cookie.maxAge = 15 * 1000;
+
+
     console.log("AdminSessionStarted");
     return res.json({ message: "Admin Connexion Succesful" });
   } catch (error) {

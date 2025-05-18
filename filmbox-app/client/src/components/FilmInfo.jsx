@@ -26,27 +26,34 @@ const FilmInfo = () => {
 
   // 1. Charger la session utilisateur
   useEffect(() => {
-    const fetchUserSession = async () => {
+    const fetchSession = async () => {
       try {
-        const response = await fetch("http://localhost:4000/get-session", {
+        const res = await fetch("http://localhost:4000/get-session", {
           credentials: "include",
         });
-        const data = await response.json();
-        if (data.loggedIn) {
-          setUser(data.user);
-        } else {
-          setErreur("Session non trouvée");
+        if (!res.ok) {
+          // not logged in → kick out
+          navigate("/", { replace: true });
+          return;
         }
+        const data = await res.json();
+        if (!data.loggedIn) {
+          navigate("/", { replace: true });
+          return;
+        }
+        // session valid
+        setUser(data.user);
       } catch (err) {
         console.error("Erreur session:", err);
-        setErreur("Erreur de session");
+        navigate("/", { replace: true });
       } finally {
+        // whether we redirected or not, we’re done checking
         setSessionLoaded(true);
       }
     };
 
-    fetchUserSession();
-  }, []);
+    fetchSession();
+  }, [navigate]);
 
   // 2. Charger les données du film une fois la session chargée
   useEffect(() => {
