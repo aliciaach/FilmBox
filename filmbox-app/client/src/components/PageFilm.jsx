@@ -168,7 +168,6 @@ const ListeFilms = () => {
               Their bond deepens as they encounter the Wizard of Oz, leading to a series of events that ultimately shape their destinies and transform
               them into the Wicked Witch of the West and Glinda the Good.
             </p>
-            <button className="btn btn-light" style={{ borderRadius: "0px", border: "0px", backgroundColor: "#0352fc", color: "white", fontFamily: "Fredoka" }}>ADD TO WATCHLIST</button>
           </div>
 
           <div
