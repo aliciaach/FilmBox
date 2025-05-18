@@ -269,62 +269,69 @@ CREATE TABLE films_favoris (
 -------------------------------------------------------------------------------------------------------------
 ---------------------INSERTION DES VALEURS DANS LES TABLES---------------------------------------------------
 -------------------------------------------------------------------------------------------------------------
-
-INSERT INTO utilisateur (nom, prenom, courriel, mot_de_passe, telephone) VALUES 
-('Doe', 'John', 'john.doe@example.com', 'password123', '1234567890'), 
-('Smith', 'Jane', 'jane.smith@example.com', 'securepass', '0987654321');
-
-INSERT INTO droit (nom, type_droit) VALUES 
-('Admin', 'Full Access'), 
-('User', 'Read Only');
-
-INSERT INTO films (titre, film_duree, date_sortie, pays_origin_film, langue_original, status) VALUES 
-('Inception', 148, '2010-07-16', 'États-Unis', 'Anglais', 'Vu', 1), 
-('Pulp Fiction', 154, '1994-10-14', 'États-Unis', 'Anglais', 'Non vu');
-
-INSERT INTO genre (genre, films_film_id) VALUES 
-('Science Fiction', 1), 
-('Crime', 2);
-
-INSERT INTO note (commentaire, valeur_note, films_film_id, utilisateur_utilisateur_id) VALUES 
-('Amazing movie!', 5, 1, 1), 
-('Classic film!', 4, 2, 2);
-
-INSERT INTO permission (note, utilisateur_utilisateur_id, droit_droit_id) VALUES 
-('Full control', 1, 1), 
-('Limited access', 2, 2);
-
-INSERT INTO session (date_cree, jeton, utilisateur_utilisateur_id) VALUES 
-('2025-02-24', 'abc123token', 1), 
-('2025-02-24', 'xyz789token', 2);
-
-INSERT INTO film_watchlist (film_id, utilisateur_utilisateur_id) VALUES 
-(1, 1), 
-(2, 2);
-
-INSERT INTO films_favoris (film_id, utilisateur_utilisateur_id) VALUES 
-(1, 1), 
-(2, 2);
-
-INSERT INTO films (film_id, titre, film_duree, date_sortie, pays_origin_film, langue_original, status)
-VALUES
-(3, 'The Dark Knight', 152, '2008-07-18', 'USA', 'English', 'vu', 1),
-(4, 'Interstellar', 169, '2014-11-07', 'USA', 'English', 'vu', 2),
-(5, 'Inception', 148, '2010-07-16', 'USA', 'English', 'vu', 2),
-(6, 'Titanic', 195, '1997-12-19', 'USA', 'English', 'non vu', 1),
-(7, 'The Godfather', 175, '1972-03-24', 'USA', 'English', 'vu', 2),
-(8, 'Pulp Fiction', 154, '1994-10-14', 'USA', 'English', 'vu', 2),
-(9, 'Fight Club', 139, '1999-10-15', 'USA', 'English', 'non vu', 1),
-(10, 'Forrest Gump', 142, '1994-07-06', 'USA', 'English', 'vu', 1),
-(11, 'The Matrix', 136, '1999-03-31', 'USA', 'English', 'vu', 2),
-(12, 'The Lord of the Rings: The Fellowship of the Ring', 178, '2001-12-19', 'New Zealand', 'English', 'vu', 2),
-(13, 'The Lord of the Rings: The Two Towers', 179, '2002-12-18', 'New Zealand', 'English', 'vu', 1),
-(14, 'The Lord of the Rings: The Return of the King', 201, '2003-12-17', 'New Zealand', 'English', 'vu', 1),
-(15, 'The Shawshank Redemption', 142, '1994-09-23', 'USA', 'English', 'vu', 1),
-(16, 'Gladiator', 155, '2000-05-05', 'USA', 'English', 'non vu', 1),
-(17, 'The Avengers', 143, '2012-04-25', 'USA', 'English', 'vu', 1),
-(18, 'Avatar', 162, '2009-12-18', 'USA', 'English', 'vu', 1),
-(19, 'Joker', 122, '2019-10-04', 'USA', 'English', 'vu', 1),
-(20, 'Spider-Man: No Way Home', 148, '2021-12-17', 'USA', 'English', 'vu', 1),
-(21, 'Django Unchained', 165, '2012-12-25', 'USA', 'English', 'non vu', 2),
-(22, 'The Wolf of Wall Street', 180, '2013-12-25', 'USA', 'English', 'vu');
+-- ================================
+-- INSERT SAMPLE DATA
+-- ================================
+ 
+-- utilisateurs
+INSERT INTO utilisateur (nom, prenom, courriel, mot_de_passe, telephone) VALUES
+('Dupont', 'Alice',   'alice.dupont@example.com',   'password1', '514-123-0001'),
+('Martin', 'Bob',     'bob.martin@example.com',     'password2', '514-123-0002'),
+('Nguyen', 'Charlie', 'charlie.nguyen@example.com', 'password3', '514-123-0003');
+ 
+-- droits
+INSERT INTO droit (nom, type_droit) VALUES
+('Administrateur', 'Admin'),
+('Modérateur',     'Moderator'),
+('Utilisateur',    'User');
+ 
+-- films
+INSERT INTO films (titre, film_duree, date_sortie, pays_origin_film, langue_original, status) VALUES
+('Inception',       148, '2010-07-16', 'USA',        'English', 'released'),
+('Parasite',        132, '2019-05-30', 'South Korea','Korean',  'released'),
+('Avatar 3',        165, '2025-12-18', 'USA',        'English', 'upcoming'),
+('Amélie',          122, '2001-04-25', 'France',     'French',  'released'),
+('Spirited Away',   125, '2001-07-20', 'Japan',      'Japanese','released');
+ 
+-- genres
+INSERT INTO genre (genre, films_film_id) VALUES
+('Sci-Fi',     1),
+('Thriller',   1),
+('Drama',      2),
+('Sci-Fi',     3),
+('Romance',    4),
+('Animation',  5);
+ 
+-- notes (avis utilisateurs)
+INSERT INTO note (commentaire, valeur_note, films_film_id, utilisateur_utilisateur_id) VALUES
+('Mind-bending and thrilling', 5, 1, 1),
+('Très bien réalisé',           4, 2, 2),
+('Impatient to see it!',       5, 3, 1),
+('Un classique charmant',       5, 4, 3),
+('Great visuals, good story',  4, 1, 2);
+ 
+-- permissions
+INSERT INTO permission (note, utilisateur_utilisateur_id, droit_droit_id) VALUES
+('Granted full access', 1, 1),
+('Moderator access',    3, 2),
+('Regular user',        2, 3);
+ 
+-- sessions
+INSERT INTO session (date_cree, jeton, utilisateur_utilisateur_id) VALUES
+('2025-05-17', 'token_abc123', 1),
+('2025-05-16', 'token_def456', 2),
+('2025-05-15', 'token_ghi789', 3);
+ 
+-- watchlists
+INSERT INTO film_watchlist (film_id, utilisateur_utilisateur_id) VALUES
+(2, 1),
+(3, 1),
+(1, 2),
+(1, 3),
+(4, 3);
+ 
+-- favoris
+INSERT INTO films_favoris (film_id, utilisateur_utilisateur_id) VALUES
+(1, 1),
+(2, 2),
+(5, 3);
