@@ -36,7 +36,7 @@ db.createCollection("AdminUsers")
 db.createCollection("CustomLists")
  
 5. Ajoutez des administrateurs et les listes :
-   Il se trouve tous les deux dans le rep git! Se sont des listes déjà fait que vous pouvez utiliser.
+   Il se trouvent tous les deux dans le rep git! Se sont des listes déjà fait que vous pouvez utiliser.
  
 6. Arrêtez et relancez le conteneur avec les commandes suivantes :
 docker stop mongodb_filmbox
