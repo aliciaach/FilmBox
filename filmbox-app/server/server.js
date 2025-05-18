@@ -560,6 +560,7 @@ app.get("/api/searchMovie", async (req, res) => {
     );
 
     const data = await response.json();
+    data.results = data.results.filter(movie => movie.poster_path);
     res.json(data.results);
   } catch (err) {
     console.error(err);
@@ -586,6 +587,7 @@ app.get("/api/getMoviesResults/:searchQuery", async (req, res) => {
     );
 
     const data = await response.json();
+    data.results = data.results.filter(movie => movie.poster_path);
     res.json(data); // Send full TMDB object, not only .results
   } catch (err) {
     console.error(err);
