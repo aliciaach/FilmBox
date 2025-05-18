@@ -1,22 +1,24 @@
 Voici comment déployer notre projet FilmBox dans votre machine :
 
-1. Télécharger notre dépôt git sur votre PC (ou faire un git clone).
+Téléchargez notre dépôt git sur votre PC (ou faites un git clone).
 
-2. Il faut préparer votre environnement Docker pour être capable de se connecter a un server:
-   
-   a) Pour créer le conteneur (instance de l’image) qui exécutera mysql dans docker, ouvrir un invite de commande et lancer la commande :
-      docker run -d -p 3306:3306 --name mysql-server -e MYSQL_ROOT_PASSWORD=oracle -e MYSQL_DATABASE=scott -e MYSQL_USER=scott -e MYSQL_PASSWORD=oracle mysql/mysql-server:latest
+Il faut préparer votre environnement Docker pour être capable de se connecter à un serveur:
 
-   b) Ensuite vous pourrez vous connecter à mysql avec la ligne de commande mysql et le mot de passe "oracle" :   
-      mysql -u root -p
+a) Pour créer le conteneur (instance de l’image) qui exécutera mysql dans docker, ouvrir un invite de commande et lancer la commande : docker run -d -p 3306:3306 --name mysql-server -e MYSQL_ROOT_PASSWORD=oracle -e MYSQL_DATABASE=scott -e MYSQL_USER=scott -e MYSQL_PASSWORD=oracle mysql/mysql-server:latest
 
-   c) Ensuite créer une base de données :
-      CREATE DATABASE filmbox;
-      USE filmbox;
+b) Ensuite vous pourrez vous connecter à mysql avec la ligne de commande mysql et le mot de passe oracle mysql -u root -p
 
-4. Maintenant que tout est prêt, il faut insérer les tables de notre script. ATTENTION : Le script mysql se trouve au milieu du script(indiqué en commentaire).
+c) Ensuite créez une base de données : CREATE DATABASE filmbox; USE filmbox;
 
-5. Insérer les valeur des tables(ce trouve en bas du script).
+Maintenant que tout est prêt, il faut insérer les tables de notre script. ATTENTION : Le script mysql se trouve au milieu du script(indiqué en commentaire).
+
+Insérez les valeur des tables(se trouve en bas du script).
+
+Ouvrez le dépôt git téléchargé (ou cloné) sur Visual Studio avec la machine ouverte sur Docker.
+
+Ouvrez deux terminaux dans Visual Studio.
+
+Entrez dans le dossier "filmbox-app" dans les deux terminaux. Voici un exemple : cd C:\Users\farru\Downloads\FilmBox-main\FilmBox-main\filmbox-app
 
 ============ SECTION MONGO DB ================
 
