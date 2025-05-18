@@ -209,7 +209,7 @@ CREATE TABLE films (
     pays_origin_film VARCHAR(255) NOT NULL,
     langue_original VARCHAR(255) NOT NULL,
     status VARCHAR(255) NOT NULL,
-    PRIMARY KEY (film_id),
+    PRIMARY KEY (film_id)
     );
 
 
