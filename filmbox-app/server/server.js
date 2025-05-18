@@ -600,7 +600,7 @@ app.get("/discoverMoviesFiltered", async (req, res) => {
   const params = new URLSearchParams();
   const page = req.query.page || 1;
   params.append("page", page);
-  const { genre, language, decade, movieDuration, originCountry } = req.query;
+  const { genre, language, decade } = req.query;
 
   const originalUrl = "https://api.themoviedb.org/3/discover/movie";
 
@@ -621,9 +621,6 @@ app.get("/discoverMoviesFiltered", async (req, res) => {
     params.append("primary_release_date.lte", `${endYearString}-12-31`);
   }
 
-  /*if (movieDuration) {
-      params.append('')
-    }*/
 
   try {
     console.log("WE ARE GETTTING HEREEEEEEEEEEEEE");
@@ -658,65 +655,6 @@ app.get("/discoverMoviesFiltered", async (req, res) => {
       console.log("CHECKKKKKKKKPOINT 1");
 
       const fullMovieData = await currentMovieInformation.json(); //All the information about the movie in details
-
-      // If the user selected
-      if (movieDuration) {
-        console.log("CHECKKKKKKKKPOINT 2");
-
-        const userPreferencesDuration = parseInt(movieDuration);
-        const runtime = fullMovieData.runtime;
-
-        if (!runtime) continue; // skip if no runtime
-
-        let durationIsOK = false;
-
-        if (userPreferencesDuration === 0 && runtime < 60) durationIsOK = true;
-        else if (userPreferencesDuration === 1 && runtime >= 60 && runtime < 90)
-          durationIsOK = true;
-        else if (
-          userPreferencesDuration === 2 &&
-          runtime >= 90 &&
-          runtime < 150
-        )
-          durationIsOK = true;
-        else if (
-          userPreferencesDuration === 3 &&
-          runtime >= 150 &&
-          runtime <= 240
-        )
-          durationIsOK = true;
-        else if (userPreferencesDuration === 4 && runtime > 240)
-          durationIsOK = true;
-
-        if (!durationIsOK) continue;
-      }
-      console.log("CHECKKKKKKKKPOINT 3");
-
-      if (originCountry) {
-        let correspondingCountryFound = false;
-
-        //check if production_companies exists
-        if (
-          fullMovieData.production_companies &&
-          fullMovieData.production_companies.length > 0
-        ) {
-          for (let i = 0; i < fullMovieData.production_companies.length; i++) {
-            const company = fullMovieData.production_companies[i];
-
-            if (company.origin_country === originCountry) {
-              correspondingCountryFound = true;
-              break; //if we found a match, the movie is good
-            }
-          }
-        }
-        console.log("CHECKKKKKKKKPOINT 4");
-
-        // If we didn’t, dont save the movie for the list
-        if (!correspondingCountryFound) {
-          continue;
-        }
-      }
-
       filteredMovies.push(fullMovieData);
     }
 
