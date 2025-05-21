@@ -120,7 +120,7 @@ function UserSettings() {
       const response = await fetch('http://localhost:4000/deleteAccount', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: user.id }),
+        body: JSON.stringify({ userId: user.utilisateur_id }),
       });
       const data = await response.json();
 
@@ -182,7 +182,7 @@ function UserSettings() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          id: tempoUser.id,
+          id: tempoUser.utilisateur_id,
           prenom: tempoUser.prenom,
           nom: tempoUser.nom,
           courriel: tempoUser.courriel,
@@ -472,8 +472,6 @@ function UserSettings() {
                 </button>
               </form>
             </div>
-
-            <p style={{ fontSize: '10px' }}>Ce site est protégé par reCAPTCHA et la politique de confidentialité et les conditions d'utilisation de FilmBox s'appliquent.</p>
           </div>
         </div>
       </div>
