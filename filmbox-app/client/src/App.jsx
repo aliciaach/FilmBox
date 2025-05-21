@@ -21,6 +21,7 @@ function App() {
     const handleUnload = (event) => {
       const rememberMe = localStorage.getItem("rememberMe");
 
+      //Aide de chatgpt pour la ligne fonction suivante
       const navType = performance.getEntriesByType("navigation")[0]?.type;
       const isReload = navType === "reload" || navType === "navigate";
 
